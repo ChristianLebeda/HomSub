@@ -4,18 +4,18 @@
 class Graph
 {
 public:
-    static Graph fromGraph6(std::string graph6);
-    static Graph fromFile(std::string path);
-    static Graph testGraph();
+    Graph(int v, int e) : vertices(v), edges(e) {};
     
-    int verCount();
+    static std::shared_ptr<Graph> fromGraph6(std::string graph6);
+    static std::shared_ptr<Graph> fromFile(std::string path);
+    static std::shared_ptr<Graph> testGraph();
+    
+    int vertCount();
     int edgeCount();
     bool edgeExist(int u, int v);
-    bool isIsomorphic(Graph g);
+    bool isIsomorphic(std::shared_ptr<Graph> g);
     
 private:
-    Graph(int v, int e);
-    
     int vertices;
     int edges;
 };

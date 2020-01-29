@@ -1,18 +1,19 @@
 #include <iostream>
 #include "homomorphism/Graph.h"
 
-Graph Graph::fromGraph6(std::string graph6) {
+std::shared_ptr<Graph> Graph::fromGraph6(std::string graph6) {
     return testGraph();
 }
 
-Graph Graph::fromFile(std::string path) {
+std::shared_ptr<Graph> Graph::fromFile(std::string path) {
     return testGraph();
 }
 
-Graph Graph::testGraph()
+std::shared_ptr<Graph> Graph::testGraph()
 {
-    Graph g = Graph(2, 2);
-    return g;
+    int v = 4;
+    int e = 5;
+    return std::make_shared<Graph>(v, e);
 }
 
 bool Graph::edgeExist(int u, int v)
@@ -21,13 +22,13 @@ bool Graph::edgeExist(int u, int v)
     return true;
 }
 
-bool Graph::isIsomorphic(Graph g)
+bool Graph::isIsomorphic(std::shared_ptr<Graph> g)
 {
     //TODO: implement
     return true;
 }
 
-int Graph::verCount()
+int Graph::vertCount()
 {
     return vertices;
 }
@@ -35,10 +36,5 @@ int Graph::verCount()
 int Graph::edgeCount()
 {
     return edges;
-}
-
-Graph::Graph(int v, int e) {
-    vertices = v;
-    edges = e;
 }
 
