@@ -1,8 +1,8 @@
   #include <iostream>
 
-#include "homomorphism/graph.h"
+#include "homomorphism/Graph.h"
 
-void graph::sayHello()
+void Graph::sayHello()
 {
     std::cout << "Hello from graph!" << std::endl;
 }

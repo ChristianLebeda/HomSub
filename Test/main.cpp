@@ -1,8 +1,8 @@
-#include "homomorphism/graph.h"
+#include "homomorphism/Graph.h"
 
 int main(int argc, char *argv[])
 {
-    graph g;
+    Graph g;
     g.sayHello();
     
     return 0;

@@ -1,9 +1,9 @@
-#ifndef graph_H
-#define graph_H
+#ifndef Graph_H
+#define Graph_H
 
 
 
-class graph
+class Graph
 {
 public:
     void sayHello();
