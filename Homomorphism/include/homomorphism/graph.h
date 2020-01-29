@@ -1,5 +1,7 @@
-#ifndef __graph_H__
-#define __graph_H__
+#ifndef graph_H
+#define graph_H
+
+
 
 class graph
 {

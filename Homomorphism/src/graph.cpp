@@ -1,6 +1,6 @@
   #include <iostream>
 
-#include "graph/graph.h"
+#include "homomorphism/graph.h"
 
 void graph::sayHello()
 {

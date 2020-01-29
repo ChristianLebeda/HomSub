@@ -1,4 +1,4 @@
-#include "graph/graph.h"
+#include "homomorphism/graph.h"
 
 int main(int argc, char *argv[])
 {
