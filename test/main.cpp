@@ -1,5 +1,5 @@
 #include <iostream>
-#include "homomorphism/Graph.h"
+#include "homomorphism/graph.h"
 
 int main(int argc, char *argv[])
 {

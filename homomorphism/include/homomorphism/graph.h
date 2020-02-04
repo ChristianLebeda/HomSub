@@ -1,5 +1,5 @@
-#ifndef Graph_H
-#define Graph_H
+#ifndef HOMOMORPHISM_GRAPH_H_
+#define HOMOMORPHISM_GRAPH_H_
 
 class Graph
 {
