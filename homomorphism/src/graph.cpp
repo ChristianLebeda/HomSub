@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include "homomorphism/graph.h"
 
 std::shared_ptr<Graph> Graph::fromGraph6(std::string graph6) {
@@ -19,22 +20,35 @@ std::shared_ptr<Graph> Graph::testGraph()
 bool Graph::edgeExist(int u, int v)
 {
     //TODO: implement
-    return true;
+    return false;
 }
 
 bool Graph::isIsomorphic(std::shared_ptr<Graph> g)
 {
     //TODO: implement
-    return true;
+    return false;
 }
 
 int Graph::vertCount()
 {
-    return vertices;
+    return vertices_;
 }
 
 int Graph::edgeCount()
 {
-    return edges;
+    return edges_;
+}
+
+std::string Graph::toString()
+{
+    std::ostringstream out;
+    out << "Graph of size (" << vertices_ << "," << edges_ << ")";
+    return out.str();
+}
+
+std::string Graph::toGraph6()
+{
+    //TODO: implement
+    return "";
 }
 

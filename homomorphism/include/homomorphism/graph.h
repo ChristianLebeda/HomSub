@@ -4,7 +4,7 @@
 class Graph
 {
 public:
-    Graph(int v, int e) : vertices(v), edges(e) {};
+    Graph(int v, int e) : vertices_(v), edges_(e) {};
     
     static std::shared_ptr<Graph> fromGraph6(std::string graph6);
     static std::shared_ptr<Graph> fromFile(std::string path);
@@ -14,10 +14,12 @@ public:
     int edgeCount();
     bool edgeExist(int u, int v);
     bool isIsomorphic(std::shared_ptr<Graph> g);
+    std::string toString();
+    std::string toGraph6();
     
 private:
-    int vertices;
-    int edges;
+    int vertices_;
+    int edges_;
 };
 
 #endif
