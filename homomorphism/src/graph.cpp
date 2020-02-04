@@ -100,4 +100,15 @@ std::string Graph::toGraph6()
     return "";
 }
 
+void Graph::prettyPrint(std::ostream& os) 
+{
+    os << "Graph with " << vertices_ << " vertices and " << edges_ << " edges:\n";
+    for (int u = 0; u < vertices_; u++) {
+        os << "[ ";
+        for (int v = 0; v < vertices_; v++) {
+            os << edgeExist(u, v) << " ";
+        }
+        os << "]" << std::endl;
+    }
+}
 

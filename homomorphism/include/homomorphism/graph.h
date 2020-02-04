@@ -6,7 +6,7 @@ class Graph
 public:
     Graph(int v, int e) : vertices_(v), edges_(e) 
     {
-        matrix_ = new bool[v * v];
+        matrix_ = new bool[v * v] { 0 };
     };
     Graph(int v, int e, bool* a) : vertices_(v), edges_(e), matrix_(a) { };
     
@@ -21,6 +21,8 @@ public:
     bool isIsomorphic(std::shared_ptr<Graph> g);
     std::string toString();
     std::string toGraph6();
+    void prettyPrint(std::ostream& os);
+    
 
     void operator delete(void* p)
     {
