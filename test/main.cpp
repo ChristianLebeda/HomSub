@@ -6,7 +6,6 @@
 int main(int argc, char *argv[])
 {
     std::shared_ptr<Graph> a = Graph::fromGraph6("This is graph6");
-    
     TreeWidthSolver *tws = new Tamaki2017();
     tws->decompose(a);
     

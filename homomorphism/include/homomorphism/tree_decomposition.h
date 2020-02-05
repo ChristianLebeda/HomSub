@@ -11,15 +11,16 @@
 #include "graph.h"
 #include <memory>
 #include <vector>
+#include <fstream>
 
 class TreeDecomposition {
 public:
-    TreeDecomposition(std::shared_ptr<Graph> g, std::vector<std::vector<int>> b) : graph(g), bags(b) {};
-    std::shared_ptr<TreeDecomposition> fromTdFile(std::string tdFile);
+    TreeDecomposition(std::shared_ptr<Graph> g, std::vector<std::vector<size_t>> b) : graph(g), bags(b) {};
+    static std::shared_ptr<TreeDecomposition> parseTd(std::ifstream& input);
     int test();
 private:
     std::shared_ptr<Graph> graph;
-    std::vector<std::vector<int>> bags;
+    std::vector<std::vector<size_t>> bags;
 };
 
 #endif /* tree_decomposition_h */
