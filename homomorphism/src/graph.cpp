@@ -14,6 +14,7 @@ bool has_suffix(const std::string& str, const std::string& suffix)
 }
 
 void Graph::addEdge(int u, int v) {
+    if (!matrix_[u * vertices_ + v]) edges_++;
     matrix_[u * vertices_ + v] = true;
     matrix_[v * vertices_ + u] = true;
 }
@@ -26,7 +27,7 @@ std::shared_ptr<Graph> parseGr(std::ifstream& input) {
     
     int n, m;
     if (!std::sscanf(line.c_str(), "p tw %d %d", &n, &m)) return nullptr;
-    std::shared_ptr <Graph> G = std::make_shared<Graph>(n, m);
+    std::shared_ptr <Graph> G = std::make_shared<Graph>(n);
 
     int u, v;
     while (getline(input, line)) {
@@ -98,6 +99,44 @@ std::string Graph::toGraph6()
 {
     //TODO: implement
     return "";
+}
+
+std::shared_ptr<Graph> Graph::partition(std::set<int>* parts, int size) {
+    std::shared_ptr<Graph> newGraph = std::make_shared<Graph>(size);
+
+    bool edgeFound;
+    std::set<int>::iterator uit, uend, vit, vend;
+
+    for(int u = 0; u < size; u++)
+    {
+        uend = parts[u].end();
+        
+        for (int v = u + 1; v < size; v++)
+        {
+            edgeFound = false;
+            uit = parts[u].begin();
+            vend = parts[v].end();
+
+            while (!edgeFound && uit != uend) {
+                vit = parts[v].begin();
+
+                while (vit != vend) {
+                    if (edgeExist(*uit, *vit)) {
+                        edgeFound = true;
+                        break;
+                    }
+                    vit++;
+                }
+                uit++;
+            }
+
+            if (edgeFound) {
+                newGraph->addEdge(u, v);
+            }
+        }
+    }
+
+    return newGraph;
 }
 
 void Graph::prettyPrint(std::ostream& os) 

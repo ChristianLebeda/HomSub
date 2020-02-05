@@ -1,13 +1,13 @@
 #ifndef HOMOMORPHISM_GRAPH_H_
 #define HOMOMORPHISM_GRAPH_H_
 
+#include <set>
+
 class Graph
 {
 public:
-    Graph(int v, int e) : vertices_(v), edges_(e) 
-    {
-        matrix_ = new bool[v * v] { 0 };
-    };
+    Graph(int v) : vertices_(v), edges_(0), matrix_(new bool[v * v]{ 0 }) { };
+    Graph(int v, int e) : vertices_(v), edges_(e), matrix_(new bool[v * v]{ 0 }) { };
     Graph(int v, int e, bool* a) : vertices_(v), edges_(e), matrix_(a) { };
     
     static std::shared_ptr<Graph> fromGraph6(std::string graph6);
@@ -22,7 +22,7 @@ public:
     std::string toString();
     std::string toGraph6();
     void prettyPrint(std::ostream& os);
-    
+    std::shared_ptr<Graph> partition(std::set<int>* parts, int size);
 
     void operator delete(void* p)
     {
