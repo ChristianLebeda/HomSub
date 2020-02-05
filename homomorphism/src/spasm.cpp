@@ -1,8 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <tuple>
 #include <sstream>
-#include "homomorphism/graph.h"
 #include "homomorphism/spasm.h"
 
 std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
@@ -15,7 +11,8 @@ std::shared_ptr<Spasm> Spasm::createSpasm(Graph H) {
 
 std::shared_ptr<Spasm> Spasm::testSpasm()
 {
-    return std::make_shared<Spasm>(std::vector<std::tuple<Graph, int>>());
+    std::vector<std::pair<Graph, int> > vec;
+    return std::make_shared<Spasm>(vec);
 }
 
 size_t Spasm::size()
@@ -23,7 +20,7 @@ size_t Spasm::size()
     return graphs_.size();
 }
 
-std::tuple<Graph, int>& Spasm::operator[](std::size_t position) {
+std::pair<Graph, int>& Spasm::operator[](std::size_t position) {
     return graphs_[position];
 }
 

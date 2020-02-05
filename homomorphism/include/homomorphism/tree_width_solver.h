@@ -8,6 +8,7 @@
 #ifndef HOMOMORPHISM_TREE_WIDTH_SOLVER_h
 #define HOMOMORPHISM_TREE_WIDTH_SOLVER_h
 
+#include <string>
 #include "graph.h"
 
 class TreeWidthSolver

@@ -1,6 +1,5 @@
-#include <iostream>
-#include <sstream>
 #include "homomorphism/graph.h"
+#include <sstream>
 
 std::shared_ptr<Graph> Graph::fromGraph6(std::string graph6) {
     return testGraph();

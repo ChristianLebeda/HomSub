@@ -8,6 +8,9 @@
 #ifndef TAMAKI_2017_h
 #define TAMAKI_2017_h
 
+#include <string>
+#include <memory>
+#include "graph.h"
 #include "tree_width_solver.h"
 
 class Tamaki2017 : public TreeWidthSolver

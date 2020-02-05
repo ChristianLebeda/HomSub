@@ -1,8 +1,9 @@
 #ifndef HOMOMORPHISM_GRAPH_H_
 #define HOMOMORPHISM_GRAPH_H_
 
-#include <memory>
 #include <string>
+#include <memory>
+#include <tuple>
 
 class Graph
 {
