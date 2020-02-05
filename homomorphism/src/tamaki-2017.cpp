@@ -6,15 +6,34 @@
 //
 
 #include "homomorphism/tamaki-2017.h"
+#include <iostream>
+#include <fstream>
 
 std::string Tamaki2017::decompose(std::shared_ptr<Graph> g)
 {
     //This might not be the smartest, but the easiest to get to run
     
-    //Write graph to tmp file
-    //Feed to Tamaki-2017
-    //Read output and remove tmp file
     
-    system("java -Xmx30g -Xms30g -Xss10m tw.exact.MainDecomposer < ex001.gr > ex001.td");
+    std::ofstream graphFile;
+    std::string test = "p tw 5 4\n1 2\n2 3\n3 4\n4 5";
+    
+    graphFile.open ("graph.gr");
+    graphFile << test;
+    graphFile.close();
+    system("java -Xmx30g -Xms30g -Xss10m tw.exact.MainDecomposer < graph.gr > tree.td");
+    remove("graph.gr");
+    
+    std::string line;
+    std::ifstream tdFile ("tree.td");
+    if (tdFile.is_open())
+    {
+      while ( getline (tdFile,line) )
+      {
+        std::cout << line << '\n';
+      }
+      tdFile.close();
+    } else std::cout << "Unable to open file";
+    remove("tree.td");
+    
     return "This is a td";
 }
