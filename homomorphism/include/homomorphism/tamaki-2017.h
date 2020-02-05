@@ -16,7 +16,7 @@
 class Tamaki2017 : public TreeWidthSolver
 {
 public:
-    std::string decompose(std::shared_ptr<Graph> g);
+    std::shared_ptr<TreeDecomposition> decompose(std::shared_ptr<Graph> g);
 };
 
 #endif /* tamaki_2017_h */

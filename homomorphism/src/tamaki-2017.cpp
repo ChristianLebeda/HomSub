@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-std::string Tamaki2017::decompose(std::shared_ptr<Graph> g)
+std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> g)
 {
     //This might not be the smartest, but the easiest to get to run
     
@@ -35,5 +35,8 @@ std::string Tamaki2017::decompose(std::shared_ptr<Graph> g)
     } else std::cout << "Unable to open file";
     remove("tree.td");
     
-    return "This is a td";
+    std::vector<std::vector<int>> b;
+    std::shared_ptr<Graph> tree = Graph::testGraph();
+    std::shared_ptr<TreeDecomposition> td = std::make_shared<TreeDecomposition>(tree, b);
+    return td;
 }
