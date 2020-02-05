@@ -11,7 +11,7 @@ std::shared_ptr<Spasm> Spasm::createSpasm(Graph H) {
 
 std::shared_ptr<Spasm> Spasm::testSpasm()
 {
-    std::vector<std::pair<Graph, int> > vec;
+    std::vector<std::pair<Graph, size_t> > vec;
     return std::make_shared<Spasm>(vec);
 }
 
@@ -20,7 +20,7 @@ size_t Spasm::size()
     return graphs_.size();
 }
 
-std::pair<Graph, int>& Spasm::operator[](std::size_t position) {
+std::pair<Graph, size_t>& Spasm::operator[](std::size_t position) {
     return graphs_[position];
 }
 
