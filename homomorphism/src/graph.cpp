@@ -28,14 +28,14 @@ std::shared_ptr<Graph> parseGr(std::ifstream& input) {
     } while (line[0] == 'c');
     
     size_t n, m;
-    if (!std::sscanf(line.c_str(), "p tw %d %d", &n, &m)) return nullptr;
+    if (!std::sscanf(line.c_str(), "p tw %zd %zd", &n, &m)) return nullptr;
     std::shared_ptr <Graph> G = std::make_shared<Graph>(n);
 
     size_t u, v;
     while (getline(input, line)) {
         if (line.empty() || line[0] == 'c') continue;
 
-        if (!std::sscanf(line.c_str(), "%d %d", &u, &v)) return nullptr;
+        if (!std::sscanf(line.c_str(), "%zd %zd", &u, &v)) return nullptr;
 
         G->addEdge(u - 1, v - 1);
     }
