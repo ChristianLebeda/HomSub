@@ -4,6 +4,8 @@
 #include <sstream>
 #include "homomorphism/graph.h"
 #include <sstream>
+#include <bitset>
+#include <homomorphism\graph6helper.h>
 
 std::shared_ptr<Graph> Graph::fromGraph6(std::string graph6) {
     return testGraph();
@@ -99,8 +101,30 @@ std::string Graph::toString()
 
 std::string Graph::toGraph6()
 {
-    //TODO: implement
-    return "";
+    std::ostringstream str;
+    str << "G" << Graph6helper::N(vertices_);
+    std::bitset<6> buffer;
+    int idx = 6;
+    for (size_t u = 1; u < vertices_; u++)
+    {
+        for (size_t v = 0; v < u; v++)
+        {
+            buffer.set(--idx, edgeExist(u, v));
+            if (!idx) {
+                str << Graph6helper::R(buffer.to_ulong());
+                idx = 6;
+            }
+        }
+    }
+
+    if (idx != 6) {
+        while (idx) {
+            buffer.set(--idx, false);
+        }
+        str << Graph6helper::R(buffer.to_ulong());
+    }
+
+    return str.str();
 }
 
 std::shared_ptr<Graph> Graph::partition(std::set<size_t>* parts, size_t size) {
