@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -8,7 +7,35 @@
 #include <homomorphism\graph6helper.h>
 
 std::shared_ptr<Graph> Graph::fromGraph6(std::string graph6) {
-    return testGraph();
+    std::stringstream str(graph6);
+    unsigned char input;
+    str >> input;
+
+    size_t n = Graph6helper::readN(str);
+
+    bool* matrix = new bool[n * n]{ 0 };
+
+    size_t idx = 0, m = 0;
+
+    for (size_t u = 1; u < n; u++)
+    {
+        for (size_t v = 0; v < u; v++)
+        {
+            if (!idx) {
+                str >> input;
+                input -= 63;
+                idx = 6;
+            }
+            
+            if ((input >> --idx) & 0x1) {
+                m++;
+                matrix[u * n + v] = true;
+                matrix[v * n + u] = true;
+            }            
+        }
+    }
+
+    return std::make_shared<Graph>(n, m, matrix);
 }
 
 bool has_suffix(const std::string& str, const std::string& suffix)
@@ -66,7 +93,7 @@ std::shared_ptr<Graph> Graph::fromFile(std::string path) {
 
 std::shared_ptr<Graph> Graph::testGraph()
 {
-    size_t v = 4;
+    size_t v = 454;
     size_t e = 5;
     return std::make_shared<Graph>(v, e);
 }

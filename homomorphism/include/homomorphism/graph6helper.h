@@ -8,6 +8,7 @@ class Graph6helper
 public:
     static char R(size_t x); 
     static std::string N(size_t x);
+    static size_t readN(std::stringstream& in);
 };
 
 #endif
