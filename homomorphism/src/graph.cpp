@@ -93,9 +93,13 @@ std::shared_ptr<Graph> Graph::fromFile(std::string path) {
 
 std::shared_ptr<Graph> Graph::testGraph()
 {
-    size_t v = 454;
-    size_t e = 5;
-    return std::make_shared<Graph>(v, e);
+    std::shared_ptr<Graph> g = std::make_shared<Graph>(4);
+    g->addEdge(0, 1);
+    g->addEdge(1, 2);
+    g->addEdge(2, 3);
+    g->addEdge(3, 0);
+
+    return g;
 }
 
 bool Graph::edgeExist(size_t u, size_t v)
@@ -105,6 +109,7 @@ bool Graph::edgeExist(size_t u, size_t v)
 
 bool Graph::isIsomorphic(std::shared_ptr<Graph> g)
 {
+    if (vertices_ != g->vertices_ || edges_ != g->edges_) return false;
     //TODO: implement
     return false;
 }
