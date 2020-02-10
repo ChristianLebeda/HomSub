@@ -4,6 +4,7 @@
 #include "homomorphism/graph.h"
 #include <sstream>
 #include <bitset>
+#include <algorithm>
 #include "homomorphism/graph6helper.h"
 
 std::shared_ptr<Graph> Graph::fromGraph6(std::string graph6) {
@@ -107,10 +108,39 @@ bool Graph::edgeExist(size_t u, size_t v)
     return matrix_[u * vertices_ + v];
 }
 
+bool Graph::isIsomorphism(std::shared_ptr<Graph> g, size_t* permutation) {
+    for (size_t u = 1; u < vertices_; u++)
+    {
+        for (size_t v = 0; v < u; v++)
+        {
+            if (edgeExist(u, v) && !g->edgeExist(permutation[u], permutation[v])) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 bool Graph::isIsomorphic(std::shared_ptr<Graph> g)
 {
     if (vertices_ != g->vertices_ || edges_ != g->edges_) return false;
-    //TODO: implement
+    
+    size_t* perm = new size_t[vertices_];
+
+    for (size_t i = 0; i < vertices_; i++)
+    {
+        perm[i] = i;
+    }
+
+    do {
+        if (isIsomorphism(g, perm)) {
+            delete[] perm;
+            return true;
+        }
+    } while (std::next_permutation(perm, perm + vertices_));
+
+    delete[] perm;
     return false;
 }
 
