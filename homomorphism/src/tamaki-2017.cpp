@@ -11,7 +11,7 @@
 
 std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> g)
 {
-    //This might not be the smartest, but the easiest to get to run
+    //This might not be the smartest way, but it is the easiest way
     
     
     std::ofstream graphFile;
