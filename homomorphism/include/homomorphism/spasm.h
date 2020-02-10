@@ -24,6 +24,7 @@ private:
     std::vector<std::pair<std::shared_ptr<Graph>, int> > graphs_;
 
     static void addPartitioningsRec(std::shared_ptr<Graph> H, std::vector<std::pair<std::shared_ptr<Graph>, int>>& graphs, std::set<size_t>* parts, size_t next, size_t size);
+    static std::vector<std::pair<std::shared_ptr<Graph>, int>> joinIsomorphic(std::vector<std::pair<std::shared_ptr<Graph>, int>> graphs);
 };
 
 #endif
