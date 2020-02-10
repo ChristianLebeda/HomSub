@@ -37,6 +37,8 @@ private:
     size_t vertices_;
     size_t edges_;
     bool* matrix_;
+
+    bool isIsomorphism(std::shared_ptr<Graph> g, size_t* permutation);
 };
 
 #endif
