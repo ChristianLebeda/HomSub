@@ -4,7 +4,7 @@
 #include "homomorphism/graph.h"
 #include <sstream>
 #include <bitset>
-#include <homomorphism\graph6helper.h>
+#include "homomorphism/graph6helper.h"
 
 std::shared_ptr<Graph> Graph::fromGraph6(std::string graph6) {
     std::stringstream str(graph6);
