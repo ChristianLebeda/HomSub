@@ -1,19 +1,30 @@
 #include <sstream>
+#include <algorithm>
 #include "homomorphism/spasm.h"
 
 std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
     return testSpasm();
 }
 
+
 std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H) {
-    std::vector<std::pair<std::shared_ptr<Graph>, int>> graphs;
+    std::vector<std::pair<std::shared_ptr<Graph>, int>> graphs { std::make_pair(H, 1) };
     std::set<size_t>* parts = new std::set<size_t>[H->vertCount()]{};
     
     addPartitioningsRec(H, graphs, parts, 0, 0);
 
+    auto lamb = [](std::pair< std::shared_ptr<Graph>, int >& g1, std::pair< std::shared_ptr<Graph>, int >& g2) -> bool
+    {
+        return g1.first->vertCount() == g2.first->vertCount() ?
+            g1.first->edgeCount() > g2.first->edgeCount() :
+            g1.first->vertCount() > g2.first->vertCount();
+    };
+    sort(graphs.begin(), graphs.end(), lamb);
+
     delete[] parts;
 
     return std::make_shared<Spasm>(graphs);
+    
 }
 
 void Spasm::addPartitioningsRec(std::shared_ptr<Graph> H, std::vector<std::pair<std::shared_ptr<Graph>, int>>& graphs, std::set<size_t>* parts, size_t next, size_t size) {
