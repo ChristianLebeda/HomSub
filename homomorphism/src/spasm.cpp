@@ -6,7 +6,6 @@ std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
     return testSpasm();
 }
 
-
 std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H) {
     std::vector<std::pair<std::shared_ptr<Graph>, int>> graphs { std::make_pair(H, 1) };
     std::set<size_t>* parts = new std::set<size_t>[H->vertCount()]{};
@@ -23,8 +22,44 @@ std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H) {
 
     delete[] parts;
 
+    graphs = joinIsomorphic(graphs);
+
     return std::make_shared<Spasm>(graphs);
-    
+}
+
+std::vector<std::pair<std::shared_ptr<Graph>, int>> Spasm::joinIsomorphic(std::vector<std::pair<std::shared_ptr<Graph>, int>> graphs) {
+    std::vector<std::pair<std::shared_ptr<Graph>, int>> joined;
+    std::vector<bool> used(graphs.size(), false);
+
+    size_t sizev, sizee, coef;
+    std::shared_ptr<Graph> gi, gj;
+
+    for (size_t i = 0; i < graphs.size(); i++)
+    {        
+        if (used[i]) continue;
+
+        gi = graphs[i].first;
+        coef = graphs[i].second;
+        sizev = gi->vertCount();
+        sizee = gi->edgeCount();
+
+        for (size_t j = i + 1; j < graphs.size(); j++)
+        {
+            if (used[j]) continue;
+            gj = graphs[j].first;
+            if (gj->vertCount() != sizev || gj->edgeCount() != sizee) {
+                break;
+            }
+            if (gi->isIsomorphic(gj)) {
+                coef += graphs[j].second;
+                used[j] = true;
+            }
+        }
+
+        joined.push_back(std::make_pair(gi, coef));
+    }
+
+    return joined;
 }
 
 void Spasm::addPartitioningsRec(std::shared_ptr<Graph> H, std::vector<std::pair<std::shared_ptr<Graph>, int>>& graphs, std::set<size_t>* parts, size_t next, size_t size) {
@@ -34,7 +69,7 @@ void Spasm::addPartitioningsRec(std::shared_ptr<Graph> H, std::vector<std::pair<
             // Use closed formula to find coefficient
             // product B in parts (|B| - 1)!
             // Sign is determined based on size of quotient graph
-            int coef = (H->vertCount() - size) % 2 ? 1 : -1;
+            int coef = (H->vertCount() - size) % 2 ? -1 : 1;
             for (size_t i = 0; i < size; i++)
             {
                 size_t B = parts[i].size() - 1;
