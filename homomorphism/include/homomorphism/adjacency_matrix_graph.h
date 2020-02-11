@@ -12,8 +12,9 @@
 #include <memory>
 #include <tuple>
 #include <set>
+#include "graph.h"
 
-class AdjacencyMatrixGraph
+class AdjacencyMatrixGraph : public Graph
 {
 public:
     AdjacencyMatrixGraph(size_t v) : vertices_(v), edges_(0), matrix_(new bool[v * v]{ 0 }) { };
@@ -28,11 +29,8 @@ public:
     size_t edgeCount();
     void addEdge(size_t u, size_t v);
     bool edgeExist(size_t u, size_t v);
-    bool isIsomorphic(std::shared_ptr<AdjacencyMatrixGraph> g);
-    std::string toString();
-    std::string toGraph6();
-    void prettyPrint(std::ostream& os);
-    std::shared_ptr<AdjacencyMatrixGraph> partition(std::set<size_t>* parts, size_t size);
+    bool isIsomorphic(std::shared_ptr<Graph> g);
+    std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size);
 
     void operator delete(void* p)
     {
@@ -45,7 +43,7 @@ private:
     size_t edges_;
     bool* matrix_;
 
-    bool isIsomorphism(std::shared_ptr<AdjacencyMatrixGraph> g, size_t* permutation);
+    bool isIsomorphism(std::shared_ptr<Graph> g, size_t* permutation);
 };
 
 #endif /* ADJACENCY_MATRIX_GRAPH_H_ */

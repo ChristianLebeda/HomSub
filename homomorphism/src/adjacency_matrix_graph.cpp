@@ -116,7 +116,7 @@ bool AdjacencyMatrixGraph::edgeExist(size_t u, size_t v)
     return matrix_[u * vertices_ + v];
 }
 
-bool AdjacencyMatrixGraph::isIsomorphism(std::shared_ptr<AdjacencyMatrixGraph> g, size_t* permutation) {
+bool AdjacencyMatrixGraph::isIsomorphism(std::shared_ptr<Graph> g, size_t* permutation) {
     for (size_t u = 1; u < vertices_; u++)
     {
         for (size_t v = 0; v < u; v++)
@@ -130,9 +130,9 @@ bool AdjacencyMatrixGraph::isIsomorphism(std::shared_ptr<AdjacencyMatrixGraph> g
     return true;
 }
 
-bool AdjacencyMatrixGraph::isIsomorphic(std::shared_ptr<AdjacencyMatrixGraph> g)
+bool AdjacencyMatrixGraph::isIsomorphic(std::shared_ptr<Graph> g)
 {
-    if (vertices_ != g->vertices_ || edges_ != g->edges_) return false;
+    if (vertices_ != g->vertCount() || edges_ != g->edgeCount()) return false;
     
     size_t* perm = new size_t[vertices_];
 
@@ -162,42 +162,7 @@ size_t AdjacencyMatrixGraph::edgeCount()
     return edges_;
 }
 
-std::string AdjacencyMatrixGraph::toString()
-{
-    std::ostringstream out;
-    out << "Graph of size (" << vertices_ << "," << edges_ << ")";
-    return out.str();
-}
-
-std::string AdjacencyMatrixGraph::toGraph6()
-{
-    std::ostringstream str;
-    str << "G" << Graph6helper::N(vertices_);
-    std::bitset<6> buffer;
-    int idx = 6;
-    for (size_t u = 1; u < vertices_; u++)
-    {
-        for (size_t v = 0; v < u; v++)
-        {
-            buffer.set(--idx, edgeExist(u, v));
-            if (!idx) {
-                str << Graph6helper::R(buffer.to_ulong());
-                idx = 6;
-            }
-        }
-    }
-
-    if (idx != 6) {
-        while (idx) {
-            buffer.set(--idx, false);
-        }
-        str << Graph6helper::R(buffer.to_ulong());
-    }
-
-    return str.str();
-}
-
-std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::partition(std::set<size_t>* parts, size_t size) {
+std::shared_ptr<Graph> AdjacencyMatrixGraph::partition(std::set<size_t>* parts, size_t size) {
     std::shared_ptr<AdjacencyMatrixGraph> newGraph = std::make_shared<AdjacencyMatrixGraph>(size);
 
     bool edgeFound;
@@ -233,16 +198,4 @@ std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::partition(std::set<s
     }
 
     return newGraph;
-}
-
-void AdjacencyMatrixGraph::prettyPrint(std::ostream& os)
-{
-    os << "Graph with " << vertices_ << " vertices and " << edges_ << " edges:\n";
-    for (size_t u = 0; u < vertices_; u++) {
-        os << "[ ";
-        for (size_t v = 0; v < vertices_; v++) {
-            os << edgeExist(u, v) << " ";
-        }
-        os << "]" << std::endl;
-    }
 }

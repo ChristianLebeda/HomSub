@@ -17,7 +17,9 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::ifstream& inp
     size_t bagN, width, n;
     if (!std::sscanf(line.c_str(), "s td %zd %zd %zd", &bagN, &width, &n)) return nullptr;
     
-    std::shared_ptr <Graph> G = std::make_shared<Graph>(n);
+    //TODO: Specific Graph. This should maybe be generic
+    std::shared_ptr <Graph> G = std::make_shared<AdjacencyMatrixGraph>(n);
+    
     std::vector<std::vector<size_t>> bags;
     bags.resize(bagN);
     for(size_t i = 0; i < bagN; i++) {

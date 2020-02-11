@@ -8,7 +8,7 @@
 #ifndef TREE_DECOMPOSITION_h
 #define TREE_DECOMPOSITION_h
 
-#include "graph.h"
+#include "adjacency_matrix_graph.h"
 #include <memory>
 #include <vector>
 #include <fstream>

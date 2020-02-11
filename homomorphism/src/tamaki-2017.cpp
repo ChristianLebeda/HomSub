@@ -25,16 +25,13 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
     
     std::string line;
     std::ifstream tdFile ("tree.td");
+    std::shared_ptr<TreeDecomposition> td;
     if (tdFile.is_open())
     {
-        TreeDecomposition::parseTd(tdFile);
+        td = TreeDecomposition::parseTd(tdFile);
         tdFile.close();
     } else std::cout << "Unable to open file";
     
     remove("tree.td");
-    
-    std::vector<std::vector<size_t>> b;
-    std::shared_ptr<Graph> tree = Graph::testGraph();
-    std::shared_ptr<TreeDecomposition> td = std::make_shared<TreeDecomposition>(tree, b);
     return td;
 }
