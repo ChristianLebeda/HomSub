@@ -8,18 +8,19 @@
 #ifndef TREE_DECOMPOSITION_h
 #define TREE_DECOMPOSITION_h
 
-#include "adjacency_matrix_graph.h"
+#include "edge_set_graph.h"
 #include <memory>
 #include <vector>
 #include <fstream>
 
 class TreeDecomposition {
 public:
-    TreeDecomposition(std::shared_ptr<Graph> g, std::vector<std::vector<size_t>> b) : graph(g), bags(b) {};
+    TreeDecomposition(std::shared_ptr<EdgeSetGraph> g, std::vector<std::vector<size_t>> b) : graph(g), bags(b) {};
     static std::shared_ptr<TreeDecomposition> parseTd(std::ifstream& input);
-    int test();
+    std::shared_ptr<EdgeSetGraph> getGraph();
+    std::vector<size_t> getBag(size_t bag);
 private:
-    std::shared_ptr<Graph> graph;
+    std::shared_ptr<EdgeSetGraph> graph;
     std::vector<std::vector<size_t>> bags;
 };
 

@@ -1,10 +1,5 @@
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include "homomorphism/graph.h"
-#include <sstream>
-#include <bitset>
-#include <algorithm>
 #include "homomorphism/graph6helper.h"
 
 std::string Graph::toGraph6() {

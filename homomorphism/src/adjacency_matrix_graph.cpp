@@ -199,3 +199,17 @@ std::shared_ptr<Graph> AdjacencyMatrixGraph::partition(std::set<size_t>* parts, 
 
     return newGraph;
 }
+
+std::set<size_t> AdjacencyMatrixGraph::getNeighbourhood(size_t v)
+{
+    std::set<size_t> neighbourhood;
+    
+    for(int i = 0; i < vertCount(); i++)
+    {
+        if(matrix_[v * i] && v != i) {
+            neighbourhood.insert(i);
+        }
+    }
+ 
+    return neighbourhood;
+}

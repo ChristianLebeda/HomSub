@@ -17,8 +17,8 @@ enum NTDNodeType { JOIN, FORGET, INTRODUCE, LEAF};
 struct NTDNode {
     NTDNodeType nodeType;
     size_t vertex;
-    struct NTDNode *left;
-    struct NTDNode *right;
+    std::shared_ptr<NTDNode> left;
+    std::shared_ptr<NTDNode> right;
 };
 
 class NiceTreeDecomposition
@@ -28,6 +28,9 @@ public:
     std::shared_ptr<NiceTreeDecomposition> FromTd(std::shared_ptr<TreeDecomposition> td);
 private:
     std::vector<NTDNode> leaves_;
+    std::shared_ptr<NTDNode> convertNode(size_t from, size_t node, std::shared_ptr<TreeDecomposition> td);
+    static std::shared_ptr<NTDNode> createLeaf();
+    static std::shared_ptr<NTDNode> createIntroduce(std::shared_ptr<NTDNode> child, size_t vert);
 };
 
 #endif /* NICE_TREE_DECOMPOSITIOM_H_ */
