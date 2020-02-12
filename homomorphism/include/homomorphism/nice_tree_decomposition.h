@@ -24,13 +24,17 @@ struct NTDNode {
 class NiceTreeDecomposition
 {
 public:
-    NiceTreeDecomposition(std::vector<NTDNode> l) : leaves_(l) {};
-    std::shared_ptr<NiceTreeDecomposition> FromTd(std::shared_ptr<TreeDecomposition> td);
+    NiceTreeDecomposition(std::shared_ptr<NTDNode> r, std::shared_ptr<Graph> g) : root_(r), graph_(g) {};
+    static std::shared_ptr<NiceTreeDecomposition> FromTd(std::shared_ptr<TreeDecomposition> td);
 private:
-    std::vector<NTDNode> leaves_;
-    std::shared_ptr<NTDNode> convertNode(size_t from, size_t node, std::shared_ptr<TreeDecomposition> td);
+    std::shared_ptr<NTDNode> root_;
+    std::shared_ptr<Graph> graph_;
+    static std::shared_ptr<NTDNode> convertNode(size_t from, size_t node, std::shared_ptr<TreeDecomposition> td);
+    static std::shared_ptr<NTDNode> connectToChild(std::shared_ptr<NTDNode> childNode, std::unordered_set<size_t> childBag, std::unordered_set<size_t> parentBag);
     static std::shared_ptr<NTDNode> createLeaf();
     static std::shared_ptr<NTDNode> createIntroduce(std::shared_ptr<NTDNode> child, size_t vert);
+    static std::shared_ptr<NTDNode> createForget(std::shared_ptr<NTDNode> child, size_t vert);
+    static std::shared_ptr<NTDNode> createJoin(std::shared_ptr<NTDNode> leftChild, std::shared_ptr<NTDNode> rightChild);
 };
 
 #endif /* NICE_TREE_DECOMPOSITIOM_H_ */

@@ -12,6 +12,7 @@
 #include <memory>
 #include <tuple>
 #include <set>
+#include <unordered_set>
 #include "graph.h"
 
 class AdjacencyMatrixGraph : public Graph
@@ -29,7 +30,7 @@ public:
     size_t edgeCount();
     void addEdge(size_t u, size_t v);
     bool edgeExist(size_t u, size_t v);
-    std::set<size_t> getNeighbourhood(size_t v);
+    std::unordered_set<size_t> getNeighbourhood(size_t v);
     bool isIsomorphic(std::shared_ptr<Graph> g);
     std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size);
 

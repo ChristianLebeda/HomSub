@@ -39,12 +39,12 @@ std::shared_ptr<Graph> EdgeSetGraph::partition(std::set<size_t>* parts, size_t s
     return nullptr;
 }
 
-std::set<size_t> EdgeSetGraph::getNeighbourhood(size_t v)
+std::unordered_set<size_t> EdgeSetGraph::getNeighbourhood(size_t v)
 {
     return neighbours_[v];
 }
 
-std::vector<std::set<size_t>> EdgeSetGraph::getNeighbourList()
+std::vector<std::unordered_set<size_t>> EdgeSetGraph::getNeighbourList()
 {
     return neighbours_;
 }

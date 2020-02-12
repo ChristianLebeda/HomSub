@@ -11,17 +11,18 @@
 #include "edge_set_graph.h"
 #include <memory>
 #include <vector>
+#include <unordered_set>
 #include <fstream>
 
 class TreeDecomposition {
 public:
-    TreeDecomposition(std::shared_ptr<EdgeSetGraph> g, std::vector<std::vector<size_t>> b) : graph(g), bags(b) {};
+    TreeDecomposition(std::shared_ptr<EdgeSetGraph> g, std::vector<std::unordered_set<size_t>> b) : graph(g), bags(b) {};
     static std::shared_ptr<TreeDecomposition> parseTd(std::ifstream& input);
     std::shared_ptr<EdgeSetGraph> getGraph();
-    std::vector<size_t> getBag(size_t bag);
+    std::unordered_set<size_t> getBag(size_t bag);
 private:
     std::shared_ptr<EdgeSetGraph> graph;
-    std::vector<std::vector<size_t>> bags;
+    std::vector<std::unordered_set<size_t>> bags;
 };
 
 #endif /* tree_decomposition_h */

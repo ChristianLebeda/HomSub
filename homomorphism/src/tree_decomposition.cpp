@@ -19,8 +19,8 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::ifstream& inp
     
     //TODO: Specific Graph. Maybe this should maybe be generic
     std::shared_ptr <EdgeSetGraph> G = std::make_shared<EdgeSetGraph>(n);
-    
-    std::vector<std::vector<size_t>> bags;
+ 
+    std::vector<std::unordered_set<size_t>> bags;
     bags.resize(bagN);
     for(size_t i = 0; i < bagN; i++) {
         int bagI = -1;
@@ -35,7 +35,7 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::ifstream& inp
             if(std::stringstream(temp) >> n)
             {
                 if(bagI < 0) bagI = n - 1;
-                else bags[bagI].push_back(n);
+                else bags[bagI].insert(n);
             }
             
             temp="";
@@ -51,7 +51,6 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::ifstream& inp
 
         G->addEdge(u - 1, v - 1);
     }
-
     return std::make_shared<TreeDecomposition>(G, bags);
 }
 
@@ -61,7 +60,7 @@ std::shared_ptr<EdgeSetGraph> TreeDecomposition::getGraph()
     return graph;
 }
 
-std::vector<size_t> TreeDecomposition::getBag(size_t bag)
+std::unordered_set<size_t> TreeDecomposition::getBag(size_t bag)
 {
     return bags[bag];
 }
