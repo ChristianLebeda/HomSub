@@ -41,12 +41,12 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::ifstream& inp
         }
         bagI = -1;
     }
-    getline(input, line);
     size_t u, v;
     while (getline(input, line)) {
         if (line.empty() || line[0] == 'c') continue;
-
-        if (!std::sscanf(line.c_str(), "%zd %zd", &u, &v)) return nullptr;
+        if (!std::sscanf(line.c_str(), "%zd %zd", &u, &v)) {
+            return nullptr;
+        }
 
         G->addEdge(u - 1, v - 1);
     }

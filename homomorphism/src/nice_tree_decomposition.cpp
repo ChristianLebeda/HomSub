@@ -21,7 +21,6 @@ std::shared_ptr<NTDNode> NiceTreeDecomposition::convertNode(size_t from, size_t 
     
     if(children.size() == 0) {
         std::shared_ptr<NTDNode> current = createLeaf();
-        
         //Introduce verts of bag
         for( size_t v : td->getBag(node)) {
             current = createIntroduce(current, v);
@@ -31,7 +30,6 @@ std::shared_ptr<NTDNode> NiceTreeDecomposition::convertNode(size_t from, size_t 
     } else if (children.size() == 1) {
         size_t child = *children.begin();
         std::shared_ptr<NTDNode> childNode = convertNode(node, child, td);
-        
         return connectToChild(childNode, td->getBag(child), td->getBag(node));
     } else {
         std::unordered_set<size_t>::iterator it = children.begin();
@@ -59,6 +57,7 @@ std::shared_ptr<NTDNode> NiceTreeDecomposition::connectToChild(std::shared_ptr<N
     //Create forget node for each missing vert in parent
     for(size_t v : childBag) {
         if(parentBag.find(v) == parentBag.end()) {
+            
             current = createForget(current, v);
         }
     }
