@@ -15,7 +15,7 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
     
     
     std::ofstream graphFile;
-    std::string test = "p tw 5 4\n1 2\n2 3\n3 4\n4 5";
+    std::string test = "p tw 4 4\n1 2\n2 3\n3 4\n4 1";
     
     graphFile.open ("graph.gr");
     graphFile << test;
@@ -32,6 +32,6 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
         tdFile.close();
     } else std::cout << "Unable to open file";
     
-    remove("tree.td");
+    //remove("tree.td");
     return td;
 }

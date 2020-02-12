@@ -16,11 +16,13 @@
 
 class TreeDecomposition {
 public:
-    TreeDecomposition(std::shared_ptr<EdgeSetGraph> g, std::vector<std::unordered_set<size_t>> b) : graph(g), bags(b) {};
+    TreeDecomposition(std::shared_ptr<EdgeSetGraph> g, std::vector<std::unordered_set<size_t>> b, size_t width) : graph(g), bags(b), width_(width) {};
     static std::shared_ptr<TreeDecomposition> parseTd(std::ifstream& input);
     std::shared_ptr<EdgeSetGraph> getGraph();
     std::unordered_set<size_t> getBag(size_t bag);
+    size_t getWidth();
 private:
+    size_t width_;
     std::shared_ptr<EdgeSetGraph> graph;
     std::vector<std::unordered_set<size_t>> bags;
 };

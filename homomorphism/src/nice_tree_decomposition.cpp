@@ -6,11 +6,12 @@
 //
 
 #include <stdio.h>
+#include <iostream>
 #include "homomorphism/nice_tree_decomposition.h"
 
 std::shared_ptr<NiceTreeDecomposition> NiceTreeDecomposition::FromTd(std::shared_ptr<TreeDecomposition> td)
 {
-    return std::make_shared<NiceTreeDecomposition>(convertNode(-1, 0, td), td->getGraph());
+    return std::make_shared<NiceTreeDecomposition>(convertNode(-1, 0, td), td->getGraph(), td->getWidth());
 }
 
 std::shared_ptr<NTDNode> NiceTreeDecomposition::convertNode(size_t from, size_t node, std::shared_ptr<TreeDecomposition> td)
@@ -82,7 +83,7 @@ std::shared_ptr<NTDNode> NiceTreeDecomposition::createLeaf()
 std::shared_ptr<NTDNode> NiceTreeDecomposition::createIntroduce(std::shared_ptr<NTDNode> child, size_t vert)
 {
     std::shared_ptr<NTDNode> introduce = std::make_shared<NTDNode>();
-    introduce->nodeType = INTRODUCE;
+    introduce->nodeType = NTDNodeType::INTRODUCE;
     introduce->left = child;
     introduce->right = child;
     introduce->vertex = vert;
@@ -92,7 +93,7 @@ std::shared_ptr<NTDNode> NiceTreeDecomposition::createIntroduce(std::shared_ptr<
 std::shared_ptr<NTDNode> NiceTreeDecomposition::createForget(std::shared_ptr<NTDNode> child, size_t vert)
 {
     std::shared_ptr<NTDNode> forget = std::make_shared<NTDNode>();
-    forget->nodeType = FORGET;
+    forget->nodeType = NTDNodeType::FORGET;
     forget->left = child;
     forget->right = child;
     forget->vertex = vert;
@@ -102,9 +103,44 @@ std::shared_ptr<NTDNode> NiceTreeDecomposition::createForget(std::shared_ptr<NTD
 std::shared_ptr<NTDNode> NiceTreeDecomposition::createJoin(std::shared_ptr<NTDNode> leftChild, std::shared_ptr<NTDNode> rightChild)
 {
     std::shared_ptr<NTDNode> join = std::make_shared<NTDNode>();
-    join->nodeType = JOIN;
+    join->nodeType = NTDNodeType::JOIN;
     join->left = leftChild;
     join->right = rightChild;
     join->vertex = -1;
     return join;
+}
+
+void NiceTreeDecomposition::print(std::shared_ptr<NTDNode> node)
+{
+    switch (node->nodeType) {
+        case NTDNodeType::INTRODUCE:
+            std::cout << "Introduce:" << node->vertex << std::endl;
+            print(node->left);
+            break;
+        case NTDNodeType::FORGET:
+            std::cout << "Forget:" << node->vertex << std::endl;
+            print(node->left);
+            break;
+        case NTDNodeType::JOIN:
+            std::cout << "Join" << std::endl;
+            print(node->left);
+            print(node->right);
+            break;
+        case NTDNodeType::LEAF:
+            std::cout << "Leaf" << std::endl;
+            break;
+        default:
+            break;
+    }
+    
+}
+
+std::shared_ptr<NTDNode> NiceTreeDecomposition::getRoot()
+{
+    return root_;
+}
+
+size_t NiceTreeDecomposition::getWidth()
+{
+    return width_;
 }
