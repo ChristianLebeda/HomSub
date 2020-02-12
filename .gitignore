@@ -9,3 +9,4 @@ compile_commands.json
 CTestTestfile.cmake
 Build
 .DS_Store
+test/main.cpp

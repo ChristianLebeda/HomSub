@@ -1,4 +1,5 @@
 #include <sstream>
+#include <bitset>
 #include "homomorphism/graph.h"
 #include "homomorphism/graph6helper.h"
 
