@@ -30,6 +30,25 @@ std::string Graph::toGraph6() {
     return str.str();
 }
 
+std::string Graph::toGr() 
+{
+    std::ostringstream str;
+    str << "p tw " << vertCount() << " " << edgeCount() << "\n";
+    
+    // Add edges in lexicographic order
+    for (size_t u = 0; u < vertCount() - 1; u++)
+    {
+        for (size_t v = u + 1; v < vertCount(); v++)
+        {
+            if (edgeExist(u, v)) {
+                str << u + 1 << " " << v + 1 << "\n";
+            }
+        }
+    }
+
+    return str.str();
+}
+
 std::string Graph::toString()
 {
     std::ostringstream out;

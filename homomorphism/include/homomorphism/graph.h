@@ -19,6 +19,7 @@ public:
     virtual std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size) = 0;
     
     std::string toString();
+    std::string toGr();
     std::string toGraph6();
     void prettyPrint(std::ostream& os);
 };
