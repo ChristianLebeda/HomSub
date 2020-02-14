@@ -12,7 +12,7 @@
 #include <bitset>
 #include <algorithm>
 #include "homomorphism/graph6helper.h"
-
+#include "homomorphism/helper_functions.h"
 #include <stdio.h>
 
 std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::string graph6) {
@@ -47,12 +47,6 @@ std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::stri
     return std::make_shared<AdjacencyMatrixGraph>(n, m, matrix);
 }
 
-bool has_suffix(const std::string& str, const std::string& suffix)
-{
-    return str.size() >= suffix.size() &&
-        str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
-}
-
 void AdjacencyMatrixGraph::addEdge(size_t u, size_t v) {
     if (!matrix_[u * vertices_ + v]) edges_++;
     matrix_[u * vertices_ + v] = true;
@@ -85,7 +79,7 @@ std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromFile(std::string
     std::ifstream input (path);
     
     if (input.is_open()) {
-        if (has_suffix(path, ".gr")) {
+        if (HelperFunctions::hasSuffix(path, ".gr")) {
             return parseGr(input);
         }
         else {

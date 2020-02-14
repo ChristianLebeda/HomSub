@@ -1,9 +1,26 @@
 #include <sstream>
 #include <algorithm>
+#include <fstream>
 #include "homomorphism/spasm.h"
+#include <homomorphism\helper_functions.h>
+#include <homomorphism/adjacency_matrix_graph.h>
 
 std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
-    return testSpasm();
+    std::ifstream input(path);
+
+    if (input.is_open()) {
+        if (HelperFunctions::hasSuffix(path, ".spsm")) {
+            return deserialize(input);
+        }
+        else {
+            std::cerr << "ERROR: Spasm must be stored in a .spsm file" << std::endl;
+            return nullptr;
+        }
+    }
+    else {
+        std::cerr << "ERROR: Unable to open file: " << path << std::endl;
+        return nullptr;
+    }
 }
 
 std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H) {
@@ -122,6 +139,52 @@ size_t Spasm::size()
 
 std::pair< std::shared_ptr<Graph>, int>& Spasm::operator[](std::size_t position) {
     return graphs_[position];
+}
+
+std::shared_ptr<Spasm> Spasm::deserialize(std::istream& input) {
+    std::string line;
+    do {
+        if (!std::getline(input, line)) return nullptr;
+    } while (line[0] == 'c');
+
+    size_t size;
+    if (!std::sscanf(line.c_str(), "sp %zd", &size)) return nullptr;
+    std::vector<std::pair<std::shared_ptr<Graph>, int>> graphs;
+
+    size_t coef;
+    std::string g6;
+    for (size_t i = 0; i < size; i++)
+    {
+        getline(input, line);
+
+        std::stringstream str(line);
+
+        str >> coef >> g6;
+
+        graphs.push_back(std::make_pair(AdjacencyMatrixGraph::fromGraph6(g6), coef));
+    }
+
+    return std::make_shared<Spasm>(graphs);
+}
+
+std::string Spasm::serialize() {
+    // Current format: 
+    // First line: sp [c] [n] [m]
+    // c is the number of graphs
+    // n and m are number of vertices and edges of original graph
+    std::ostringstream str;
+    str << "sp " << graphs_.size() << " " << graphs_[0].first->vertCount() << " "
+        << graphs_[0].first->edgeCount() << "\n";
+
+    std::vector<std::pair<std::shared_ptr<Graph>, int>>::iterator it = graphs_.begin();
+
+    while (it != graphs_.end()) {
+        std::pair<std::shared_ptr<Graph>, int> next = *it;
+        str << next.second << " " << next.first->toGraph6() << "\n";
+        it++;
+    }
+
+    return str.str();
 }
 
 void Spasm::prettyPrint(std::ostream& os) {
