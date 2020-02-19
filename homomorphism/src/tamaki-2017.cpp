@@ -31,6 +31,6 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
         tdFile.close();
     } else std::cout << "Unable to open file";
     
-    //remove("tree.td");
+    remove("tempTree.td");
     return td;
 }
