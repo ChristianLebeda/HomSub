@@ -16,12 +16,16 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
 		decomps[i] = std::make_tuple(next.first, ntd, next.second);
 	}
 
-	return std::make_shared<SpasmDecomposition>(decomps);
+	return std::make_shared<SpasmDecomposition>(decomps, sp->graph());
 }
 
 size_t SpasmDecomposition::size()
 {
 	return graphDecomps_.size();
+}
+
+std::shared_ptr<Graph> SpasmDecomposition::graph() {
+	return graph_;
 }
 
 std::tuple<std::shared_ptr<Graph>, std::shared_ptr<NiceTreeDecomposition>, int>& SpasmDecomposition::operator[](std::size_t position) {

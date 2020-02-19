@@ -10,7 +10,7 @@
 class Spasm
 {
 public:
-    Spasm(std::vector<std::pair<std::shared_ptr<Graph>, int> > g) : graphs_(g) {};
+    Spasm(std::vector<std::pair<std::shared_ptr<Graph>, int>> g) : graphs_(g) {};
 
     static std::shared_ptr<Spasm> fromFile(std::string path);
     static std::shared_ptr<Spasm> createSpasm(std::shared_ptr<Graph> H);
@@ -20,6 +20,7 @@ public:
     std::pair< std::shared_ptr<Graph>, int>& operator[](std::size_t position);
     std::string toString();
     std::string serialize();
+    std::shared_ptr<Graph> graph();
     void prettyPrint(std::ostream& os);
 
 private:
