@@ -53,7 +53,7 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
 
     // Figure out which vertices in H are connected to the introduced vertex
     std::vector<bool> connected;
-    for each (size_t v in bag)
+    for (size_t v : bag)
     {
         connected.push_back(h_->edgeExist(x, v));
     }
