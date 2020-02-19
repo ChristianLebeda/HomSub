@@ -15,16 +15,15 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
     
     
     std::ofstream graphFile;
-    std::string test = "p tw 4 4\n1 2\n2 3\n3 4\n4 1";
     
-    graphFile.open ("graph.gr");
-    graphFile << test;
+    graphFile.open ("tempGraph.gr");
+    graphFile << g->toGr();
     graphFile.close();
     system("java -Xmx30g -Xms30g -Xss10m tw.exact.MainDecomposer < graph.gr > tree.td");
-    remove("graph.gr");
+    remove("tempGraph.gr");
     
     std::string line;
-    std::ifstream tdFile ("tree.td");
+    std::ifstream tdFile ("tempTree.td");
     std::shared_ptr<TreeDecomposition> td;
     if (tdFile.is_open())
     {
