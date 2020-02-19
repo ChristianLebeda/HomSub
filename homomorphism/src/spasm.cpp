@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <fstream>
 #include "homomorphism/spasm.h"
-#include <homomorphism\helper_functions.h>
+#include <homomorphism/helper_functions.h>
 #include <homomorphism/adjacency_matrix_graph.h>
 
 std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
