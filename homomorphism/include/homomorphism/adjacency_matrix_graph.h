@@ -1,18 +1,12 @@
-//
-//  adjacency_matrix_graph.h
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 10/02/2020.
-//
-
 #ifndef ADJACENCY_MATRIX_GRAPH_H_
 #define ADJACENCY_MATRIX_GRAPH_H_
 
-#include <string>
 #include <memory>
-#include <tuple>
 #include <set>
+#include <string>
+#include <tuple>
 #include <unordered_set>
+
 #include "graph.h"
 
 class AdjacencyMatrixGraph : public Graph
@@ -48,4 +42,4 @@ private:
     bool isIsomorphism(std::shared_ptr<Graph> g, size_t* permutation);
 };
 
-#endif /* ADJACENCY_MATRIX_GRAPH_H_ */
+#endif 

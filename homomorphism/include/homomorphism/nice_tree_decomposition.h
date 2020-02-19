@@ -1,15 +1,9 @@
-//
-//  nice_tree_decomposition.h
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 10/02/2020.
-//
-
 #ifndef NICE_TREE_DECOMPOSITIOM_H_
 #define NICE_TREE_DECOMPOSITIOM_H_
 
 #include <memory>
 #include <vector>
+
 #include "tree_decomposition.h"
 
 enum NTDNodeType { JOIN, FORGET, INTRODUCE, LEAF};
@@ -41,4 +35,4 @@ private:
     static std::shared_ptr<NTDNode> createJoin(std::shared_ptr<NTDNode> leftChild, std::shared_ptr<NTDNode> rightChild);
 };
 
-#endif /* NICE_TREE_DECOMPOSITIOM_H_ */
+#endif 

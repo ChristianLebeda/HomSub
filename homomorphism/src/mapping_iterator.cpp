@@ -1,4 +1,4 @@
-#include <homomorphism/mapping_iterator.h>
+#include "homomorphism/mapping_iterator.h"
 
 std::shared_ptr<MappingIterator> MappingIterator::makeIterator(int n, int k) {
     return std::make_shared<MappingIterator>(n, k);

@@ -1,18 +1,12 @@
-//
-//  tree_decomposition.h
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 05/02/2020.
-//
-
 #ifndef TREE_DECOMPOSITION_h
 #define TREE_DECOMPOSITION_h
 
 #include "edge_set_graph.h"
+
+#include <fstream>
 #include <memory>
 #include <vector>
 #include <unordered_set>
-#include <fstream>
 
 class TreeDecomposition {
 public:
@@ -27,4 +21,4 @@ private:
     std::vector<std::unordered_set<size_t>> bags;
 };
 
-#endif /* tree_decomposition_h */
+#endif 

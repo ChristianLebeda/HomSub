@@ -1,19 +1,15 @@
-//
-//  adjacency_matrix_graph.cpp
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 10/02/2020.
-//
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include "homomorphism/adjacency_matrix_graph.h"
-#include <sstream>
-#include <bitset>
+
 #include <algorithm>
+#include <bitset>
+#include <fstream>
+#include <iostream>
+#include <stdio.h>
+#include <sstream>
+#include <sstream>
+
 #include "homomorphism/graph6helper.h"
 #include "homomorphism/helper_functions.h"
-#include <stdio.h>
 
 std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::string graph6) {
     std::stringstream str(graph6);

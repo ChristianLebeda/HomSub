@@ -1,7 +1,7 @@
 #ifndef HOMOMORPHISM_BRUTEFORCECOUNTER_H_
 #define HOMOMORPHISM_BRUTEFORCECOUNTER_H_
 
-#include <homomorphism/embedding_counter.h>
+#include "homomorphism/embedding_counter.h"
 
 class BruteforceCounter : EmbeddingCounter
 {

@@ -2,8 +2,9 @@
 #define HOMOMORPHISM_HOMOMORPHISMCOUNTER_H_
 
 #include <memory>
-#include <homomorphism\graph.h>
-#include <homomorphism\nice_tree_decomposition.h>
+
+#include "homomorphism/graph.h"
+#include "homomorphism/nice_tree_decomposition.h"
 
 class HomomorphismCounter
 {

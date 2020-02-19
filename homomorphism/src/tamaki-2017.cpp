@@ -1,13 +1,7 @@
-//
-//  tamaki-2017.cpp
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 04/02/2020.
-//
-
 #include "homomorphism/tamaki-2017.h"
-#include <iostream>
+
 #include <fstream>
+#include <iostream>
 
 std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> g)
 {

@@ -1,17 +1,11 @@
-//
-//  edge_set_graph.h
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 11/02/2020.
-//
-
 #ifndef EDGE_SET_GRAPH_H_
 #define EDGE_SET_GRAPH_H_
 
-#include "graph.h"
-#include <vector>
 #include <set>
+#include <vector>
 #include <unordered_set>
+
+#include "graph.h"
 
 class EdgeSetGraph : public Graph {
 public:
@@ -34,4 +28,4 @@ private:
     std::vector<std::unordered_set<size_t>> neighbours_;
 };
 
-#endif /* edge_set_graph_h */
+#endif 

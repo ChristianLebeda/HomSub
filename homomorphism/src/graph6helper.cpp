@@ -1,4 +1,5 @@
 #include "homomorphism/graph6helper.h"
+
 #include <sstream>
 
 char Graph6helper::R(size_t x) {

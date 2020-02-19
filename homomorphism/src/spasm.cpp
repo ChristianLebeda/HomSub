@@ -1,9 +1,11 @@
-#include <sstream>
+#include "homomorphism/spasm.h"
+
 #include <algorithm>
 #include <fstream>
-#include "homomorphism/spasm.h"
-#include <homomorphism/helper_functions.h>
-#include <homomorphism/adjacency_matrix_graph.h>
+#include <sstream>
+
+#include "homomorphism/adjacency_matrix_graph.h"
+#include "homomorphism/helper_functions.h"
 
 std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
     std::ifstream input(path);

@@ -2,7 +2,8 @@
 #define HOMOMORPHISM_EMBEDDINGCOUNTER_H_
 
 #include <memory>
-#include <homomorphism/graph.h>
+
+#include "homomorphism/graph.h"
 
 class EmbeddingCounter
 {

@@ -1,8 +1,8 @@
 #ifndef HOMOMORPHISM_MAPPINGITERATOR_H_
 #define HOMOMORPHISM_MAPPINGITERATOR_H_
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 class MappingIterator
 {

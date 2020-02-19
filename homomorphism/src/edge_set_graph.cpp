@@ -1,12 +1,6 @@
-//
-//  edge_set_graph.cpp
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 11/02/2020.
-//
+#include "homomorphism/edge_set_graph.h"
 
 #include <stdio.h>
-#include "homomorphism/edge_set_graph.h"
 
 size_t EdgeSetGraph::vertCount()
 {

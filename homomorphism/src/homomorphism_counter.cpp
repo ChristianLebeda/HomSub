@@ -1,5 +1,6 @@
-#include <homomorphism/homomorphism_counter.h>
-#include <homomorphism\mapping_iterator.h>
+#include "homomorphism/homomorphism_counter.h"
+
+#include "homomorphism/mapping_iterator.h"
 
 std::shared_ptr<HomomorphismCounter> HomomorphismCounter::instantiate(std::shared_ptr<Graph> h,
     std::shared_ptr<Graph> g, std::shared_ptr<NiceTreeDecomposition> tree) {
@@ -12,7 +13,7 @@ size_t HomomorphismCounter::compute() {
     size_t count = 0;
 
     // TODO: Ensure that we do not need the forget nodes for the root
-    for each (size_t c in res.second)
+    for (size_t c : res.second)
     {
         count += c;
     }

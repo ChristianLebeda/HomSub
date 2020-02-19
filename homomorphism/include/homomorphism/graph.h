@@ -1,10 +1,10 @@
 #ifndef HOMOMORPHISM_GRAPH_H_
 #define HOMOMORPHISM_GRAPH_H_
 
-#include <string>
 #include <memory>
-#include <tuple>
 #include <set>
+#include <string>
+#include <tuple>
 #include <unordered_set>
 
 class Graph

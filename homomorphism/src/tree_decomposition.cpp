@@ -1,13 +1,7 @@
-//
-//  tree_decomposition.cpp
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 05/02/2020.
-//
+#include "homomorphism/tree_decomposition.h"
 
 #include <iostream>
 #include <sstream>
-#include "homomorphism/tree_decomposition.h"
 
 std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::ifstream& input) {
     std::string line;

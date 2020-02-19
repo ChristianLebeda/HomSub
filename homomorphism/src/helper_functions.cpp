@@ -1,6 +1,7 @@
-#include <homomorphism/helper_functions.h>
-#include <iostream>
+#include "homomorphism/helper_functions.h"
+
 #include <fstream>
+#include <iostream>
 
 bool HelperFunctions::hasSuffix(const std::string& str, const std::string& suffix)
 {

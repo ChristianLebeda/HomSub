@@ -1,13 +1,7 @@
-//
-//  nice_tree_decomposition.cpp
-//  homomorphism
-//
-//  Created by Jonas Mortensen on 10/02/2020.
-//
-
-#include <stdio.h>
-#include <iostream>
 #include "homomorphism/nice_tree_decomposition.h"
+
+#include <iostream>
+#include <stdio.h>
 
 std::shared_ptr<NiceTreeDecomposition> NiceTreeDecomposition::FromTd(std::shared_ptr<TreeDecomposition> td)
 {
