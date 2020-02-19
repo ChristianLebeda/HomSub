@@ -1,0 +1,3 @@
+[submodule "PACE2017-TrackA"]
+	path = PACE2017-TrackA
+	url = https://github.com/TCS-Meiji/PACE2017-TrackA.git
