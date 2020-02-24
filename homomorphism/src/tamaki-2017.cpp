@@ -13,7 +13,7 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
     graphFile.open ("tempGraph.gr");
     graphFile << g->toGr();
     graphFile.close();
-    system("java -Xmx30g -Xms30g -Xss10m tw.exact.MainDecomposer < graph.gr > tree.td");
+    system("java -Xmx30g -Xms30g -Xss10m tw.exact.MainDecomposer < tempGraph.gr > tempTree.td");
     remove("tempGraph.gr");
     
     std::string line;

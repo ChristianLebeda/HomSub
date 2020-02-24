@@ -134,6 +134,15 @@ std::shared_ptr<Spasm> Spasm::testSpasm()
     return std::make_shared<Spasm>(vec);
 }
 
+std::shared_ptr<Graph> Spasm::graph() {
+    if (size()) {
+        return graphs_[0].first;
+    }
+    else {
+        return nullptr;
+    }
+}
+
 size_t Spasm::size()
 {
     return graphs_.size();
