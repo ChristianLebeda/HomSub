@@ -11,6 +11,13 @@
 #include "homomorphism/graph6helper.h"
 #include "homomorphism/helper_functions.h"
 
+void AdjacencyMatrixGraph::clear(size_t v)
+{
+    vertices_ = v;
+    edges_ = 0;
+    matrix_ = new bool[v * v]{ 0 };
+}
+
 std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::string graph6) {
     std::stringstream str(graph6);
     unsigned char input;
