@@ -11,9 +11,9 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
 	{
 		auto next = (*sp)[i];
 
-		auto ntd = NiceTreeDecomposition::FromTd(t.decompose(next.first));
+		auto ntd = NiceTreeDecomposition::FromTd(t.decompose(next.graph));
 
-		decomps[i] = std::make_tuple(next.first, ntd, next.second);
+		decomps[i] = std::make_tuple(next.graph, ntd, next.coefficient);
 	}
 
 	return std::make_shared<SpasmDecomposition>(decomps, sp->graph());
