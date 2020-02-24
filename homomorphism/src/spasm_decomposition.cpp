@@ -5,7 +5,7 @@
 std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shared_ptr<Spasm> sp) {
 	Tamaki2017 t;
 	
-	std::vector<std::tuple<std::shared_ptr<Graph>, std::shared_ptr<NiceTreeDecomposition>, int>> decomps(sp->size());
+	std::vector<SpasmDecompositionEntry> decomps(sp->size());
 	
 	for (size_t i = 0; i < sp->size(); i++)
 	{
@@ -13,7 +13,12 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
 
 		auto ntd = NiceTreeDecomposition::FromTd(t.decompose(next.graph));
 
-		decomps[i] = std::make_tuple(next.graph, ntd, next.coefficient);
+		SpasmDecompositionEntry spe;
+		spe.graph = next.graph;
+		spe.coefficient = next.coefficient;
+		spe.decomposition = ntd;
+
+		decomps[i] = spe;
 	}
 
 	return std::make_shared<SpasmDecomposition>(decomps, sp->graph());
@@ -28,6 +33,6 @@ std::shared_ptr<Graph> SpasmDecomposition::graph() {
 	return graph_;
 }
 
-std::tuple<std::shared_ptr<Graph>, std::shared_ptr<NiceTreeDecomposition>, int>& SpasmDecomposition::operator[](std::size_t position) {
+SpasmDecompositionEntry& SpasmDecomposition::operator[](std::size_t position) {
 	return graphDecomps_[position];
 }

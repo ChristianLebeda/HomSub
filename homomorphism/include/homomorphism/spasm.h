@@ -2,7 +2,6 @@
 #define HOMOMORPHISM_SPASM_H_
 
 #include <iostream>
-#include <tuple>
 #include <vector>
 
 #include "homomorphism/graph.h"
