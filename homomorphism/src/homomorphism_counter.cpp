@@ -12,7 +12,6 @@ size_t HomomorphismCounter::compute() {
 
     size_t count = 0;
 
-    // TODO: Ensure that we do not need the forget nodes for the root
     for (size_t c : res.second)
     {
         count += c;
@@ -41,13 +40,13 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
 std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child, size_t x) {
     // Currently indices are 1-indexes for the tree decomposition and 0-indexes for the algorithm
     x--;
-    
-    // Base case for starting the DP
-    if (child->nodeType == LEAF) {
-        return std::make_pair(std::vector<size_t> {x}, std::vector<size_t>(g_->vertCount(), 1));
-    }
 
     std::pair<std::vector<size_t>, std::vector<size_t>> c = computeRec(child);
+
+    // First node to be introduced
+    if (c.first.empty()) {
+        return std::make_pair(std::vector<size_t> {x}, std::vector<size_t>(g_->vertCount(), c.second[0]));
+    }
 
     std::vector<size_t> bag = c.first;
 
