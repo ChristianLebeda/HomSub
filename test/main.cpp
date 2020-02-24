@@ -6,12 +6,13 @@
 int main(int argc, char *argv[])
 {
     
-    std::shared_ptr<AdjacencyMatrixGraph> square = std::make_shared<AdjacencyMatrixGraph>(1);
+    std::shared_ptr<AdjacencyMatrixGraph> g = std::make_shared<AdjacencyMatrixGraph>(1);
     
-    GraphGenerator::CompleteGrid(square, 2, 2);
+    GraphGenerator gg;
+    gg.CompleteBinaryTree(g, 3);
+    
+    g->prettyPrint(std::cout);
     //std::shared_ptr<Graph> g = AdjacencyMatrixGraph::testGraph();
-
-    square->prettyPrint(std::cout);
     
     return 0;
 }
