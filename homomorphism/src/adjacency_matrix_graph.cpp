@@ -15,6 +15,7 @@ void AdjacencyMatrixGraph::clear(size_t v)
 {
     vertices_ = v;
     edges_ = 0;
+    //TODO: Memory
     matrix_ = new bool[v * v]{ 0 };
 }
 

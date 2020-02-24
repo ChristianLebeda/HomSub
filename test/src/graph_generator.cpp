@@ -1,4 +1,5 @@
 #include "test/graph_generator.h"
+#include <vector>
 
  void GraphGenerator::CompleteGrid(std::shared_ptr<Graph> g, int rows, int columns)
 {
@@ -24,8 +25,6 @@ void GraphGenerator::RandomConnectedGrid(std::shared_ptr<Graph> g, int rows, int
             if(!neighbours) {
                 size_t toAdd = RandomSize(4);
             }
-            
-            
         }
     }
 }
@@ -33,9 +32,29 @@ void GraphGenerator::RandomConnectedGrid(std::shared_ptr<Graph> g, int rows, int
 void GraphGenerator::CompleteBinaryTree(std::shared_ptr<Graph> g, int depth) {
     size_t verts = ~(-1 << depth);
     g->clear(verts);
-    for(int i = 2; i < verts+1; i++) {
-        g->addEdge(i-1, (i >> 1)-1);
-        std::cout << "connected " << i-1 << " to " << (i >> 1)-1 << std::endl;
+    for(int i = 1; i < verts; i++) {
+        g->addEdge(i, ((i+1) >> 1) - 1);
+        std::cout << "connected " << i << " to " << ((i+1) >> 1)-1 << std::endl;
+    }
+}
+
+//Can run forever
+void GraphGenerator::RandomConnectedGraph(std::shared_ptr<Graph> g, size_t verts, size_t edges)
+{
+    g->clear(verts);
+    for(int i = 1; i < verts; i++) {
+        size_t connector = RandomSize(i);
+        g->addEdge(i, connector);
+    }
+    
+    while(g->edgeCount() < edges) {
+        //Add random edge
+        size_t u = RandomSize(verts);
+        size_t v = RandomSize(verts);
+        if(u == v) continue;
+        if(!g->edgeExist(u, v)) {
+            g->addEdge(u, v);
+        }
     }
 }
 
