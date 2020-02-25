@@ -79,3 +79,15 @@ void GraphGenerator::Cycle(std::shared_ptr<Graph> g, int length) {
     Path(g, length);
     g->addEdge(length-1, 0);
 }
+
+void GraphGenerator::EdgeProbabilityGraph(std::shared_ptr<Graph> g, size_t verts, float probability)
+{
+    g->clear(verts);
+    for(int i = 0; i < verts; i++) {
+        for(int j = 0; j < verts; j++) {
+            if(i < j && RandomFloat() < probability) {
+                g->addEdge(i, j);
+            }
+        }
+    }
+}
