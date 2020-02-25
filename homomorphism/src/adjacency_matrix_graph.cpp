@@ -16,7 +16,7 @@ void AdjacencyMatrixGraph::clear(size_t v)
     vertices_ = v;
     edges_ = 0;
     //TODO: Memory
-    matrix_ = new bool[v * v]{ 0 };
+    matrix_ = Matrix(v * v, 0 );
 }
 
 std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::string graph6) {
@@ -26,7 +26,7 @@ std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::stri
 
     size_t n = Graph6helper::readN(str);
 
-    bool* matrix = new bool[n * n]{ 0 };
+    std::vector<unsigned char> matrix = std::vector<unsigned char>(n * n, 0);
 
     size_t idx = 0, m = 0;
 
