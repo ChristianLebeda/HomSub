@@ -8,12 +8,14 @@
 
 #include "graph.h"
 
+typedef std::vector<unsigned char> Matrix;
+
 class AdjacencyMatrixGraph : public Graph
 {
 public:
-    AdjacencyMatrixGraph(size_t v) : vertices_(v), edges_(0), matrix_(std::vector<unsigned char>(v * v, 0)) { };
-    AdjacencyMatrixGraph(size_t v, size_t e) : vertices_(v), edges_(e), matrix_(std::vector<unsigned char>(v * v,  0 )) { };
-    AdjacencyMatrixGraph(size_t v, size_t e, std::vector<unsigned char> a) : vertices_(v), edges_(e), matrix_(a) { };
+    AdjacencyMatrixGraph(size_t v) : vertices_(v), edges_(0), matrix_(Matrix(v * v, 0)) { };
+    AdjacencyMatrixGraph(size_t v, size_t e) : vertices_(v), edges_(e), matrix_(Matrix(v * v,  0 )) { };
+    AdjacencyMatrixGraph(size_t v, size_t e, Matrix a) : vertices_(v), edges_(e), matrix_(a) { };
     
     static std::shared_ptr<AdjacencyMatrixGraph> fromGraph6(std::string graph6);
     static std::shared_ptr<AdjacencyMatrixGraph> fromFile(std::string path);
@@ -31,7 +33,7 @@ public:
 private:
     size_t vertices_;
     size_t edges_;
-    std::vector<unsigned char> matrix_;
+    Matrix matrix_;
 
     bool isIsomorphism(std::shared_ptr<Graph> g, size_t* permutation);
 };
