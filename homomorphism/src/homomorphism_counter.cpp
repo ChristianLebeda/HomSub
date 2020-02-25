@@ -8,11 +8,11 @@ std::shared_ptr<HomomorphismCounter> HomomorphismCounter::instantiate(std::share
 }
 
 size_t HomomorphismCounter::compute() {
-    std::pair<std::vector<size_t>, std::vector<size_t>> res = computeRec(tdc_->getRoot());
+    DPState res = computeRec(tdc_->getRoot());
 
     size_t count = 0;
 
-    for (size_t c : res.second)
+    for (size_t c : res.mappings)
     {
         count += c;
     }
@@ -23,7 +23,7 @@ size_t HomomorphismCounter::compute() {
 // The state at each step is a pair of vectors
 // The first vector contains the ordered bag of vertices for that node
 // The second vector contains the count of homomorphisms for all possible mappings of said bag
-std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::computeRec(std::shared_ptr<NTDNode> node) {
+DPState HomomorphismCounter::computeRec(std::shared_ptr<NTDNode> node) {
     switch (node->nodeType)
     {
         case INTRODUCE: 
@@ -33,22 +33,22 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
         case JOIN: 
             return computeJoinRec(node->left, node->right);
         default:
-            return std::make_pair(std::vector<size_t>(0), std::vector<size_t> {1});
+            return { std::vector<size_t>(0), std::vector<size_t> {1} };
     }
 }
 
-std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child, size_t x) {
+DPState HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child, size_t x) {
     // Currently indices are 1-indexes for the tree decomposition and 0-indexes for the algorithm
     x--;
 
-    std::pair<std::vector<size_t>, std::vector<size_t>> c = computeRec(child);
+    DPState c = computeRec(child);
 
     // First node to be introduced
-    if (c.first.empty()) {
-        return std::make_pair(std::vector<size_t> {x}, std::vector<size_t>(g_->vertCount(), c.second[0]));
+    if (c.bag.empty()) {
+        return { std::vector<size_t> {x}, std::vector<size_t>(n_, c.mappings[0]) };
     }
 
-    std::vector<size_t> bag = c.first;
+    std::vector<size_t> bag = c.bag;
 
     // Figure out which vertices in H are connected to the introduced vertex
     std::vector<bool> connected;
@@ -65,14 +65,14 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
     size_t newPos, newOffset;
     for (int i = bag.size() - 1; i >= 0; i--)
     {
-        if (larger && c.first[i] < x) {
+        if (larger && c.bag[i] < x) {
             larger = false;
             newPos = i + 1ULL;
             newOffset = offset;
-            offset *= g_->vertCount();
+            offset *= n_;
         }
         offsets[i] = offset;
-        offset *= g_->vertCount();
+        offset *= n_;
     }
 
     if (larger) {
@@ -80,12 +80,12 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
         newOffset = offset;
     }
 
-    std::vector<size_t> mapping(c.second.size() * g_->vertCount(), 0);
+    std::vector<size_t> mapping(c.mappings.size() * n_, 0);
 
-    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(g_->vertCount(), bag.size());
+    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(n_, bag.size());
 
     do {
-        size_t count = c.second[it->idx];
+        size_t count = c.mappings[it->idx];
         if (count) {
             // Compute where the new entries should be stored.
             // TODO: Compute this in the iterator to avoid recomputing
@@ -96,7 +96,7 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
             }
 
             // Add all valid assignments of vertex x
-            for (size_t i = 0; i < g_->vertCount(); i++)
+            for (size_t i = 0; i < n_; i++)
             {
                 // Ensure that all edges of H are also present in G
                 bool valid = true;
@@ -115,17 +115,17 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
 
     bag.insert(bag.begin() + newPos, x);
 
-    return std::make_pair(bag, mapping);
+    return { bag, mapping };
 }
 
 // TODO: Handle case of forgetting only vertex
 // Should also be handled properly for introduce nodes
-std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::computeForgetRec(std::shared_ptr<NTDNode> child, size_t x) {
+DPState HomomorphismCounter::computeForgetRec(std::shared_ptr<NTDNode> child, size_t x) {
     x--;
 
-    std::pair<std::vector<size_t>, std::vector<size_t>> c = computeRec(child);
+    DPState c = computeRec(child);
 
-    std::vector<size_t> bag = c.first;
+    std::vector<size_t> bag = c.bag;
 
     std::vector<size_t> offsets(bag.size());
 
@@ -139,15 +139,15 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
             continue;
         }
         offsets[i] = offset;
-        offset *= g_->vertCount();
+        offset *= n_;
     }
 
-    std::vector<size_t> mapping(c.second.size() / g_->vertCount(), 0);
+    std::vector<size_t> mapping(c.mappings.size() / n_, 0);
 
-    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(g_->vertCount(), bag.size());
+    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(n_, bag.size());
 
     do {
-        size_t count = c.second[it->idx];
+        size_t count = c.mappings[it->idx];
         if (count) {
             // Combines mappings that are identical without x
             size_t newidx = 0;
@@ -162,20 +162,20 @@ std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::compute
 
     bag.erase(bag.begin() + oldPos);
 
-    return std::make_pair(bag, mapping);
+    return { bag, mapping };
 }
 
-std::pair<std::vector<size_t>, std::vector<size_t>> HomomorphismCounter::computeJoinRec(std::shared_ptr<NTDNode> child1, std::shared_ptr<NTDNode> child2) {
-    // First element of results should be identical
-    std::pair<std::vector<size_t>, std::vector<size_t>> c1 = computeRec(child1);
-    std::pair<std::vector<size_t>, std::vector<size_t>> c2 = computeRec(child2);
+DPState HomomorphismCounter::computeJoinRec(std::shared_ptr<NTDNode> child1, std::shared_ptr<NTDNode> child2) {
+    // The bag of the results should be identical
+    DPState c1 = computeRec(child1);
+    DPState c2 = computeRec(child2);
 
-    std::vector<size_t> joined(c1.second.size());
+    std::vector<size_t> joined(c1.mappings.size());
 
     for (size_t i = 0; i < joined.size(); i++)
     {
-        joined[i] = c1.second[i] * c2.second[i];
+        joined[i] = c1.mappings[i] * c2.mappings[i];
     }
 
-    return std::make_pair(c1.first, joined);
+    return { c1.bag, joined };
 }

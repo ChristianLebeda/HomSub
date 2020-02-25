@@ -14,8 +14,8 @@ long TreewidthSubgraphCounter::compute() {
 	for (size_t i = 0; i < spdc_->size(); i++)
 	{
 		auto next = (*spdc_)[i];
-		auto hc = HomomorphismCounter::instantiate(std::get<0>(next), g_, std::get<1>(next));
-		count += hc->compute() * std::get<2>(next);
+		auto hc = HomomorphismCounter::instantiate(next.graph, g_, next.decomposition);
+		count += hc->compute() * next.coefficient;
 	}
 
 	return count;
