@@ -45,7 +45,7 @@ DPState HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child,
 
     // First node to be introduced
     if (c.bag.empty()) {
-        return { std::vector<size_t> {x}, std::vector<size_t>(g_->vertCount(), c.mappings[0]) };
+        return { std::vector<size_t> {x}, std::vector<size_t>(n_, c.mappings[0]) };
     }
 
     std::vector<size_t> bag = c.bag;
@@ -69,10 +69,10 @@ DPState HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child,
             larger = false;
             newPos = i + 1ULL;
             newOffset = offset;
-            offset *= g_->vertCount();
+            offset *= n_;
         }
         offsets[i] = offset;
-        offset *= g_->vertCount();
+        offset *= n_;
     }
 
     if (larger) {
@@ -80,9 +80,9 @@ DPState HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child,
         newOffset = offset;
     }
 
-    std::vector<size_t> mapping(c.mappings.size() * g_->vertCount(), 0);
+    std::vector<size_t> mapping(c.mappings.size() * n_, 0);
 
-    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(g_->vertCount(), bag.size());
+    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(n_, bag.size());
 
     do {
         size_t count = c.mappings[it->idx];
@@ -96,7 +96,7 @@ DPState HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child,
             }
 
             // Add all valid assignments of vertex x
-            for (size_t i = 0; i < g_->vertCount(); i++)
+            for (size_t i = 0; i < n_; i++)
             {
                 // Ensure that all edges of H are also present in G
                 bool valid = true;
@@ -139,12 +139,12 @@ DPState HomomorphismCounter::computeForgetRec(std::shared_ptr<NTDNode> child, si
             continue;
         }
         offsets[i] = offset;
-        offset *= g_->vertCount();
+        offset *= n_;
     }
 
-    std::vector<size_t> mapping(c.mappings.size() / g_->vertCount(), 0);
+    std::vector<size_t> mapping(c.mappings.size() / n_, 0);
 
-    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(g_->vertCount(), bag.size());
+    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(n_, bag.size());
 
     do {
         size_t count = c.mappings[it->idx];
