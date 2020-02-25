@@ -13,6 +13,7 @@ public:
         neighbours_.resize(verts);
     };
     EdgeSetGraph(size_t verts, size_t edges, std::vector<std::unordered_set<size_t>> neighbours) : verts_(verts), edges_(edges), neighbours_(neighbours) {};
+    void clear(size_t v);
     size_t vertCount();
     size_t edgeCount();
     void addEdge(size_t u, size_t v);

@@ -2,6 +2,15 @@
 
 #include <stdio.h>
 
+void EdgeSetGraph::clear(size_t v)
+{
+    verts_ = 0;
+    edges_ = 0;
+    std::vector<std::unordered_set<size_t>> nei;
+    nei.resize(v);
+    neighbours_ = nei;
+}
+
 size_t EdgeSetGraph::vertCount()
 {
     return verts_;
