@@ -17,6 +17,7 @@ public:
     virtual std::unordered_set<size_t> getNeighbourhood(size_t v) = 0;
     virtual bool isIsomorphic(std::shared_ptr<Graph> g) = 0;
     virtual std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size) = 0;
+    virtual void clear(size_t v) = 0;
     
     std::string toString();
     std::string toGr();

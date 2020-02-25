@@ -20,6 +20,7 @@ public:
     static std::shared_ptr<AdjacencyMatrixGraph> fromFile(std::string path);
     static std::shared_ptr<AdjacencyMatrixGraph> testGraph();
     
+    void clear(size_t v);
     size_t vertCount();
     size_t edgeCount();
     void addEdge(size_t u, size_t v);
