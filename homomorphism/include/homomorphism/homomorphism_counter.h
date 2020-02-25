@@ -6,6 +6,11 @@
 #include "homomorphism/graph.h"
 #include "homomorphism/nice_tree_decomposition.h"
 
+struct DPState {
+    std::vector<size_t> bag;
+    std::vector<size_t> mappings;
+};
+
 class HomomorphismCounter
 {
 public:
@@ -20,10 +25,10 @@ private:
     std::shared_ptr<Graph> h_, g_;
     std::shared_ptr<NiceTreeDecomposition> tdc_;
     // Return vertices in bag first and count of all mappings second.
-    std::pair<std::vector<size_t>, std::vector<size_t>> computeRec(std::shared_ptr<NTDNode> node);
-    std::pair<std::vector<size_t>, std::vector<size_t>> computeIntroduceRec(std::shared_ptr<NTDNode> child, size_t x);
-    std::pair<std::vector<size_t>, std::vector<size_t>> computeForgetRec(std::shared_ptr<NTDNode> child, size_t x);
-    std::pair<std::vector<size_t>, std::vector<size_t>> computeJoinRec(std::shared_ptr<NTDNode> child1, std::shared_ptr<NTDNode> child2);
+    DPState computeRec(std::shared_ptr<NTDNode> node);
+    DPState computeIntroduceRec(std::shared_ptr<NTDNode> child, size_t x);
+    DPState computeForgetRec(std::shared_ptr<NTDNode> child, size_t x);
+    DPState computeJoinRec(std::shared_ptr<NTDNode> child1, std::shared_ptr<NTDNode> child2);
 };
 
 #endif
