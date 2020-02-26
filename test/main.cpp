@@ -8,20 +8,23 @@
 
 int main(int argc, char *argv[])
 {
-    //srand(time(NULL));
-    
-    //std::shared_ptr<AdjacencyMatrixGraph> g = std::make_shared<AdjacencyMatrixGraph>(1);
-
-    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::testGraph();
-    Tamaki2017 t;
-    std::shared_ptr<TreeDecomposition> td = t.decompose(g);
-    
-    td->getGraph()->prettyPrint(std::cout);
-    //GraphGenerator gg;
-    //gg.RandomConnectedGraph(g, 10, 20);
-    
-    //g->prettyPrint(std::cout);
-    //std::shared_ptr<Graph> g = AdjacencyMatrixGraph::testGraph();
+    int testMask = -1;
+    int seed = time(NULL);
+    if(argc > 1) {
+        std::string firstArg = argv[1];
+        if(firstArg.compare("run") == 0) {
+            std::cout << "run algo on given graph" << std::endl;
+            return 0;
+        } else if (firstArg.compare("-s") == 0) {
+            seed = std::stoi(argv[2]);
+            if(argc > 3) {
+                testMask = std::stoi(argv[3]);
+            }
+        } else {
+            testMask = std::stoi(firstArg);
+        }
+    }
+    std::cout << "testing " << testMask << " with seed " << seed << std::endl;
     
     return 0;
 }
