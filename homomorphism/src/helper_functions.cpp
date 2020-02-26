@@ -16,3 +16,31 @@ bool HelperFunctions::saveToFile(const std::string& str, const std::string& file
     out << str;
     return true;
 }
+
+std::string HelperFunctions::trimDreadnautOutput(PipeHandler& dread, size_t n) 
+{
+    std::ostringstream out;
+
+    std::istringstream line;
+    size_t v;
+
+    std::string tmp = dread.nextLine();
+
+    for (size_t i = 0; i < n; i++)
+    {
+        line.clear();
+        line.str(dread.nextLine());
+
+        line >> tmp >> tmp;
+
+        while (line >> v) {
+            if (i < v) {
+                out << " " << v;
+            }
+        }
+
+        out << ";";
+    }
+
+    return out.str();
+}
