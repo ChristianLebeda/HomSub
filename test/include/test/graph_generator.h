@@ -9,7 +9,7 @@
 class GraphGenerator
 {
 public:
-    void CompleteGrid(std::shared_ptr<Graph> g, int rows, int columns);
+    static void CompleteGrid(std::shared_ptr<Graph> g, int rows, int columns);
     void RandomConnectedGrid(std::shared_ptr<Graph> g, int rows, int columns);
     void Path(std::shared_ptr<Graph> g, int length);
     void Cycle(std::shared_ptr<Graph> g, int length);
