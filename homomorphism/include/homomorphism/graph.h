@@ -17,6 +17,7 @@ public:
     virtual bool isIsomorphic(std::shared_ptr<Graph> g) = 0;
     virtual std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size) = 0;
     virtual void clear(size_t v) = 0;
+    virtual std::string toNautyFormat();
     
     std::string toString();
     std::string toGr();

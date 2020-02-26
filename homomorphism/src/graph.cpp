@@ -69,3 +69,18 @@ void Graph::prettyPrint(std::ostream& os)
         os << "]" << std::endl;
     }
 }
+
+std::string Graph::toNautyFormat() {
+    std::ostringstream str;
+    
+    for (size_t u = 0; u < vertCount(); u++) {
+        for (size_t v = u + 1; v < vertCount(); v++) {
+            if (edgeExist(u, v)) {
+                str << " " << v;
+            }
+        }
+        str << ";";
+    }
+
+    return str.str();
+}
