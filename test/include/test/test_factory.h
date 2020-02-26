@@ -8,10 +8,11 @@
 #ifndef TEST_FACTORY_h
 #define TEST_FACTORY_h
 #include "test/test.h"
+#include <memory>
 class TestFactory
 {
 public:
-    static Test GetTest(int i);
+    static std::unique_ptr<Test> GetTest(int i);
 private:
     static void Test0();
     static void Test1();

@@ -16,20 +16,16 @@
 #include "test/graph_generator.h"
 #include <memory>
 
-Test TestFactory::GetTest(int i) {
+std::unique_ptr<Test> TestFactory::GetTest(int i) {
     switch (i) {
         case 0: {
-            Test t0("Square in Square", "", Test0);
-            return t0;
-            break;
+            return std::unique_ptr<Test>(new Test("Square in square", "", Test0));
         }
         case 1: {
-            Test t1("Square in grid", "", Test1);
-            return t1;
-            break;
+            return std::unique_ptr<Test>(new Test("Square in grid", "", Test1));
         }
     }
-    throw "Unknown test requested";
+    return nullptr;
 }
 
 void TestFactory::Test0()

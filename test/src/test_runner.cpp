@@ -35,6 +35,8 @@ void TestRunner::RunTest(Test test)
 
 void TestRunner::RunTest(int testNum)
 {
-    Test t = TestFactory::GetTest(testNum);
-    RunTest(t);
+    std::unique_ptr<Test> t = TestFactory::GetTest(testNum);
+    if(t) {
+        RunTest(*t);
+    }
 }
