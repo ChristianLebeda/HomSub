@@ -1,21 +1,27 @@
-#ifndef NICE_TREE_PIPEHANDLER_H_
-#define NICE_TREE_PIPEHANDLER_H_
+#ifndef HOMOMORPHISM_PIPEHANDLER_H_
+#define HOMOMORPHISM_PIPEHANDLER_H_
 
 #include <sstream>
 
 class PipeHandler
 {
 public:
-	PipeHandler(std::istringstream& tt) : tmpstring(tt) {};
+    PipeHandler(FILE* input, FILE* output)
+            : input_(input), output_(output) {}
 
-	void write(std::string str);
-	void writeLine(std::string str);
+	static PipeHandler openNauty();
+	static PipeHandler openTamaki();
+
+	void write(const std::string& str);
+	void writeLine(const std::string& str);
 	std::string nextLine();
 	void nextLine(std::ostream& os);
-	bool close();
+	bool closePipes();
 
 private:
-	std::istringstream& tmpstring;
+	FILE *input_, *output_;
+
+    static PipeHandler open(const char* file, const char* argv, ...);
 };
 
 #endif 
