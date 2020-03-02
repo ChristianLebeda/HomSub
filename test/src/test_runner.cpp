@@ -11,6 +11,18 @@
 #include "test/test.h"
 #include <chrono>
 
+
+void TestRunner::Run() {
+    srand(settings_.GetRandomSeed());
+    if(settings_.ShouldRunSingleTest()) {
+        RunTest(settings_.GetSingleTest());
+    }
+    
+    if(settings_.ShouldRunTestMask()) {
+        RunTestFromMask(settings_.GetTestMask());
+    }
+}
+
 void TestRunner::RunTestFromMask(int mask)
 {
     for(int i = 0; i < 32; i++) {

@@ -7,6 +7,8 @@
 #include "homomorphism/tamaki-2017.h"
 #include "test/test_runner.h"
 #include <unordered_map>
+#include "test/test_settings.h"
+#include "homomorphism/main.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,29 +19,49 @@ int main(int argc, char *argv[])
     
     std::unordered_map<std::string, std::string> argMap;
     
+    TestSettings settings;
+    
     for(int i = 1; i < argc; i = i+2) {
         argMap[argv[i]] = argv[i+1];
     }
     
-    //Initialise random seed
+    
+    //Set TreeWidthSolver settings
+    if(argMap.count("-tws")) {
+        if(argMap["-tws"].compare("tamaki") == 0) {
+            Tamaki2017 t;
+            settings.SetTWS(&t);
+        }
+    } else {
+        Tamaki2017 t;
+        settings.SetTWS(&t);
+    }
+    
+    //Set random seed
     int randomSeed = time(NULL);
     if(argMap.count("-seed")) {
         randomSeed = std::stoi(argMap["-seed"]);
+        settings.SetRandomSeed(randomSeed);
     }
-    srand(randomSeed);
     
-    //run single test
+    //Set single test
     if(argMap.count("-test")) {
         int testNum = std::stoi(argMap["-test"]);
-        TestRunner::RunTest(testNum);
+        settings.SetSingleTest(testNum);
     }
     
-    //Run several tests
+    //Set several tests
     if(argMap.count("-mask")) {
         int testMask = std::stoi(argMap["-mask"]);
-        TestRunner::RunTestFromMask(testMask);
+        settings.SetTestMask(testMask);
     }
     
+    if(argMap.count("-run")) {
+        std::cout << "This should run the agorithm on files " << argMap["-run"] << std::endl;
+    }
+    
+    TestRunner runner(settings);
+    runner.Run();
     
     return 0;
 }
