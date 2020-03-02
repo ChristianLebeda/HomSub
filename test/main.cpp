@@ -12,8 +12,8 @@
 
 int main(int argc, char *argv[])
 {
-    if(argc % 2 == 0) {
-        std::cout << "Not key-value pairs" << std::endl;
+    if(argc < 2) {
+        std::cout << "use -help" << std::endl;
         return 1;
     }
     
@@ -22,7 +22,15 @@ int main(int argc, char *argv[])
     TestSettings settings;
     
     for(int i = 1; i < argc; i = i+2) {
-        argMap[argv[i]] = argv[i+1];
+        std::string arg = argv[i];
+        if(arg.compare("-help") == 0) {
+            TestRunner::PrintHelp();
+        } else if(arg.compare("-list") == 0) {
+            TestRunner::PrintTests();
+        } else {
+            std::string value = argv[i+1];
+            argMap[arg] = value;
+        }
     }
     
     

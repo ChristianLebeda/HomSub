@@ -13,6 +13,7 @@ class TestFactory
 {
 public:
     static std::unique_ptr<Test> GetTest(int i);
+    static int TestCount();
 private:
     static void Test0();
     static void Test1();

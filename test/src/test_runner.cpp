@@ -52,3 +52,25 @@ void TestRunner::RunTest(int testNum)
         RunTest(*t);
     }
 }
+
+void TestRunner::PrintHelp()
+{
+    std::cout << "Give the program a sequence of parameters in order to adjust execution. Supported parameters are described here:\n" << std::endl;
+    std::cout << "-help     | Get this help screen" << std::endl;
+    std::cout << "-list     | List all tests" << std::endl;
+    std::cout << "-test t   | Run a specific test" << std::endl;
+    std::cout << "-mask m   | Run several tests masked by given signed integer (-1 runs all)" << std::endl;
+    std::cout << "-tws  t   | Specify which TreeWidthSolve should be used from: tamaki" << std::endl;
+    std::cout << "-run  h g | Count occurences of pattern h in host g" << std::endl;
+    
+    std::cout << std::endl;
+}
+
+void TestRunner::PrintTests()
+{
+    std::cout << "Tests:" << std::endl;
+    for(int i = 0; i < TestFactory::TestCount(); i++) {
+        std::shared_ptr<Test> t = TestFactory::GetTest(i);
+        std::cout << i << ": " << t->GetName() << ", " << t->GetDescription() << std::endl;
+    }
+}

@@ -8,6 +8,8 @@ class TestRunner
 public:
     TestRunner(TestSettings ts) : settings_(ts) {};
     void Run();
+    static void PrintHelp();
+    static void PrintTests();
 private:
     TestSettings settings_;
     static void RunTestFromMask(int mask);

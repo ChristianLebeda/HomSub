@@ -45,3 +45,7 @@ void TestFactory::Test1()
     
     Main::subgraphsGraph(h, g);
 }
+
+int TestFactory::TestCount() {
+    return 2;
+}
