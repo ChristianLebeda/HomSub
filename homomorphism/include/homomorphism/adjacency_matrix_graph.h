@@ -1,7 +1,7 @@
 #ifndef HOMOMORPHISM_ADJACENCY_MATRIX_GRAPH_H_
 #define HOMOMORPHISM_ADJACENCY_MATRIX_GRAPH_H_
 
-#include "graph.h"
+#include "homomorphism/graph.h"
 
 #include <memory>
 #include <set>

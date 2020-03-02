@@ -25,7 +25,7 @@ PipeHandler PipeHandler::open(bool tamaki) //const char* file, const char* argv 
             if(tamaki) {
                 execlp("java", "-Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer", (const char*)NULL);
             } else {
-                execlp("./dreadnaut", (const char*) NULL);
+                execlp("./dreadnaut", "./dreadnaut", (const char*) NULL);
             }
 
             //TODO: Fix!

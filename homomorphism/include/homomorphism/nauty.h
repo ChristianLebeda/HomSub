@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "spasm.h"
+#include "homomorphism/spasm.h"
 
 struct CanonicalEntry
 {
