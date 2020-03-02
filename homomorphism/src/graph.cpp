@@ -79,7 +79,7 @@ std::string Graph::toNautyFormat() {
                 str << " " << v;
             }
         }
-        str << ";";
+        str << " ; ";
     }
 
     return str.str();

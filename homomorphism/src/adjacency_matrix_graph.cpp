@@ -107,13 +107,30 @@ std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::testGraph()
     return g;
 }
 
-std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::parseNautyFormat(std::string nauty, size_t n)
+std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::parseNautyFormat(const std::string& nauty, size_t n)
 {
-    // TODO: Implement
+    std::shared_ptr<AdjacencyMatrixGraph> g = std::make_shared<AdjacencyMatrixGraph>(n);
 
-    std::cerr << "Cannot parse nauty format yet";
+    size_t u = 0, v;
 
-    return nullptr;
+    std::string tmp;
+
+    std::istringstream str(nauty);
+
+    while(u < n) {
+        if(!(str >> tmp)) {
+            std::cerr << "ERROR: Could not parse Nauty format n=" << n << ": " << nauty << std::endl;
+            break;
+        }
+        if(tmp == ";") {
+            u++;
+        } else {
+            std::istringstream(tmp) >> v;
+            g->addEdge(u, v);
+        }
+    }
+
+    return g;
 }
 
 bool AdjacencyMatrixGraph::edgeExist(size_t u, size_t v)

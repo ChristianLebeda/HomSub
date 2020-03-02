@@ -11,15 +11,18 @@
 struct CanonicalEntry
 {
     std::string graph;
+    size_t n;
     int coefficient;
+    bool operator<(const CanonicalEntry& rhs) const {
+        return graph < rhs.graph;
+    }
 };
 
 class Nauty
 {
 public:
     static void Test(std::vector<SpasmEntry> spasm);
-private:
-    static std::string compute(std::shared_ptr<Graph> g, PipeHandler& n);
+    static std::vector<SpasmEntry> joinIsomorphic(const std::vector<SpasmEntry>& spasm);
 };
 
 

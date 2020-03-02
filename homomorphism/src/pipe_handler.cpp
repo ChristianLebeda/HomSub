@@ -8,7 +8,7 @@ PipeHandler PipeHandler::open(bool tamaki) //const char* file, const char* argv 
     //Create pipes for read and write
     int inp[2], outp[2];
     pipe(inp);
-    pipe(outp);   
+    pipe(outp);
     
     //Fork
     switch (fork()) {
@@ -25,7 +25,7 @@ PipeHandler PipeHandler::open(bool tamaki) //const char* file, const char* argv 
             if(tamaki) {
                 execlp("java", "-Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer", (const char*)NULL);
             } else {
-                execlp("./dreadnaut", "./dreadnaut", (const char*) NULL);
+                execlp("./dreadnaut", "", (const char*) NULL);
             }
 
             //TODO: Fix!
@@ -59,7 +59,6 @@ PipeHandler PipeHandler::openTamaki()
 void PipeHandler::write(const std::string& str)
 {
     fprintf(input_, "%s", str.c_str());
-    std::fflush(input_);
 }
 
 void PipeHandler::writeLine(const std::string& str)
@@ -72,8 +71,8 @@ std::string PipeHandler::nextLine()
 {
     if(feof(output_)) return "";
 
-    char buffer [256];
-    fgets(buffer, 256, output_);
+    char buffer [1024];
+    fgets(buffer, 1024, output_);
 
     return buffer;
 }
@@ -88,5 +87,5 @@ void PipeHandler::nextLine(std::ostream& os)
 
 bool PipeHandler::closePipes()
 {
-	return fclose(input_) + fclose(output_);
+	return fclose(input_);// + fclose(output_);
 }

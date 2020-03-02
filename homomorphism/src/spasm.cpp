@@ -6,6 +6,7 @@
 
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/helper_functions.h"
+#include "homomorphism/nauty.h"
 
 std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
     std::ifstream input(path);
