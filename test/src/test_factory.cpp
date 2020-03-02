@@ -19,10 +19,19 @@
 std::unique_ptr<Test> TestFactory::GetTest(int i) {
     switch (i) {
         case 0: {
-            return std::unique_ptr<Test>(new Test("Square in square", "", Test0));
+            return std::unique_ptr<Test>(new Test("Square in grid2", "", Test0));
         }
         case 1: {
-            return std::unique_ptr<Test>(new Test("Square in grid", "", Test1));
+            return std::unique_ptr<Test>(new Test("Square in grid4", "", Test1));
+        }
+        case 2: {
+            return std::unique_ptr<Test>(new Test("Square in grid8", "", Test2));
+        }
+        case 3: {
+            return std::unique_ptr<Test>(new Test("Square in grid16", "", Test3));
+        }
+        case 4: {
+            return std::unique_ptr<Test>(new Test("Square in coinFlip128", "", Test4));
         }
     }
     return nullptr;
@@ -46,6 +55,39 @@ void TestFactory::Test1()
     Main::subgraphsGraph(h, g);
 }
 
+void TestFactory::Test2()
+{
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(g, 8, 8);
+    
+    Main::subgraphsGraph(h, g);
+}
+
+void TestFactory::Test3()
+{
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(g, 16, 16);
+    
+    Main::subgraphsGraph(h, g);
+}
+
+void TestFactory::Test4()
+{
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::EdgeProbabilityGraph(g, 128, 0.5);
+    
+    Main::subgraphsGraph(h, g);
+}
+
 int TestFactory::TestCount() {
-    return 2;
+    return 5;
 }

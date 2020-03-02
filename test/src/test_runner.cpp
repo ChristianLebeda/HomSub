@@ -42,7 +42,7 @@ void TestRunner::RunTest(Test test)
     
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     
-    std::cout << duration.count() << "ms" << std::endl;
+    std::cout << (float)duration.count() / (float)1000000 << "s" << std::endl;
 }
 
 void TestRunner::RunTest(int testNum)
