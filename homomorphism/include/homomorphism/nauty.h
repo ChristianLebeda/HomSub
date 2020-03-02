@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "homomorphism/pipe_handler.h"
 #include "homomorphism/spasm.h"
 
 struct CanonicalEntry
@@ -17,6 +18,8 @@ class Nauty
 {
 public:
     static void Test(std::vector<SpasmEntry> spasm);
+private:
+    static std::string compute(std::shared_ptr<Graph> g, PipeHandler& n);
 };
 
 

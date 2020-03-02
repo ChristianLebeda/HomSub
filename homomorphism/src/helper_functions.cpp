@@ -9,6 +9,12 @@ bool HelperFunctions::hasSuffix(const std::string& str, const std::string& suffi
         str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
+bool HelperFunctions::hasPrefix(const std::string& str, const std::string& prefix)
+{
+    return str.size() >= prefix.size() &&
+           str.compare(0, prefix.size(), prefix) == 0;
+}
+
 bool HelperFunctions::saveToFile(const std::string& str, const std::string& filename)
 {
     std::ofstream out(filename);
@@ -24,12 +30,20 @@ std::string HelperFunctions::trimDreadnautOutput(PipeHandler& dread, size_t n)
     std::istringstream line;
     size_t v;
 
-    std::string tmp = dread.nextLine();
+    std::string tmp;
+
+    do {
+        tmp = dread.nextLine();
+    } while(!hasPrefix(tmp, "  0 :"));
 
     for (size_t i = 0; i < n; i++)
     {
         line.clear();
-        line.str(dread.nextLine());
+        if(i) {
+            line.str(dread.nextLine());
+        } else {
+            line.str(tmp);
+        }
 
         line >> tmp >> tmp;
 
