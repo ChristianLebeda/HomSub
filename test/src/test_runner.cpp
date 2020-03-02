@@ -29,7 +29,7 @@ void TestRunner::RunTest(Test test)
 {
     std::cout << test.GetName() << ":\t";
     
-    float prTestRuntime = settings_.GetPrTestRuntime();
+    float prTestRuntime = (float) settings_.GetPrTestRuntime();
     float elapsedTime = 0;
     float latestRuntime = 0;
     int i = 1;

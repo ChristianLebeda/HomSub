@@ -37,7 +37,7 @@ public:
     void SetPrTestRuntime(float runtime) {
         prTestRuntime_ = runtime;
     };
-    float GetPrTestRuntime() {
+    int GetPrTestRuntime() {
         return prTestRuntime_;
     }
 private:
@@ -46,7 +46,7 @@ private:
     int singleTest_;
     bool runTestMask_;
     bool runSingleTest_;
-    float prTestRuntime_;
+    int prTestRuntime_;
     TreeWidthSolver *tws_;
 };
 
