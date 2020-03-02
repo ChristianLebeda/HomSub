@@ -21,7 +21,8 @@ public:
 private:
 	FILE *input_, *output_;
 
-    static PipeHandler open(const char* file, const char* argv, ...);
+	static PipeHandler open(bool tamaki);
+    //static PipeHandler open(const char* file, const char* argv, ...);
 };
 
 #endif 

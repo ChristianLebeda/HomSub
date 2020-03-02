@@ -3,7 +3,7 @@
 #include <iostream>
 #include <unistd.h>
 
-PipeHandler PipeHandler::open(const char* file, const char* argv ...)
+PipeHandler PipeHandler::open(bool tamaki) //const char* file, const char* argv ...)
 {
     //Create pipes for read and write
     int inp[2], outp[2];
@@ -21,7 +21,13 @@ PipeHandler PipeHandler::open(const char* file, const char* argv ...)
             close(inp[0]); close(1); dup(inp[1]); close(inp[1]);
             close(outp[1]); close(0); dup(outp[0]); close(outp[0]);
 
-            execlp("java", "-Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer", (const char*)NULL);
+
+            if(tamaki) {
+                execlp("java", "-Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer", (const char*)NULL);
+            } else {
+                execlp("./dreadnaut", (const char*) NULL);
+            }
+
             //TODO: Fix!
             //execlp(file, argv, (const char*) nullptr);
 
@@ -40,12 +46,14 @@ PipeHandler PipeHandler::open(const char* file, const char* argv ...)
 
 PipeHandler PipeHandler::openNauty()
 {
-    return open("./dreadnaut", "./dreadnaut");
+    return open(false);
+    //return open("./dreadnaut", "./dreadnaut");
 }
 
 PipeHandler PipeHandler::openTamaki()
 {
-    return open("java", "-Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer");
+    return open(true);
+    //return open("java", "-Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer");
 }
 
 void PipeHandler::write(const std::string& str)

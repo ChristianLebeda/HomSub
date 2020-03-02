@@ -1,13 +1,13 @@
-#ifndef ADJACENCY_MATRIX_GRAPH_H_
-#define ADJACENCY_MATRIX_GRAPH_H_
+#ifndef HOMOMORPHISM_ADJACENCY_MATRIX_GRAPH_H_
+#define HOMOMORPHISM_ADJACENCY_MATRIX_GRAPH_H_
+
+#include "graph.h"
 
 #include <memory>
 #include <set>
 #include <string>
 #include <unordered_set>
 #include <vector>
-
-#include "graph.h"
 
 typedef std::vector<unsigned char> Matrix;
 
@@ -32,7 +32,6 @@ public:
     bool isIsomorphic(std::shared_ptr<Graph> g);
     std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size);
 
-    
 private:
     size_t vertices_;
     size_t edges_;
