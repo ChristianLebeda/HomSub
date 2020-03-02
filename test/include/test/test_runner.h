@@ -12,9 +12,9 @@ public:
     static void PrintTests();
 private:
     TestSettings settings_;
-    static void RunTestFromMask(int mask);
-    static void RunTest(int testNum);
-    static void RunTest(Test test);
+    void RunTestFromMask(int mask);
+    void RunTest(int testNum);
+    void RunTest(Test test);
     
 };
 

@@ -11,6 +11,6 @@ std::string Test::GetDescription()
     return description_;
 }
 
-void Test::Run() {
-    run_();
+void Test::Run(int i) {
+    run_(i);
 }

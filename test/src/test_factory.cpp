@@ -19,32 +19,35 @@
 std::unique_ptr<Test> TestFactory::GetTest(int i) {
     switch (i) {
         case 0: {
-            return std::unique_ptr<Test>(new Test("Square in grid2", "", Test0));
+            return std::unique_ptr<Test>(new Test("Square in grid2", "", false, Test0));
         }
         case 1: {
-            return std::unique_ptr<Test>(new Test("Square in grid4", "", Test1));
+            return std::unique_ptr<Test>(new Test("Square in grid4", "", false, Test1));
         }
         case 2: {
-            return std::unique_ptr<Test>(new Test("Square in grid8", "", Test2));
+            return std::unique_ptr<Test>(new Test("Square in grid8", "", false, Test2));
         }
         case 3: {
-            return std::unique_ptr<Test>(new Test("Square in grid16", "", Test3));
+            return std::unique_ptr<Test>(new Test("Square in grid16", "", false, Test3));
         }
         case 4: {
-            return std::unique_ptr<Test>(new Test("Square in coinFlip128", "", Test4));
+            return std::unique_ptr<Test>(new Test("Square in coinFlip128", "", false, Test4));
+        }
+        case 5: {
+            return std::unique_ptr<Test>(new Test("Square in nGrid", "", true, Test5));
         }
     }
     return nullptr;
 }
 
-void TestFactory::Test0()
+void TestFactory::Test0(int i)
 {
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     Tamaki2017 t;
     std::shared_ptr<TreeDecomposition> td = t.decompose(g);
 }
 
-void TestFactory::Test1()
+void TestFactory::Test1(int i)
 {
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     GraphGenerator::CompleteGrid(h, 2, 2);
@@ -55,7 +58,7 @@ void TestFactory::Test1()
     Main::subgraphsGraph(h, g);
 }
 
-void TestFactory::Test2()
+void TestFactory::Test2(int i)
 {
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     GraphGenerator::CompleteGrid(h, 2, 2);
@@ -66,7 +69,7 @@ void TestFactory::Test2()
     Main::subgraphsGraph(h, g);
 }
 
-void TestFactory::Test3()
+void TestFactory::Test3(int i)
 {
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     GraphGenerator::CompleteGrid(h, 2, 2);
@@ -77,13 +80,24 @@ void TestFactory::Test3()
     Main::subgraphsGraph(h, g);
 }
 
-void TestFactory::Test4()
+void TestFactory::Test4(int i)
 {
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     GraphGenerator::CompleteGrid(h, 2, 2);
     
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     GraphGenerator::EdgeProbabilityGraph(g, 128, 0.5);
+    
+    Main::subgraphsGraph(h, g);
+}
+
+void TestFactory::Test5(int i)
+{
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(g, i, i);
     
     Main::subgraphsGraph(h, g);
 }

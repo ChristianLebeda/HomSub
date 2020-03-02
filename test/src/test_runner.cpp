@@ -1,10 +1,3 @@
-//
-//  test_runner.cpp
-//  test
-//
-//  Created by Jonas Mortensen on 26/02/2020.
-//
-
 #include <iostream>
 #include "test/test_runner.h"
 #include "test/test_factory.h"
@@ -36,13 +29,27 @@ void TestRunner::RunTest(Test test)
 {
     std::cout << test.GetName() << ":\t";
     
-    auto start = std::chrono::high_resolution_clock::now();
-    test.Run();
-    auto stop = std::chrono::high_resolution_clock::now();
+    float prTestRuntime = settings_.GetPrTestRuntime();
+    float elapsedTime = 0;
+    float latestRuntime = 0;
+    int i = 1;
     
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    //Run test several times until met timelimit
+    while(elapsedTime < prTestRuntime) {
+        auto start = std::chrono::high_resolution_clock::now();
+        test.Run(i);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        float seconds = (float)duration.count() / (float)1000000;
+        
+        elapsedTime += seconds;
+        latestRuntime = seconds;
+        i++;
+    }
     
-    std::cout << (float)duration.count() / (float)1000000 << "s" << std::endl;
+    float timeResult = test.isIncremental() ? latestRuntime : elapsedTime / (float) i;
+    
+    std::cout << i << ", " << timeResult << "s" << std::endl;
 }
 
 void TestRunner::RunTest(int testNum)

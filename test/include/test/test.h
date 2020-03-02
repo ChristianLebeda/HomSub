@@ -4,14 +4,18 @@
 class Test
 {
 public:
-    Test(std::string name, std::string description, void (*run)()) : name_(name), description_(description), run_(run) {};
+    Test(std::string name, std::string description, bool incremental, void (*run)(int)) : name_(name), description_(description), run_(run), incremental_(incremental) {};
     std::string GetName();
     std::string GetDescription();
-    void Run();
+    bool isIncremental() {
+        return incremental_;
+    }
+    void Run(int i);
 private:
     std::string name_;
     std::string description_;
-    void (*run_)();
+    bool incremental_;
+    void (*run_)(int);
 };
 
 #endif /* test_h */

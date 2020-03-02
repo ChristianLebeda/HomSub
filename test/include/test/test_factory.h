@@ -15,11 +15,12 @@ public:
     static std::unique_ptr<Test> GetTest(int i);
     static int TestCount();
 private:
-    static void Test0();
-    static void Test1();
-    static void Test2();
-    static void Test3();
-    static void Test4();
+    static void Test0(int i);
+    static void Test1(int i);
+    static void Test2(int i);
+    static void Test3(int i);
+    static void Test4(int i);
+    static void Test5(int i);
 };
 
 #endif /* test_factory_h */

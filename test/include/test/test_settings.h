@@ -5,7 +5,6 @@
 
 class TestSettings {
 public:
-    TestSettings() : randomSeed_(-1), testMask_(-1), singleTest_(-1), runTestMask_(false), runSingleTest_(false), tws_(NULL) {};
     void SetRandomSeed(int seed) {
         randomSeed_ = seed;
     };
@@ -14,26 +13,32 @@ public:
     }
     void SetTWS(TreeWidthSolver *tws) {
         tws_ = tws;
-    }
+    };
     void SetTestMask(int mask) {
         testMask_ = mask;
         runTestMask_ = true;
     };
     int GetTestMask() {
         return testMask_;
-    }
+    };
     void SetSingleTest(int test) {
         singleTest_ = test;
         runSingleTest_ = true;
     };
     int GetSingleTest() {
         return singleTest_;
-    }
+    };
     bool ShouldRunTestMask(){
         return runTestMask_;
     };
     bool ShouldRunSingleTest(){
         return runSingleTest_;
+    };
+    void SetPrTestRuntime(float runtime) {
+        prTestRuntime_ = runtime;
+    };
+    float GetPrTestRuntime() {
+        return prTestRuntime_;
     }
 private:
     int randomSeed_;
@@ -41,6 +46,7 @@ private:
     int singleTest_;
     bool runTestMask_;
     bool runSingleTest_;
+    float prTestRuntime_;
     TreeWidthSolver *tws_;
 };
 

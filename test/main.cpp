@@ -68,6 +68,8 @@ int main(int argc, char *argv[])
         std::cout << "This should run the agorithm on files " << argMap["-run"] << std::endl;
     }
     
+    settings.SetPrTestRuntime(30);
+    
     TestRunner runner(settings);
     runner.Run();
     
