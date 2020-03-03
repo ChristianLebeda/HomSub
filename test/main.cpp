@@ -5,23 +5,78 @@
 #include <time.h>
 #include "homomorphism/tree_decomposition.h"
 #include "homomorphism/tamaki-2017.h"
+#include "test/test_runner.h"
+#include <unordered_map>
+#include "test/test_settings.h"
+#include "homomorphism/main.h"
 
 int main(int argc, char *argv[])
 {
-    //srand(time(NULL));
+    if(argc < 2) {
+        std::cout << "use -help" << std::endl;
+        return 1;
+    }
     
-    //std::shared_ptr<AdjacencyMatrixGraph> g = std::make_shared<AdjacencyMatrixGraph>(1);
-
-    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::testGraph();
-    Tamaki2017 t;
-    std::shared_ptr<TreeDecomposition> td = t.decompose(g);
+    std::unordered_map<std::string, std::string> argMap;
     
-    td->getGraph()->prettyPrint(std::cout);
-    //GraphGenerator gg;
-    //gg.RandomConnectedGraph(g, 10, 20);
+    TestSettings settings;
     
-    //g->prettyPrint(std::cout);
-    //std::shared_ptr<Graph> g = AdjacencyMatrixGraph::testGraph();
+    for(int i = 1; i < argc; i = i+2) {
+        std::string arg = argv[i];
+        if(arg.compare("-help") == 0) {
+            TestRunner::PrintHelp();
+        } else if(arg.compare("-list") == 0) {
+            TestRunner::PrintTests();
+        } else {
+            std::string value = argv[i+1];
+            argMap[arg] = value;
+        }
+    }
+    
+    
+    //Set TreeWidthSolver settings
+    if(argMap.count("-tws")) {
+        if(argMap["-tws"].compare("tamaki") == 0) {
+            Tamaki2017 t;
+            settings.SetTWS(&t);
+        }
+    } else {
+        Tamaki2017 t;
+        settings.SetTWS(&t);
+    }
+    
+    //Set random seed
+    int randomSeed = time(NULL);
+    if(argMap.count("-seed")) {
+        randomSeed = std::stoi(argMap["-seed"]);
+        settings.SetRandomSeed(randomSeed);
+    }
+    
+    //Set single test
+    if(argMap.count("-test")) {
+        int testNum = std::stoi(argMap["-test"]);
+        settings.SetSingleTest(testNum);
+    }
+    
+    //Set several tests
+    if(argMap.count("-mask")) {
+        int testMask = std::stoi(argMap["-mask"]);
+        settings.SetTestMask(testMask);
+    }
+    
+    if(argMap.count("-run")) {
+        std::cout << "This should run the agorithm on files " << argMap["-run"] << std::endl;
+    }
+    
+    if(argMap.count("-runtime")) {
+        int runtime = std::stoi(argMap["-runtime"]);
+        settings.SetPrTestRuntime(runtime);
+    } else {
+        settings.SetPrTestRuntime(10);
+    }
+    
+    TestRunner runner(settings);
+    runner.Run();
     
     return 0;
 }

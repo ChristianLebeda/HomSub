@@ -38,8 +38,8 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
     // write to outp[1]; read from inp[0]
     FILE* fin  = fdopen(inp[0], "r");
     FILE* fout = fdopen(outp[1], "w");
-
-    fprintf(fout, "p tw 4 4\n1 2\n2 3\n3 4\n4 1\n");
+    
+    fprintf(fout, "p tw 4 4\n1 2\n2 3\n3 4\n4 1");
 
     fclose(fout);
 
@@ -85,10 +85,8 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
                 i++;
             } else { //Read edge
                 if (!std::sscanf(line.c_str(), "%zd %zd", &u, &v)) {
-                    std::cout << line << std::endl;
                     return nullptr;
                 }
-
                 G->addEdge(u - 1, v - 1);
             }
 
