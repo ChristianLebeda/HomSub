@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 
-#include "graph.h"
-#include "tree_decomposition.h"
+#include "homomorphism/graph.h"
+#include "homomorphism/tree_decomposition.h"
 
 class TreeWidthSolver
 {

@@ -10,3 +10,6 @@ CTestTestfile.cmake
 Build
 .DS_Store
 test/main.cpp
+.idea/
+cmake-build-debug/
+

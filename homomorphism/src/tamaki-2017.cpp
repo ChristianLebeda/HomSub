@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 
+// TODO: Refactor to use new handler
 std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> g)
 {
     //Create pipes for read and write
@@ -17,40 +18,40 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
 
     //Fork
     switch (fork()) {
-    case -1:
-        perror("fork");
-        exit(EXIT_FAILURE);
+        case -1:
+            perror("fork");
+            exit(EXIT_FAILURE);
 
-    case 0:
-        //child Process
-        close( inp[0]); close(1); dup( inp[1]); close( inp[1]);
-        close(outp[1]); close(0); dup(outp[0]); close(outp[0]);
+        case 0:
+            //child Process
+            close( inp[0]); close(1); dup( inp[1]); close( inp[1]);
+            close(outp[1]); close(0); dup(outp[0]); close(outp[0]);
 
-        execlp("java", "-cp /Users/jonasmortensen/Documents/Thesis/SubgraphThesis/build/test/Debug -Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer", (const char*)NULL);
+            execlp("java", "-cp /Users/jonasmortensen/Documents/Thesis/SubgraphThesis/build/test/Debug -Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer", (const char*)NULL);
 
-        perror("exec");
-        exit(EXIT_FAILURE);
+            perror("exec");
+            exit(EXIT_FAILURE);
     }
-        
+
     // parent process
-    
+
     // write to outp[1]; read from inp[0]
     FILE* fin  = fdopen(inp[0], "r");
     FILE* fout = fdopen(outp[1], "w");
     
     fprintf(fout, "p tw 4 4\n1 2\n2 3\n3 4\n4 1");
-    
+
     fclose(fout);
-    
+
     char buffer [256];
     if (fin == NULL) perror ("Error opening file");
     else
     {
         size_t bagN, width, n;
         std::shared_ptr <EdgeSetGraph> G;
-        
+
         std::vector<std::unordered_set<size_t>> bags;
-        
+
         int i = -1;
         size_t u, v;
         while ( ! feof (fin) )
@@ -71,13 +72,13 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
                 while(!ss.eof())
                 {
                     ss >> temp;
-                    
+
                     if(std::stringstream(temp) >> util)
                     {
                         if(bagI < 0) bagI = util - 1;
                         else bags[bagI].insert(util);
                     }
-                    
+
                     temp="";
                 }
                 bagI = -1;
@@ -88,7 +89,7 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
                 }
                 G->addEdge(u - 1, v - 1);
             }
-            
+
         }
         fclose (fin);
         return std::make_shared<TreeDecomposition>(G, bags, width);

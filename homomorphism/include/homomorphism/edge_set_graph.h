@@ -1,11 +1,11 @@
-#ifndef EDGE_SET_GRAPH_H_
-#define EDGE_SET_GRAPH_H_
+#ifndef HOMOMORPHISM_EDGE_SET_GRAPH_H_
+#define HOMOMORPHISM_EDGE_SET_GRAPH_H_
 
 #include <set>
 #include <vector>
 #include <unordered_set>
 
-#include "graph.h"
+#include "homomorphism/graph.h"
 
 class EdgeSetGraph : public Graph {
 public:
