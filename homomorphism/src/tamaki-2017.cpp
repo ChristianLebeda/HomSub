@@ -8,6 +8,8 @@
 #include <sstream>
 #include <iostream>
 
+//TODO: This might no longer be needed, as it has been replaced by tamaki_runner
+
 // TODO: Refactor to use new handler
 std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> g)
 {
@@ -97,4 +99,17 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
         return std::make_shared<TreeDecomposition>(G, bags, width);
     }
     return nullptr;
+}
+
+std::vector<std::shared_ptr<TreeDecomposition>> Tamaki2017::decomposeAll(std::vector<std::shared_ptr<Graph>> graphs)
+{
+    std::vector<std::shared_ptr<TreeDecomposition>> output;
+
+    output.reserve(graphs.size());
+
+    for(auto& g : graphs) {
+        output.push_back(decompose(g));
+    }
+
+    return output;
 }
