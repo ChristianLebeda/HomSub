@@ -1,13 +1,13 @@
-#ifndef ADJACENCY_MATRIX_GRAPH_H_
-#define ADJACENCY_MATRIX_GRAPH_H_
+#ifndef HOMOMORPHISM_ADJACENCY_MATRIX_GRAPH_H_
+#define HOMOMORPHISM_ADJACENCY_MATRIX_GRAPH_H_
+
+#include "homomorphism/graph.h"
 
 #include <memory>
 #include <set>
 #include <string>
 #include <unordered_set>
 #include <vector>
-
-#include "graph.h"
 
 typedef std::vector<unsigned char> Matrix;
 
@@ -21,6 +21,7 @@ public:
     static std::shared_ptr<AdjacencyMatrixGraph> fromGraph6(std::string graph6);
     static std::shared_ptr<AdjacencyMatrixGraph> fromFile(std::string path);
     static std::shared_ptr<AdjacencyMatrixGraph> testGraph();
+    static std::shared_ptr<AdjacencyMatrixGraph> parseNautyFormat(const std::string& nauty, size_t n);
     
     void clear(size_t v);
     size_t vertCount();
@@ -31,7 +32,6 @@ public:
     bool isIsomorphic(std::shared_ptr<Graph> g);
     std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size);
 
-    
 private:
     size_t vertices_;
     size_t edges_;

@@ -2,7 +2,7 @@
 
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/tamaki-2017.h"
-#include "adjacency_matrix_graph.cpp"
+#include "homomorphism/adjacency_matrix_graph.h"
 
 std::shared_ptr<SpasmDecomposition> SpasmDecomposition::fromFile(std::string path) {
 	std::ifstream input(path);

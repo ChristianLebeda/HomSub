@@ -1,7 +1,7 @@
-#ifndef TAMAKI_2017_h
-#define TAMAKI_2017_h
+#ifndef HOMOMORPHISM_TAMAKI_2017_h
+#define HOMOMORPHISM_TAMAKI_2017_h
 
-#include "tree_width_solver.h"
+#include "homomorphism/tree_width_solver.h"
 
 #include <memory>
 #include <string>

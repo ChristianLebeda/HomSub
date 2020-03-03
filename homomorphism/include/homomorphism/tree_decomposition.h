@@ -1,7 +1,7 @@
-#ifndef TREE_DECOMPOSITION_h
-#define TREE_DECOMPOSITION_h
+#ifndef HOMOMORPHISM_TREE_DECOMPOSITION_h
+#define HOMOMORPHISM_TREE_DECOMPOSITION_h
 
-#include "edge_set_graph.h"
+#include "homomorphism/edge_set_graph.h"
 
 #include <fstream>
 #include <memory>

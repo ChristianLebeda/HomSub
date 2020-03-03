@@ -5,8 +5,6 @@
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
-#include <sstream>
-#include <sstream>
 
 #include "homomorphism/graph6helper.h"
 #include "homomorphism/helper_functions.h"
@@ -105,6 +103,32 @@ std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::testGraph()
     g->addEdge(1, 2);
     g->addEdge(2, 3);
     g->addEdge(3, 0);
+
+    return g;
+}
+
+std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::parseNautyFormat(const std::string& nauty, size_t n)
+{
+    std::shared_ptr<AdjacencyMatrixGraph> g = std::make_shared<AdjacencyMatrixGraph>(n);
+
+    size_t u = 0, v;
+
+    std::string tmp;
+
+    std::istringstream str(nauty);
+
+    while(u < n) {
+        if(!(str >> tmp)) {
+            std::cerr << "ERROR: Could not parse Nauty format n=" << n << ": " << nauty << std::endl;
+            break;
+        }
+        if(tmp == ";") {
+            u++;
+        } else {
+            std::istringstream(tmp) >> v;
+            g->addEdge(u, v);
+        }
+    }
 
     return g;
 }
