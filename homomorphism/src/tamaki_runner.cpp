@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "homomorphism/third_party.h"
+
 std::shared_ptr<TreeDecomposition> TamakiRunner::decompose(std::shared_ptr<Graph> g)
 {
     std::vector<std::shared_ptr<Graph>> gr(1, g);
@@ -27,7 +29,10 @@ std::vector<std::shared_ptr<TreeDecomposition>> TamakiRunner::decomposeAll(std::
     in.close();
 
     // TODO: Might want to increase heap for JVM
-    system("java TamakiRunner < tam.in > tam.out");
+    std::string path = ThirdParty::directory() + "tamaki";
+    std::string command = "java -cp " + path + " TamakiRunner < tam.in > tam.out";
+    system(command.c_str());
+
     remove("tam.in");
 
     std::string line;

@@ -13,3 +13,4 @@ test/main.cpp
 .idea/
 cmake-build-debug/
 third-party/
+homomorphism/include/homomorphism/third_party.h

@@ -8,6 +8,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "homomorphism/third_party.h"
+
 //TODO: This might no longer be needed, as it has been replaced by tamaki_runner
 
 // TODO: Refactor to use new handler
@@ -29,7 +31,9 @@ std::shared_ptr<TreeDecomposition> Tamaki2017::decompose(std::shared_ptr<Graph> 
             close( inp[0]); close(1); dup( inp[1]); close( inp[1]);
             close(outp[1]); close(0); dup(outp[0]); close(outp[0]);
 
-            execlp("java", "-cp /Users/jonasmortensen/Documents/Thesis/SubgraphThesis/build/test/Debug -Xmx30g -Xms30g -Xss10m", "tw.exact.MainDecomposer", (const char*)NULL);
+            std::string path = ThirdParty::directory() + "tamaki";
+            std::string args = "-cp " + path + " -Xmx30g -Xms30g -Xss10m";
+            execlp("java", args.c_str(), "tw.exact.MainDecomposer", (const char*)NULL);
 
             perror("exec");
             exit(EXIT_FAILURE);
