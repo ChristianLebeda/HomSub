@@ -8,4 +8,4 @@ configure_file(third_party.h.in ${PROJECT_SOURCE_DIR}/homomorphism/include/homom
 
 # Add sub directories
 add_subdirectory(homomorphism)
-add_subdirectory(test)
+add_subdirectory(experiments)
