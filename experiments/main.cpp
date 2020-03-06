@@ -5,6 +5,7 @@
 #include <time.h>
 #include "homomorphism/tree_decomposition.h"
 #include "homomorphism/tamaki-2017.h"
+#include "homomorphism/tamaki_runner.h"
 #include "experiments/test_runner.h"
 #include <unordered_map>
 #include "experiments/test_settings.h"
@@ -37,11 +38,11 @@ int main(int argc, char *argv[])
     //Set TreeWidthSolver settings
     if(argMap.count("-tws")) {
         if(argMap["-tws"].compare("tamaki") == 0) {
-            Tamaki2017 t;
+            TamakiRunner t;
             settings.SetTWS(&t);
         }
     } else {
-        Tamaki2017 t;
+        TamakiRunner t;
         settings.SetTWS(&t);
     }
     
