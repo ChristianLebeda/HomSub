@@ -1,8 +1,8 @@
 #ifndef TEST_RUNNER_h
 #define TEST_RUNNER_h
 
-#include "test/test.h"
-#include "test/test_settings.h"
+#include "experiments/test.h"
+#include "experiments/test_settings.h"
 class TestRunner
 {
 public:

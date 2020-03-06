@@ -26,30 +26,39 @@ std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
     }
 }
 
-std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H) {
+std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H, SpasmReducer& red) {
     std::vector<SpasmEntry> graphs{ {H, 1} };
     std::set<size_t>* parts = new std::set<size_t>[H->vertCount()]{};
     
     addPartitioningsRec(H, graphs, parts, 0, 0);
 
+    delete[] parts;
+
+    graphs = red.joinIsomorphic(graphs);
+
     auto lamb = [](SpasmEntry& g1, SpasmEntry& g2) -> bool
     {
         return g1.graph->vertCount() == g2.graph->vertCount() ?
-            g1.graph->edgeCount() > g2.graph->edgeCount() :
-            g1.graph->vertCount() > g2.graph->vertCount();
+               g1.graph->edgeCount() > g2.graph->edgeCount() :
+               g1.graph->vertCount() > g2.graph->vertCount();
     };
+
     sort(graphs.begin(), graphs.end(), lamb);
 
-    delete[] parts;
-
-    graphs = joinIsomorphic(graphs);
-
-    return std::make_shared<Spasm>(graphs);
+    return std::make_shared<Spasm>(graphs, H);
 }
 
 std::vector<SpasmEntry> Spasm::joinIsomorphic(std::vector<SpasmEntry> graphs) {
     std::vector<SpasmEntry> joined;
     std::vector<bool> used(graphs.size(), false);
+
+    auto lamb = [](SpasmEntry& g1, SpasmEntry& g2) -> bool
+    {
+        return g1.graph->vertCount() == g2.graph->vertCount() ?
+               g1.graph->edgeCount() > g2.graph->edgeCount() :
+               g1.graph->vertCount() > g2.graph->vertCount();
+    };
+    sort(graphs.begin(), graphs.end(), lamb);
 
     size_t sizev, sizee;
     int coef;
@@ -132,17 +141,12 @@ void Spasm::addPartitioningsRec(std::shared_ptr<Graph> H, std::vector<SpasmEntry
 
 std::shared_ptr<Spasm> Spasm::testSpasm()
 {
-    std::vector<SpasmEntry> vec;
-    return std::make_shared<Spasm>(vec);
+    //TODO: Add testspasm
+    return nullptr;
 }
 
 std::shared_ptr<Graph> Spasm::graph() {
-    if (size()) {
-        return graphs_[0].graph;
-    }
-    else {
-        return nullptr;
-    }
+    return g_;
 }
 
 size_t Spasm::size()
@@ -166,6 +170,10 @@ std::shared_ptr<Spasm> Spasm::deserialize(std::istream& input) {
 
     int coef;
     std::string g6;
+
+    getline(input, g6);
+    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromGraph6(g6);
+
     for (size_t i = 0; i < size; i++)
     {
         getline(input, line);
@@ -177,7 +185,7 @@ std::shared_ptr<Spasm> Spasm::deserialize(std::istream& input) {
         graphs.push_back({ AdjacencyMatrixGraph::fromGraph6(g6), coef });
     }
 
-    return std::make_shared<Spasm>(graphs);
+    return std::make_shared<Spasm>(graphs, g);
 }
 
 std::string Spasm::serialize() {
@@ -188,6 +196,8 @@ std::string Spasm::serialize() {
     std::ostringstream str;
     str << "sp " << graphs_.size() << " " << graphs_[0].graph->vertCount() << " "
         << graphs_[0].graph->edgeCount() << "\n";
+
+    str << g_->toGraph6() << "\n";
 
     std::vector<SpasmEntry>::iterator it = graphs_.begin();
 

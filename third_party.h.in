@@ -1,0 +1,14 @@
+#ifndef HOMOMORPHISM_THIRD_PARTY_H
+#define HOMOMORPHISM_THIRD_PARTY_H
+
+#define THIRD_PARTY_DIRECTORY @THIRD_PARTY_PATH@
+
+class ThirdParty {
+public:
+    static std::string directory() {
+        return THIRD_PARTY_DIRECTORY;
+    }
+};
+
+
+#endif

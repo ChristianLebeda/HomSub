@@ -1,6 +1,8 @@
 #ifndef HOMOMORPHISM_NAUTY_H
 #define HOMOMORPHISM_NAUTY_H
 
+#include "homomorphism/spasm_reducer.h"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -18,11 +20,11 @@ struct CanonicalEntry
     }
 };
 
-class Nauty
+class Nauty : public SpasmReducer
 {
 public:
-    static void Test(std::vector<SpasmEntry> spasm);
-    static std::vector<SpasmEntry> joinIsomorphic(const std::vector<SpasmEntry>& spasm);
+    void Test(std::vector<SpasmEntry> spasm);
+    std::vector<SpasmEntry> joinIsomorphic(const std::vector<SpasmEntry>& spasm);
 };
 
 

@@ -6,14 +6,14 @@
 //
 
 #include <stdio.h>
-#include "test/test_factory.h"
-#include "test/test.h"
+#include "experiments/test_factory.h"
+#include "experiments/test.h"
 #include "homomorphism/tamaki-2017.h"
 #include "homomorphism/tree_decomposition.h"
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/main.h"
-#include "test/graph_generator.h"
+#include "experiments/graph_generator.h"
 #include <memory>
 
 std::unique_ptr<Test> TestFactory::GetTest(int i) {

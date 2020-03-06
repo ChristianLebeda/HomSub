@@ -1,13 +1,14 @@
 #include <iostream>
 #include "homomorphism/graph.h"
 #include "homomorphism/adjacency_matrix_graph.h"
-#include "test/graph_generator.h"
+#include "experiments/graph_generator.h"
 #include <time.h>
 #include "homomorphism/tree_decomposition.h"
 #include "homomorphism/tamaki-2017.h"
-#include "test/test_runner.h"
+#include "homomorphism/tamaki_runner.h"
+#include "experiments/test_runner.h"
 #include <unordered_map>
-#include "test/test_settings.h"
+#include "experiments/test_settings.h"
 #include "homomorphism/main.h"
 
 int main(int argc, char *argv[])
@@ -16,7 +17,7 @@ int main(int argc, char *argv[])
         std::cout << "use -help" << std::endl;
         return 1;
     }
-    
+
     std::unordered_map<std::string, std::string> argMap;
     
     TestSettings settings;
@@ -37,11 +38,11 @@ int main(int argc, char *argv[])
     //Set TreeWidthSolver settings
     if(argMap.count("-tws")) {
         if(argMap["-tws"].compare("tamaki") == 0) {
-            Tamaki2017 t;
+            TamakiRunner t;
             settings.SetTWS(&t);
         }
     } else {
-        Tamaki2017 t;
+        TamakiRunner t;
         settings.SetTWS(&t);
     }
     

@@ -44,6 +44,39 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
 	return std::make_shared<SpasmDecomposition>(decomps, sp->graph());
 }
 
+std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shared_ptr<Spasm> sp, TreeWidthSolver& tws) {
+
+    std::vector<std::shared_ptr<Graph>> graphs;
+
+    for(size_t i = 0; i < sp->size(); i++) {
+        graphs.push_back((*sp)[i].graph);
+    }
+
+    std::vector<std::shared_ptr<TreeDecomposition>> decomps = tws.decomposeAll(graphs);
+
+    if(decomps.size() != sp->size()) {
+        std::cerr << "ERROR: Different sizes of tree decompositions("
+            << decomps.size() << ") and spasm(" << sp->size() << ")" << std::endl;
+        return nullptr;
+    }
+
+    std::vector<SpasmDecompositionEntry> entries(sp->size());
+
+    for (size_t i = 0; i < sp->size(); i++)
+    {
+        auto old = (*sp)[i];
+
+        SpasmDecompositionEntry spe;
+        spe.graph = old.graph;
+        spe.coefficient = old.coefficient;
+        spe.decomposition = decomps[i];
+
+        entries[i] = spe;
+    }
+
+    return std::make_shared<SpasmDecomposition>(entries, sp->graph());
+}
+
 std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream& input) {
 	std::string line;
 	do {
@@ -56,6 +89,10 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream
 
 	int coef;
 	std::string g6;
+
+    getline(input, g6);
+    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromGraph6(g6);
+
 	for (size_t i = 0; i < size; i++)
 	{
 		getline(input, line);
@@ -76,7 +113,7 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream
 		graphs[i].decomposition = TreeDecomposition::parseTd(input);
 	}
 
-	return std::make_shared<SpasmDecomposition>(graphs, graphs[0].graph);
+	return std::make_shared<SpasmDecomposition>(graphs, g);
 }
 
 std::string SpasmDecomposition::serialize() {
@@ -87,6 +124,8 @@ std::string SpasmDecomposition::serialize() {
 	std::ostringstream str;
 	str << "sp " << graphDecomps_.size() << " " << graph_->vertCount() << " "
 		<< graph_->edgeCount() << "\n";
+
+	str << graph_->toGraph6() << "\n";
 
 	std::vector<SpasmDecompositionEntry>::iterator it = graphDecomps_.begin();
 
