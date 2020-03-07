@@ -26,6 +26,7 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
 	Tamaki2017 t;
 	
 	std::vector<SpasmDecompositionEntry> decomps(sp->size());
+	size_t width = 0;
 	
 	for (size_t i = 0; i < sp->size(); i++)
 	{
@@ -37,11 +38,14 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
 		spe.graph = next.graph;
 		spe.coefficient = next.coefficient;
 		spe.decomposition = td;
+        if(width < spe.decomposition->getWidth()) {
+            width = spe.decomposition->getWidth();
+        }
 
 		decomps[i] = spe;
 	}
 
-	return std::make_shared<SpasmDecomposition>(decomps, sp->graph());
+	return std::make_shared<SpasmDecomposition>(decomps, sp->graph(), width);
 }
 
 std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shared_ptr<Spasm> sp, TreeWidthSolver& tws) {
@@ -61,6 +65,7 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
     }
 
     std::vector<SpasmDecompositionEntry> entries(sp->size());
+    size_t width = 0;
 
     for (size_t i = 0; i < sp->size(); i++)
     {
@@ -70,11 +75,14 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shar
         spe.graph = old.graph;
         spe.coefficient = old.coefficient;
         spe.decomposition = decomps[i];
+        if(width < spe.decomposition->getWidth()) {
+            width = spe.decomposition->getWidth();
+        }
 
         entries[i] = spe;
     }
 
-    return std::make_shared<SpasmDecomposition>(entries, sp->graph());
+    return std::make_shared<SpasmDecomposition>(entries, sp->graph(), width);
 }
 
 std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream& input) {
@@ -83,8 +91,8 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream
 		if (!std::getline(input, line)) return nullptr;
 	} while (line[0] == 'c');
 
-	size_t size;
-	if (!std::sscanf(line.c_str(), "sp %zd", &size)) return nullptr;
+	size_t size, n, m, w;
+	if (!std::sscanf(line.c_str(), "sp %zd %zd %zd %zd", &size, &n, &m, &w)) return nullptr;
 	std::vector<SpasmDecompositionEntry> graphs;
 
 	int coef;
@@ -113,17 +121,18 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream
 		graphs[i].decomposition = TreeDecomposition::parseTd(input);
 	}
 
-	return std::make_shared<SpasmDecomposition>(graphs, g);
+	return std::make_shared<SpasmDecomposition>(graphs, g, w);
 }
 
 std::string SpasmDecomposition::serialize() {
 	// Current format: 
-	// First line: spdc [c] [n] [m]
+	// First line: spdc [c] [n] [m] [w]
 	// c is the number of graphs
 	// n and m are number of vertices and edges of original graph
+	// w is the maximum treewidth of all decompositions
 	std::ostringstream str;
 	str << "sp " << graphDecomps_.size() << " " << graph_->vertCount() << " "
-		<< graph_->edgeCount() << "\n";
+		<< graph_->edgeCount() << width_ << "\n";
 
 	str << graph_->toGraph6() << "\n";
 
@@ -157,4 +166,8 @@ std::shared_ptr<Graph> SpasmDecomposition::graph() {
 
 SpasmDecompositionEntry& SpasmDecomposition::operator[](std::size_t position) {
 	return graphDecomps_[position];
+}
+
+size_t SpasmDecomposition::width() {
+    return width_;
 }
