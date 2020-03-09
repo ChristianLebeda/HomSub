@@ -12,6 +12,7 @@ public:
     void NotifyTestStart(std::string name);
     void NotifyTestEnd(float duration);
     void NotifyTestSubstep(SubStep step, std::string note, float duration);
+    void NotifyTestAssert(std::string note,bool passed);
 private:
     std::ostream& stream_;
     std::string currentTestName_;

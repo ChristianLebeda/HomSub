@@ -16,7 +16,7 @@
 #include "experiments/test_settings.h"
 #include <memory>
 
-#define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::high_resolution_clock::now();auto stop = start;SubStep step;
+#define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::high_resolution_clock::now();auto stop = start;SubStep step;long exp = 0;
 
 #define END_TEST logger.NotifyTestEnd(duration);
 
@@ -24,6 +24,9 @@
 
 #define SUBSTEP_END(note) stop = std::chrono::high_resolution_clock::now();duration = microSecondDifferene(start, stop);logger.NotifyTestSubstep(step, note, duration);
 
+#define ASSERT_START(expected) exp = expected;
+
+#define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
 
 std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
     switch (i) {
@@ -32,6 +35,8 @@ std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
             break;
         case 2:
             return Test2;
+        case 3:
+            return Test3;
         default:
             return nullptr;
     }
@@ -81,6 +86,18 @@ void TestFactory::Test2(TestSettings settings, TestLogger logger)
     Main::spasmFromGraph(h);
     SUBSTEP_END("Method4");
     
+    END_TEST;
+}
+
+void TestFactory::Test3(TestSettings settings, TestLogger logger) {
+    BEGIN_TEST("SquareInSquareIsCorrect");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(g, 2, 2);
+    ASSERT_START(1);
+    long result = Main::subgraphsGraph(h, g);
+    ASSERT_END("Result", result)
     END_TEST;
 }
 
