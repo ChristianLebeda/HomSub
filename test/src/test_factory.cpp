@@ -33,7 +33,7 @@ std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
         case 2:
             return Test2;
         default:
-            return Test1;
+            return nullptr;
     }
 }
 
@@ -43,7 +43,7 @@ int TestFactory::TestCount() {
 
 void TestFactory::Test1(TestSettings settings, TestLogger logger)
 {
-    BEGIN_TEST("Decompose Square");
+    BEGIN_TEST("DecomposeSquare");
     
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     GraphGenerator::CompleteGrid(h, 2, 2);
@@ -63,7 +63,7 @@ void TestFactory::Test2(TestSettings settings, TestLogger logger)
 {
     BEGIN_TEST("SpasmFromSquare");
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
+    GraphGenerator::CompleteGrid(h, 2, 2); //Should h be initialised between steps?
     
     SUBSTEP_START(SubStep::CREATE_SPASM);
     Main::spasmFromGraph(h);

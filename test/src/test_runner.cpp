@@ -27,7 +27,9 @@ void TestRunner::RunTestFromMask(int mask)
 void TestRunner::RunTest(int testNum)
 {
     std::function<void(TestSettings, TestLogger)> t = TestFactory::GetTest(testNum);
-    t(settings_, logger_);
+    if(t) {
+        t(settings_, logger_);
+    }
 }
 
 void TestRunner::PrintHelp()

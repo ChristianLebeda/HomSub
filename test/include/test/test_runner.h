@@ -14,8 +14,6 @@ private:
     TestLogger logger_;
     void RunTestFromMask(int mask);
     void RunTest(int testNum);
-    
-    float lastTimeCheck;
 };
 
 #endif /* test_runner_h */
