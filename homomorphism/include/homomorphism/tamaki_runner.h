@@ -1,16 +1,12 @@
-#ifndef HOMOMORPHISM_TAMAKI_2017_h
-#define HOMOMORPHISM_TAMAKI_2017_h
+#ifndef HOMOMORPHISM_TAMAKIRUNNER_H
+#define HOMOMORPHISM_TAMAKIRUNNER_H
 
 #include "homomorphism/tree_width_solver.h"
 
-#include <memory>
-#include <string>
-
-class Tamaki2017 : public TreeWidthSolver
-{
+class TamakiRunner : public TreeWidthSolver {
 public:
     std::shared_ptr<TreeDecomposition> decompose(std::shared_ptr<Graph> g) override;
     std::vector<std::shared_ptr<TreeDecomposition>> decomposeAll(std::vector<std::shared_ptr<Graph>> g) override;
 };
 
-#endif 
+#endif

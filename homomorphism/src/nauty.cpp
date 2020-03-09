@@ -8,6 +8,7 @@
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/pipe_handler.h"
+#include "homomorphism/third_party.h"
 
 std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spasm) {
     std::ostringstream str;
@@ -32,7 +33,9 @@ std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spa
     graphs << str.str();
     graphs.close();
 
-    system("./dreadnaut < nauty.in > nauty.out");
+    std::string command = ThirdParty::directory() + "nauty/dreadnaut < nauty.in > nauty.out";
+    system(command.c_str());
+
     remove("nauty.in");
 
     std::string line;
@@ -49,15 +52,15 @@ std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spa
     std::vector<SpasmEntry> joined;
 
     std::string last;
-    SpasmEntry next = SpasmEntry();
+    SpasmEntry* next = nullptr;
 
     for(auto& a : canons) {
         if(last != a.graph) {
             last = a.graph;
-            next = {AdjacencyMatrixGraph::parseNautyFormat(a.graph, a.n), a.coefficient};
-            joined.push_back(next);
+            joined.push_back({AdjacencyMatrixGraph::parseNautyFormat(a.graph, a.n), a.coefficient});
+            next = &joined.back();
         } else {
-            next.coefficient += a.coefficient;
+            next->coefficient += a.coefficient;
         }
     }
 

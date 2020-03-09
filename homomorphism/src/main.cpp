@@ -2,10 +2,13 @@
 
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/helper_functions.h"
+#include "homomorphism/nauty.h"
+#include "homomorphism/tamaki_runner.h"
 #include "homomorphism/treewidth_subgraph_counter.h"
 
 std::shared_ptr<Spasm> Main::spasmFromGraph(std::shared_ptr<Graph> h) {
-	return Spasm::createSpasm(h);
+    Nauty n;
+	return Spasm::createSpasm(h, n);
 }
 
 std::shared_ptr<Spasm> Main::spasmFromGraph(std::string filename) {
@@ -23,7 +26,8 @@ std::shared_ptr<SpasmDecomposition> Main::decomposedSpasmFromGraph(std::string f
 }
 
 std::shared_ptr<SpasmDecomposition> Main::decomposedSpasmFromSpasm(std::shared_ptr<Spasm> sp) {
-	return SpasmDecomposition::decomposeSpasm(sp);
+    TamakiRunner tr;
+    return SpasmDecomposition::decomposeSpasm(sp, tr);
 }
 
 std::shared_ptr<SpasmDecomposition> Main::decomposedSpasmFromSpasm(std::string filename) {

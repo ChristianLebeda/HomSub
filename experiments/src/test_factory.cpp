@@ -6,14 +6,14 @@
 //
 
 #include <stdio.h>
-#include "test/test_factory.h"
+#include "experiments/test_factory.h"
 #include "homomorphism/tamaki-2017.h"
 #include "homomorphism/tree_decomposition.h"
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/main.h"
-#include "test/graph_generator.h"
-#include "test/test_settings.h"
+#include "experiments/graph_generator.h"
+#include "experiments/test_settings.h"
 #include <memory>
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::high_resolution_clock::now();auto stop = start;SubStep step;

@@ -8,8 +8,10 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 Build
+build
 .DS_Store
 test/main.cpp
 .idea/
 cmake-build-debug/
-
+third-party/
+homomorphism/include/homomorphism/third_party.h
