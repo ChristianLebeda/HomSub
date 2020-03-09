@@ -52,15 +52,15 @@ std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spa
     std::vector<SpasmEntry> joined;
 
     std::string last;
-    SpasmEntry next = SpasmEntry();
+    SpasmEntry* next = nullptr;
 
     for(auto& a : canons) {
         if(last != a.graph) {
             last = a.graph;
-            next = {AdjacencyMatrixGraph::parseNautyFormat(a.graph, a.n), a.coefficient};
-            joined.push_back(next);
+            joined.push_back({AdjacencyMatrixGraph::parseNautyFormat(a.graph, a.n), a.coefficient});
+            next = &joined.back();
         } else {
-            next.coefficient += a.coefficient;
+            next->coefficient += a.coefficient;
         }
     }
 
