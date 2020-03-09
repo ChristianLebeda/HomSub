@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
         std::string arg = argv[i];
         if(arg.compare("-help") == 0) {
             TestRunner::PrintHelp();
+            return 0;
         } else {
             std::string value = argv[i+1];
             argMap[arg] = value;

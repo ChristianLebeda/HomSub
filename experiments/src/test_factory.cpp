@@ -90,14 +90,25 @@ void TestFactory::Test2(TestSettings settings, TestLogger logger)
 }
 
 void TestFactory::Test3(TestSettings settings, TestLogger logger) {
-    BEGIN_TEST("SquareInSquareIsCorrect");
+    BEGIN_TEST("SquareSanity");
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    
+    GraphGenerator::CompleteGrid(h, 2, 2);
     GraphGenerator::CompleteGrid(g, 2, 2);
     ASSERT_START(1);
     long result = Main::subgraphsGraph(h, g);
-    ASSERT_END("Result", result)
+    ASSERT_END("InSquare", result)
+    
+    GraphGenerator::CompleteGrid(g, 3, 3);
+    ASSERT_START(4);
+    result = Main::subgraphsGraph(h, g);
+    ASSERT_END("In3x3", result)
+    
+    GraphGenerator::CompleteGrid(g, 4, 3);
+    ASSERT_START(6);
+    result = Main::subgraphsGraph(h, g);
+    ASSERT_END("In4x3", result)
     END_TEST;
 }
 

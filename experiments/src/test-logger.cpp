@@ -19,14 +19,18 @@ void TestLogger::NotifyTestEnd(float duration)
 }
 
 void TestLogger::NotifyTestSubstep(SubStep step, std::string note, float duration) {
-    stream_ << subStepToString(step) << "," << note << "," << duration << std::endl;
+    if(note.length() > 0) {
+        stream_ << subStepToString(step) << " - " << note << ": " << duration << std::endl;
+    } else {
+        stream_ << subStepToString(step) << ": " << duration << std::endl;
+    }
 }
 
 void TestLogger::NotifyTestAssert(std::string note,bool passed) {
     if(passed) {
-        stream_ << note << ": PASSED";
+        stream_ << note << ": PASSED" << std::endl;
     } else {
-        stream_ << note << ": FAILED";
+        stream_ << note << ": FAILED" << std::endl;
     }
 }
 
