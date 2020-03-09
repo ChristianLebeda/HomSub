@@ -7,7 +7,7 @@ rm -fr tmp-third-build
 cp -r nauty tmp-third-build
 cd tmp-third-build
 ./configure
-make
+make dreadnaut
 cp dreadnaut ../third-party/nauty
 cd ..
 
