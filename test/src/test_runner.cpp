@@ -1,7 +1,6 @@
 #include <iostream>
 #include "test/test_runner.h"
 #include "test/test_factory.h"
-#include "test/test.h"
 #include <chrono>
 
 
@@ -25,39 +24,10 @@ void TestRunner::RunTestFromMask(int mask)
     }
 }
 
-void TestRunner::RunTest(Test test)
-{
-    std::cout << test.GetName() << ":\t";
-    
-    float prTestRuntime = (float) settings_.GetPrTestRuntime();
-    float elapsedTime = 0;
-    float latestRuntime = 0;
-    int i = 1;
-    
-    //Run test several times until met timelimit
-    while(elapsedTime < prTestRuntime) {
-        auto start = std::chrono::high_resolution_clock::now();
-        test.Run(i);
-        auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        float seconds = (float)duration.count() / (float)1000000;
-        
-        elapsedTime += seconds;
-        latestRuntime = seconds;
-        i++;
-    }
-    
-    float timeResult = test.isIncremental() ? latestRuntime : elapsedTime / (float) i;
-    
-    std::cout << i << ", " << timeResult << "s" << std::endl;
-}
-
 void TestRunner::RunTest(int testNum)
 {
-    std::unique_ptr<Test> t = TestFactory::GetTest(testNum);
-    if(t) {
-        RunTest(*t);
-    }
+    std::function<void(TestSettings, TestLogger)> t = TestFactory::GetTest(testNum);
+    t(settings_, logger_);
 }
 
 void TestRunner::PrintHelp()
@@ -71,13 +41,4 @@ void TestRunner::PrintHelp()
     std::cout << "-run  h g | Count occurences of pattern h in host g" << std::endl;
     
     std::cout << std::endl;
-}
-
-void TestRunner::PrintTests()
-{
-    std::cout << "Tests:" << std::endl;
-    for(int i = 0; i < TestFactory::TestCount(); i++) {
-        std::shared_ptr<Test> t = TestFactory::GetTest(i);
-        std::cout << i << ": " << t->GetName() << ", " << t->GetDescription() << std::endl;
-    }
 }

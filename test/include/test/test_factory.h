@@ -7,20 +7,19 @@
 
 #ifndef TEST_FACTORY_h
 #define TEST_FACTORY_h
-#include "test/test.h"
+#include "test/test_settings.h"
+#include "test/test-logger.h"
 #include <memory>
+
 class TestFactory
 {
 public:
-    static std::unique_ptr<Test> GetTest(int i);
+    static std::function<void(TestSettings, TestLogger)> GetTest(int i);
     static int TestCount();
 private:
-    static void Test0(int i);
-    static void Test1(int i);
-    static void Test2(int i);
-    static void Test3(int i);
-    static void Test4(int i);
-    static void Test5(int i);
+    static void Test1(TestSettings settings, TestLogger logger);
+    static void Test2(TestSettings settings, TestLogger logger);
+    static int microSecondDifferene(std::chrono::time_point<std::chrono::high_resolution_clock> start, std::chrono::time_point<std::chrono::high_resolution_clock> stop);
 };
 
 #endif /* test_factory_h */

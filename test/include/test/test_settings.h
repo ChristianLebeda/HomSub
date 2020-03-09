@@ -34,11 +34,11 @@ public:
     bool ShouldRunSingleTest(){
         return runSingleTest_;
     };
-    void SetPrTestRuntime(float runtime) {
-        prTestRuntime_ = runtime;
+    void SetPrTestTime(float time) {
+        prTestTime_ = time;
     };
-    int GetPrTestRuntime() {
-        return prTestRuntime_;
+    int GetPrTestTime() {
+        return prTestTime_;
     }
 private:
     int randomSeed_;
@@ -46,7 +46,7 @@ private:
     int singleTest_;
     bool runTestMask_;
     bool runSingleTest_;
-    int prTestRuntime_;
+    int prTestTime_;
     TreeWidthSolver *tws_;
 };
 
