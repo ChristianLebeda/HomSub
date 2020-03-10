@@ -7,101 +7,111 @@
 
 #include <stdio.h>
 #include "experiments/test_factory.h"
-#include "experiments/test.h"
 #include "homomorphism/tamaki-2017.h"
 #include "homomorphism/tree_decomposition.h"
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/main.h"
 #include "experiments/graph_generator.h"
+#include "experiments/test_settings.h"
 #include <memory>
 
-std::unique_ptr<Test> TestFactory::GetTest(int i) {
+#define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::high_resolution_clock::now();auto stop = start;SubStep step;long exp = 0;
+
+#define END_TEST logger.NotifyTestEnd(duration);
+
+#define SUBSTEP_START(substep) start = std::chrono::high_resolution_clock::now();step = substep;
+
+#define SUBSTEP_END(note) stop = std::chrono::high_resolution_clock::now();duration = microSecondDifferene(start, stop);logger.NotifyTestSubstep(step, note, duration);
+
+#define ASSERT_START(expected) exp = expected;
+
+#define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
+
+std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
     switch (i) {
-        case 0: {
-            return std::unique_ptr<Test>(new Test("Square in grid2", "", false, Test0));
-        }
-        case 1: {
-            return std::unique_ptr<Test>(new Test("Square in grid4", "", false, Test1));
-        }
-        case 2: {
-            return std::unique_ptr<Test>(new Test("Square in grid8", "", false, Test2));
-        }
-        case 3: {
-            return std::unique_ptr<Test>(new Test("Square in grid16", "", false, Test3));
-        }
-        case 4: {
-            return std::unique_ptr<Test>(new Test("Square in coinFlip128", "", false, Test4));
-        }
-        case 5: {
-            return std::unique_ptr<Test>(new Test("Square in nGrid", "", true, Test5));
-        }
+        case 1:
+            return Test1;
+            break;
+        case 2:
+            return Test2;
+        case 3:
+            return Test3;
+        default:
+            return nullptr;
     }
-    return nullptr;
-}
-
-void TestFactory::Test0(int i)
-{
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    Tamaki2017 t;
-    std::shared_ptr<TreeDecomposition> td = t.decompose(g);
-}
-
-void TestFactory::Test1(int i)
-{
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(g, 4, 4);
-    
-    Main::subgraphsGraph(h, g);
-}
-
-void TestFactory::Test2(int i)
-{
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(g, 8, 8);
-    
-    Main::subgraphsGraph(h, g);
-}
-
-void TestFactory::Test3(int i)
-{
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(g, 16, 16);
-    
-    Main::subgraphsGraph(h, g);
-}
-
-void TestFactory::Test4(int i)
-{
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::EdgeProbabilityGraph(g, 128, 0.5);
-    
-    Main::subgraphsGraph(h, g);
-}
-
-void TestFactory::Test5(int i)
-{
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(g, i, i);
-    
-    Main::subgraphsGraph(h, g);
 }
 
 int TestFactory::TestCount() {
-    return 5;
+    return 0;
+}
+
+void TestFactory::Test1(TestSettings settings, TestLogger logger)
+{
+    BEGIN_TEST("DecomposeSquare");
+    
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    
+    SUBSTEP_START(SubStep::CREATE_SPASM);
+    auto spasm = Main::spasmFromGraph(h);
+    SUBSTEP_END("");
+    
+    SUBSTEP_START(SubStep::DECOMPOSE_SPASM);
+    Main::decomposedSpasmFromSpasm(spasm);
+    SUBSTEP_END("");
+    
+    END_TEST;
+}
+
+void TestFactory::Test2(TestSettings settings, TestLogger logger)
+{
+    BEGIN_TEST("SpasmFromSquare");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2); //Should h be initialised between steps?
+    
+    SUBSTEP_START(SubStep::CREATE_SPASM);
+    Main::spasmFromGraph(h);
+    SUBSTEP_END("Method1");
+    
+    SUBSTEP_START(SubStep::CREATE_SPASM);
+    Main::spasmFromGraph(h);
+    SUBSTEP_END("Method2");
+    
+    SUBSTEP_START(SubStep::CREATE_SPASM);
+    Main::spasmFromGraph(h);
+    SUBSTEP_END("Method3");
+    
+    SUBSTEP_START(SubStep::CREATE_SPASM);
+    Main::spasmFromGraph(h);
+    SUBSTEP_END("Method4");
+    
+    END_TEST;
+}
+
+void TestFactory::Test3(TestSettings settings, TestLogger logger) {
+    BEGIN_TEST("SquareSanity");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    GraphGenerator::CompleteGrid(g, 2, 2);
+    ASSERT_START(1);
+    long result = Main::subgraphsGraph(h, g);
+    ASSERT_END("InSquare", result)
+    
+    GraphGenerator::CompleteGrid(g, 3, 3);
+    ASSERT_START(4);
+    result = Main::subgraphsGraph(h, g);
+    ASSERT_END("In3x3", result)
+    
+    GraphGenerator::CompleteGrid(g, 4, 3);
+    ASSERT_START(6);
+    result = Main::subgraphsGraph(h, g);
+    ASSERT_END("In4x3", result)
+    END_TEST;
+}
+
+int TestFactory::microSecondDifferene(std::chrono::time_point<std::chrono::high_resolution_clock> start, std::chrono::time_point<std::chrono::high_resolution_clock> stop) {
+    return std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 }

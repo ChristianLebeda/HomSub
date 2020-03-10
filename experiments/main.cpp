@@ -26,8 +26,7 @@ int main(int argc, char *argv[])
         std::string arg = argv[i];
         if(arg.compare("-help") == 0) {
             TestRunner::PrintHelp();
-        } else if(arg.compare("-list") == 0) {
-            TestRunner::PrintTests();
+            return 0;
         } else {
             std::string value = argv[i+1];
             argMap[arg] = value;
@@ -69,14 +68,16 @@ int main(int argc, char *argv[])
         std::cout << "This should run the agorithm on files " << argMap["-run"] << std::endl;
     }
     
-    if(argMap.count("-runtime")) {
-        int runtime = std::stoi(argMap["-runtime"]);
-        settings.SetPrTestRuntime(runtime);
+    if(argMap.count("-time")) {
+        int time = std::stoi(argMap["-time"]);
+        settings.SetPrTestTime(time);
     } else {
-        settings.SetPrTestRuntime(10);
+        settings.SetPrTestTime(10);
     }
     
-    TestRunner runner(settings);
+    TestLogger logger(std::cout);
+    
+    TestRunner runner(settings, logger);
     runner.Run();
     
     return 0;
