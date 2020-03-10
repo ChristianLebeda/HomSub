@@ -1,7 +1,7 @@
 #include "homomorphism/vector_allocator.h"
 
-void VectorAllocator::setSize(size_t n, size_t maxb) {
-    sizes_ = std::vector<size_t>(maxb + 1);
+void VectorAllocator::setSize(size_t n, size_t width) {
+    sizes_ = std::vector<size_t>(width + 2);
 
     sizes_[0] = 1;
 
