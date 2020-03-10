@@ -14,7 +14,7 @@
 
 #define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
 
-std::function<void(TestSettings, TestLogger)> SanityTestFactory::getTest(TestCase t) {
+std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestCase t) {
     switch (t) {
         case SQUARE_PATTERN:
             return squarePatternTest;
@@ -27,12 +27,12 @@ std::function<void(TestSettings, TestLogger)> SanityTestFactory::getTest(TestCas
     }
 }
 
-std::vector<std::function<void(TestSettings, TestLogger)>> SanityTestFactory::allTests() {
+std::vector<std::function<void(TestSettings&, TestLogger&)>> SanityTestFactory::allTests() {
     //TODO: Needs to add manually currently
-    return std::vector<std::function<void(TestSettings, TestLogger)>> {squarePatternTest, calculationRemapperTest};
+    return std::vector<std::function<void(TestSettings&, TestLogger&)>> {squarePatternTest, calculationRemapperTest};
 }
 
-void SanityTestFactory::squarePatternTest(TestSettings settings, TestLogger logger) {
+void SanityTestFactory::squarePatternTest(TestSettings& settings, TestLogger& logger) {
     BEGIN_TEST("SquareSanity", long);
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
@@ -55,17 +55,17 @@ void SanityTestFactory::squarePatternTest(TestSettings settings, TestLogger logg
     END_TEST;
 }
 
-void SanityTestFactory::calculationRemapperTest(TestSettings settings, TestLogger logger) {
+void SanityTestFactory::calculationRemapperTest(TestSettings& settings, TestLogger& logger) {
     CalculationRemapper mapper;
     remapperTest(settings, logger, mapper);
 }
 
-void SanityTestFactory::iteratorRemapperTest(TestSettings settings, TestLogger logger) {
+void SanityTestFactory::iteratorRemapperTest(TestSettings& settings, TestLogger& logger) {
     IteratorRemapper mapper;
     remapperTest(settings, logger, mapper);
 }
 
-void SanityTestFactory::remapperTest(TestSettings settings, TestLogger logger, Remapper& mapper) {
+void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger, Remapper& mapper) {
     BEGIN_TEST("CalculationRemapperSanity", std::vector<size_t>);
     std::vector<size_t> input(8), result(8), expected;
 

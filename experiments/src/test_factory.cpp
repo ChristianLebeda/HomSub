@@ -28,7 +28,7 @@
 
 #define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
 
-std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
+std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
     switch (i) {
         case 1:
             return Test1;
@@ -44,7 +44,7 @@ int TestFactory::TestCount() {
     return 0;
 }
 
-void TestFactory::Test1(TestSettings settings, TestLogger logger)
+void TestFactory::Test1(TestSettings& settings, TestLogger& logger)
 {
     BEGIN_TEST("DecomposeSquare");
     
@@ -62,7 +62,7 @@ void TestFactory::Test1(TestSettings settings, TestLogger logger)
     END_TEST;
 }
 
-void TestFactory::Test2(TestSettings settings, TestLogger logger)
+void TestFactory::Test2(TestSettings& settings, TestLogger& logger)
 {
     BEGIN_TEST("SpasmFromSquare");
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
