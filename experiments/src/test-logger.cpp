@@ -30,7 +30,15 @@ void TestLogger::NotifyTestAssert(std::string note,bool passed) {
     if(passed) {
         stream_ << note << ": PASSED" << std::endl;
     } else {
+        failed_++;
         stream_ << note << ": FAILED" << std::endl;
+    }
+}
+
+void TestLogger::NotifyFailed() {
+    if(failed_) {
+        error_ << "Failed " << failed_ << " tests" << std::endl;
+        failed_ = 0;
     }
 }
 
