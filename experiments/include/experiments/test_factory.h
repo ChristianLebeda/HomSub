@@ -9,6 +9,9 @@
 #define TEST_FACTORY_h
 #include "experiments/test_settings.h"
 #include "experiments/test-logger.h"
+
+#include <chrono>
+#include <functional>
 #include <memory>
 
 class TestFactory
@@ -19,7 +22,6 @@ public:
 private:
     static void Test1(TestSettings settings, TestLogger logger);
     static void Test2(TestSettings settings, TestLogger logger);
-    static void Test3(TestSettings settings, TestLogger logger);
     static int microSecondDifferene(std::chrono::time_point<std::chrono::high_resolution_clock> start, std::chrono::time_point<std::chrono::high_resolution_clock> stop);
 };
 

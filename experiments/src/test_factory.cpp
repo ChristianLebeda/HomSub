@@ -35,8 +35,6 @@ std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
             break;
         case 2:
             return Test2;
-        case 3:
-            return Test3;
         default:
             return nullptr;
     }
@@ -86,29 +84,6 @@ void TestFactory::Test2(TestSettings settings, TestLogger logger)
     Main::spasmFromGraph(h);
     SUBSTEP_END("Method4");
     
-    END_TEST;
-}
-
-void TestFactory::Test3(TestSettings settings, TestLogger logger) {
-    BEGIN_TEST("SquareSanity");
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    GraphGenerator::CompleteGrid(g, 2, 2);
-    ASSERT_START(1);
-    long result = Main::subgraphsGraph(h, g);
-    ASSERT_END("InSquare", result)
-    
-    GraphGenerator::CompleteGrid(g, 3, 3);
-    ASSERT_START(4);
-    result = Main::subgraphsGraph(h, g);
-    ASSERT_END("In3x3", result)
-    
-    GraphGenerator::CompleteGrid(g, 4, 3);
-    ASSERT_START(6);
-    result = Main::subgraphsGraph(h, g);
-    ASSERT_END("In4x3", result)
     END_TEST;
 }
 
