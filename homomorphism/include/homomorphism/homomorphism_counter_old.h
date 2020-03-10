@@ -11,13 +11,14 @@ struct DPState {
     std::vector<size_t> mappings;
 };
 
-class HomomorphismCounter
+//TODO: Might delete after refactoring
+class HomomorphismCounterOld
 {
 public:
-    HomomorphismCounter(std::shared_ptr<Graph> h, std::shared_ptr<Graph> g,
+    HomomorphismCounterOld(std::shared_ptr<Graph> h, std::shared_ptr<Graph> g,
         std::shared_ptr<NiceTreeDecomposition> tree) : h_(h), g_(g), tdc_(tree), n_(g->vertCount()) {};
     
-    static std::shared_ptr<HomomorphismCounter> instantiate(std::shared_ptr<Graph> h,
+    static std::shared_ptr<HomomorphismCounterOld> instantiate(std::shared_ptr<Graph> h,
         std::shared_ptr<Graph> g, std::shared_ptr<NiceTreeDecomposition> tree);
 
     size_t compute();

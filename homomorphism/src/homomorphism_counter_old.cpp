@@ -1,13 +1,13 @@
-#include "homomorphism/homomorphism_counter.h"
+#include "homomorphism/homomorphism_counter_old.h"
 
 #include "homomorphism/mapping_iterator.h"
 
-std::shared_ptr<HomomorphismCounter> HomomorphismCounter::instantiate(std::shared_ptr<Graph> h,
+std::shared_ptr<HomomorphismCounterOld> HomomorphismCounterOld::instantiate(std::shared_ptr<Graph> h,
     std::shared_ptr<Graph> g, std::shared_ptr<NiceTreeDecomposition> tree) {
-    return std::make_shared<HomomorphismCounter>(h, g, tree);
+    return std::make_shared<HomomorphismCounterOld>(h, g, tree);
 }
 
-size_t HomomorphismCounter::compute() {
+size_t HomomorphismCounterOld::compute() {
     DPState res = computeRec(tdc_->getRoot());
 
     size_t count = 0;
@@ -23,7 +23,7 @@ size_t HomomorphismCounter::compute() {
 // The state at each step is a pair of vectors
 // The first vector contains the ordered bag of vertices for that node
 // The second vector contains the count of homomorphisms for all possible mappings of said bag
-DPState HomomorphismCounter::computeRec(std::shared_ptr<NTDNode> node) {
+DPState HomomorphismCounterOld::computeRec(std::shared_ptr<NTDNode> node) {
     switch (node->nodeType)
     {
         case INTRODUCE: 
@@ -37,7 +37,7 @@ DPState HomomorphismCounter::computeRec(std::shared_ptr<NTDNode> node) {
     }
 }
 
-DPState HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child, size_t x) {
+DPState HomomorphismCounterOld::computeIntroduceRec(std::shared_ptr<NTDNode> child, size_t x) {
     // Currently indices are 1-indexes for the tree decomposition and 0-indexes for the algorithm
     x--;
 
@@ -120,7 +120,7 @@ DPState HomomorphismCounter::computeIntroduceRec(std::shared_ptr<NTDNode> child,
 
 // TODO: Handle case of forgetting only vertex
 // Should also be handled properly for introduce nodes
-DPState HomomorphismCounter::computeForgetRec(std::shared_ptr<NTDNode> child, size_t x) {
+DPState HomomorphismCounterOld::computeForgetRec(std::shared_ptr<NTDNode> child, size_t x) {
     x--;
 
     DPState c = computeRec(child);
@@ -165,7 +165,7 @@ DPState HomomorphismCounter::computeForgetRec(std::shared_ptr<NTDNode> child, si
     return { bag, mapping };
 }
 
-DPState HomomorphismCounter::computeJoinRec(std::shared_ptr<NTDNode> child1, std::shared_ptr<NTDNode> child2) {
+DPState HomomorphismCounterOld::computeJoinRec(std::shared_ptr<NTDNode> child1, std::shared_ptr<NTDNode> child2) {
     // The bag of the results should be identical
     DPState c1 = computeRec(child1);
     DPState c2 = computeRec(child2);
