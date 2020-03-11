@@ -21,7 +21,10 @@ private:
     static void forgetLastTest(TestSettings& settings, TestLogger& logger);
     static void prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                     std::vector<size_t>& result, size_t n, size_t b);
-    static void joinLastTest(TestSettings& settings, TestLogger& logger);
+    static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger);
+    static void prepareIntroduceCompleteTest(std::vector<size_t>& input, std::vector<size_t>& expected,
+                                             std::vector<size_t>& result, std::vector<size_t>& bag,
+                                             size_t n, size_t b);
 };
 
 #endif

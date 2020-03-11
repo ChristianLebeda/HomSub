@@ -80,6 +80,15 @@ void GraphGenerator::Cycle(std::shared_ptr<Graph> g, int length) {
     g->addEdge(length-1, 0);
 }
 
+void GraphGenerator::Clique(std::shared_ptr<Graph> g, size_t n) {
+    g->clear(n);
+    for(size_t u = 0 ;u < n; u++) {
+        for(size_t v = u + 1 ; v < n; v++) {
+            g->addEdge(u, v);
+        }
+    }
+}
+
 void GraphGenerator::EdgeProbabilityGraph(std::shared_ptr<Graph> g, size_t verts, float probability)
 {
     g->clear(verts);
