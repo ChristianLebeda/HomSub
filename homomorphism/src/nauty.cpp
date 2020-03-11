@@ -10,15 +10,59 @@
 #include "homomorphism/pipe_handler.h"
 #include "homomorphism/third_party.h"
 
+std::vector<NautyEntry> Nauty::convertToNauty(const std::vector<SpasmEntry>& spasm) {
+    std::vector<NautyEntry> entries;
+
+    entries.reserve(spasm.size());
+    for(auto& entry : spasm) {
+        entries.push_back({entry.graph->toNautyFormat(), entry.graph->vertCount(), entry.coefficient});
+    }
+
+    return entries;
+}
+
+std::vector<NautyEntry> Nauty::combineEntries(std::vector<NautyEntry> entries) {
+    std::vector<NautyEntry> joined;
+
+    sort(entries.begin(), entries.end());
+
+    std::string last;
+    NautyEntry* next = nullptr;
+
+    for(auto& e : entries) {
+        if(last != e.graph) {
+            last = e.graph;
+            joined.push_back(e);
+            next = &joined.back();
+        } else {
+            next->coefficient += e.coefficient;
+        }
+    }
+
+    return joined;
+}
+
+std::vector<SpasmEntry> Nauty::convertToSpasm(const std::vector<NautyEntry>& entries) {
+    std::vector<SpasmEntry> spasm;
+
+    spasm.reserve(spasm.size());
+    for(auto& entry : entries) {
+        spasm.push_back({AdjacencyMatrixGraph::parseNautyFormat(entry.graph, entry.n), entry.coefficient});
+    }
+
+    return spasm;
+}
+
 std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spasm) {
+    std::vector<NautyEntry> entries = combineEntries(convertToNauty(spasm));
     std::ostringstream str;
 
     // Canonical mode
     str << "c\n";
 
-    for (auto &entry : spasm) {
+    for (auto &entry : entries) {
         // Define graph
-        str << "n=" << entry.graph->vertCount() << " g " << entry.graph->toNautyFormat();
+        str << "n=" << entry.n << " g " << entry.graph;
 
         // Execute nauty and display graph
         str << "x b\n";
@@ -40,29 +84,14 @@ std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spa
 
     std::string line;
     std::ifstream output("nauty.out");
-    std::vector<CanonicalEntry> canons;
     if (output.is_open()) {
-        for (auto &i : spasm) {
-            canons.push_back({HelperFunctions::trimDreadnautOutput(output, i.graph->vertCount()), i.graph->vertCount(), i.coefficient});
+        // Update graphs with new canonical labelling
+        for (auto &entry : entries) {
+            entry.graph = HelperFunctions::trimDreadnautOutput(output, entry.n);
         }
     } else std::cout << "Unable to open file";
 
-    sort(canons.begin(), canons.end());
-
-    std::vector<SpasmEntry> joined;
-
-    std::string last;
-    SpasmEntry* next = nullptr;
-
-    for(auto& a : canons) {
-        if(last != a.graph) {
-            last = a.graph;
-            joined.push_back({AdjacencyMatrixGraph::parseNautyFormat(a.graph, a.n), a.coefficient});
-            next = &joined.back();
-        } else {
-            next->coefficient += a.coefficient;
-        }
-    }
+    std::vector<SpasmEntry> joined = convertToSpasm(combineEntries(entries));
 
     return joined;
 }
