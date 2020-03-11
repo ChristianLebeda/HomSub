@@ -1,3 +1,5 @@
+#include <homomorphism/forget_handler.h>
+#include <homomorphism/helper_functions.h>
 #include "experiments/sanity_test_factory.h"
 
 #include "experiments/graph_generator.h"
@@ -13,6 +15,16 @@
 #define ASSERT_START(expected) exp = expected;
 
 #define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
+
+#define BEGIN_LOOP_TEST(name, type) BEGIN_TEST(name, type) bool allPassed;
+
+#define LOOP_START allPassed = true;
+
+#define LOOP_ASSERT_START(expected) ASSERT_START(expected)
+
+#define LOOP_ASSERT_END(note, result) if(exp != result) { logger.NotifyTestAssert(note,exp == result); allPassed = false; break; }
+
+#define LOOP_END(note) logger.NotifyTestAssert(note, allPassed)
 
 std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestCase t) {
     switch (t) {
@@ -98,3 +110,45 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
     END_TEST;
 }
 
+void SanityTestFactory::forgetLastTest(TestSettings &settings, TestLogger &logger) {
+    BEGIN_LOOP_TEST("ForgetHandlerSanity", std::vector<size_t>);
+
+    std::vector<size_t> input, expected, result;
+
+    ForgetHandler handler;
+
+    LOOP_START
+
+    for(size_t n = 1; n < 10; n++) {
+        for(size_t b = 1; b < 5; b++) {
+            prepareForgetTest(input, expected, result, n, b);
+            LOOP_ASSERT_START(expected)
+            result = handler.forgetLast(input, result, n);
+            std::stringstream str;
+            str << "ForgetHandlerN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+
+    LOOP_END("ForgetHandler");
+
+    END_TEST;
+}
+
+void SanityTestFactory::prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected, std::vector<size_t>& result, size_t n, size_t b) {
+    size_t size = HelperFunctions::pow(n, b);
+
+    input.resize(size);
+    expected.resize(size / n);
+    result.resize(size / n);
+
+    for (size_t i = 0; i < input.size(); ++i) {
+        input[i] = i;
+    }
+
+    size_t sum = n * (n - 1) / 2;
+    size_t offset = n * n;
+    for (size_t i = 0; i < expected.size(); ++i) {
+        expected[i] = sum + i * offset;
+    }
+}
