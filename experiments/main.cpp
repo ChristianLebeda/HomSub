@@ -11,6 +11,7 @@
 #include "experiments/test_settings.h"
 #include "homomorphism/main.h"
 #include "experiments/readable_logger.h"
+#include "experiments/csv_logger.h"
 
 int main(int argc, char *argv[])
 {
@@ -76,11 +77,19 @@ int main(int argc, char *argv[])
         settings.SetPrTestTime(5);
     }
     
-    //TestLogger logger(std::cout, std::cerr);
+    TestLogger *logger;
     
-    ReadableLogger logger(std::cout);
+    if(argMap.count("-logMode")) {
+        if(argMap["-logMode"].compare("csv") == 0) {
+            CSVLogger csvLogger(std::cout);
+            logger = &csvLogger;
+        }
+    } else {
+        ReadableLogger readLogger(std::cout);
+        logger = &readLogger;
+    }
     
-    TestRunner runner(settings, logger);
+    TestRunner runner(settings, *logger);
     runner.Run();
     
     return 0;
