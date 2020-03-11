@@ -21,9 +21,9 @@
 
 #define LOOP_START allPassed = true;
 
-#define LOOP_ASSERT_START(expected) ASSERT_START(expected)
+#define LOOP_ASSERT_START(expected) if(!allPassed) continue; ASSERT_START(expected)
 
-#define LOOP_ASSERT_END(note, result) if(exp != result) { logger.NotifyTestAssert(note,exp == result); allPassed = false; break; }
+#define LOOP_ASSERT_END(note, result) if(exp != result) { logger.NotifyTestAssert(note,exp == result); allPassed = false; }
 
 #define LOOP_END(note) logger.NotifyTestAssert(note, allPassed)
 
@@ -35,6 +35,10 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return calculationRemapperTest;
         case REMAPPER_ITERATOR:
             return iteratorRemapperTest;
+        case FORGET_HANDLER:
+            return forgetLastTest;
+        case INTRODUCE_HANDLER_COMPLETE:
+            return introduceLastCompleteTest;
         default:
             return nullptr;
     }
@@ -183,6 +187,9 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
     gen.Clique(h, 5);
     for(size_t n = 1; n < 10; n++) {
         gen.Clique(g, n);
+        for(size_t i = 0; i < n; i++) {
+            g->addEdge(i, i);
+        }
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
             LOOP_ASSERT_START(expected)
@@ -198,6 +205,9 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
     gen.Cycle(h, 5);
     for(size_t n = 1; n < 10; n++) {
         gen.Clique(g, n);
+        for(size_t i = 0; i < n; i++) {
+            g->addEdge(i, i);
+        }
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
             LOOP_ASSERT_START(expected)

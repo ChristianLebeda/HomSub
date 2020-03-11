@@ -7,7 +7,7 @@
 #include "experiments/test_settings.h"
 #include "homomorphism/remapper.h"
 
-enum TestCase {SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR};
+enum TestCase {SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, FORGET_HANDLER, INTRODUCE_HANDLER_COMPLETE};
 
 class SanityTestFactory {
 public:
