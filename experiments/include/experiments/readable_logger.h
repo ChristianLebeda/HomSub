@@ -13,6 +13,7 @@ public:
     void NotifyTestIterative(int n, std::string note, float duration);
     void NotifyTestAssert(std::string note,bool passed);
     void NotifyFailed();
+    void NotifyRunStart();
 private:
     size_t failed_;
     std::ostream &stream_;
