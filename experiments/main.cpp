@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
         settings.SetPrTestTime(5);
     }
     
-    TestLogger logger(std::cout);
+    TestLogger logger(std::cout, std::cerr);
     
     TestRunner runner(settings, logger);
     runner.Run();

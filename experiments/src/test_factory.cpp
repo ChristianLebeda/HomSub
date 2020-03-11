@@ -36,7 +36,7 @@
 
 #define ITERATIVE_END n++;} logger.NotifyTestIterative(n, "", duration);
 
-std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
+std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
     switch (i) {
         case 1:
             return Test1;
@@ -56,7 +56,7 @@ int TestFactory::TestCount() {
     return 0;
 }
 
-void TestFactory::Test1(TestSettings settings, TestLogger logger)
+void TestFactory::Test1(TestSettings& settings, TestLogger& logger)
 {
     BEGIN_TEST("DecomposeSquare");
     
@@ -78,7 +78,7 @@ void TestFactory::Test1(TestSettings settings, TestLogger logger)
     END_TEST;
 }
 
-void TestFactory::Test2(TestSettings settings, TestLogger logger)
+void TestFactory::Test2(TestSettings& settings, TestLogger& logger)
 {
     BEGIN_TEST("SpasmFromSquare");
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
@@ -111,7 +111,7 @@ void TestFactory::Test2(TestSettings settings, TestLogger logger)
     END_TEST;
 }
 
-void TestFactory::Test3(TestSettings settings, TestLogger logger) {
+void TestFactory::Test3(TestSettings& settings, TestLogger& logger) {
     BEGIN_TEST("SquareSanity");
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
@@ -134,7 +134,7 @@ void TestFactory::Test3(TestSettings settings, TestLogger logger) {
     END_TEST;
 }
 
-void TestFactory::Test4(TestSettings settings, TestLogger logger)
+void TestFactory::Test4(TestSettings& settings, TestLogger& logger)
 {
     
     BEGIN_TEST("SquareInN-Grid");

@@ -13,6 +13,8 @@ void TestRunner::Run() {
     if(settings_.ShouldRunTestMask()) {
         RunTestFromMask(settings_.GetTestMask());
     }
+
+    logger_.NotifyFailed();
 }
 
 void TestRunner::RunTestFromMask(int mask)
@@ -26,7 +28,7 @@ void TestRunner::RunTestFromMask(int mask)
 
 void TestRunner::RunTest(int testNum)
 {
-    std::function<void(TestSettings, TestLogger)> t = TestFactory::GetTest(testNum);
+    std::function<void(TestSettings&, TestLogger&)> t = TestFactory::GetTest(testNum);
     if(t) {
         t(settings_, logger_);
     }

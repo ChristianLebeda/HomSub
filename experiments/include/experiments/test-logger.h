@@ -8,14 +8,16 @@ enum TestingKeyword {TAMAKI};
 
 class TestLogger {
 public:
-    TestLogger(std::ostream& stream) : stream_(stream) {};
+    explicit TestLogger(std::ostream& stream, std::ostream& error) : stream_(stream), error_(error), failed_(0) {};
     void NotifyTestStart(std::string name);
     void NotifyTestEnd(float duration);
     void NotifyTestSubstep(SubStep step, std::string note, float duration);
     void NotifyTestIterative(int n, std::string note, float duration);
     void NotifyTestAssert(std::string note,bool passed);
+    void NotifyFailed();
 private:
-    std::ostream& stream_;
+    size_t failed_;
+    std::ostream &stream_, &error_;
     std::string currentTestName_;
     std::string subStepToString(SubStep step);
 };
