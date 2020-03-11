@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include "experiments/test_settings.h"
 #include "homomorphism/main.h"
+#include "experiments/readable_logger.h"
 
 int main(int argc, char *argv[])
 {
@@ -75,7 +76,9 @@ int main(int argc, char *argv[])
         settings.SetPrTestTime(5);
     }
     
-    TestLogger logger(std::cout, std::cerr);
+    //TestLogger logger(std::cout, std::cerr);
+    
+    ReadableLogger logger(std::cout);
     
     TestRunner runner(settings, logger);
     runner.Run();

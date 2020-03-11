@@ -5,6 +5,8 @@
 
 
 void TestRunner::Run() {
+    logger_.NotifyRunStart();
+    
     srand(settings_.GetRandomSeed());
     if(settings_.ShouldRunSingleTest()) {
         RunTest(settings_.GetSingleTest());
