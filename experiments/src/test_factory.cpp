@@ -47,6 +47,8 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
             return Test3;
         case 4:
             return Test4;
+        case 5:
+            return Test5;
         default:
             return nullptr;
     }
@@ -146,6 +148,23 @@ void TestFactory::Test4(TestSettings& settings, TestLogger& logger)
     GraphGenerator::CompleteGrid(g, n*2, n*2);
     START_CLOCK;
     Main::subgraphsGraph(h, g);
+    STOP_CLOCK;
+    ITERATIVE_END;
+    
+    END_TEST;
+}
+
+void TestFactory::Test5(TestSettings& settings, TestLogger& logger)
+{
+    
+    BEGIN_TEST("DecomposeNClique");
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    
+    ITERATIVE_START;
+    GraphGenerator::Clique(g, n*2);
+    START_CLOCK;
+    auto spasm = Main::spasmFromGraph(g);
+    Main::decomposedSpasmFromSpasm(spasm);
     STOP_CLOCK;
     ITERATIVE_END;
     

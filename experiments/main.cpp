@@ -83,6 +83,9 @@ int main(int argc, char *argv[])
         if(argMap["-logMode"].compare("csv") == 0) {
             CSVLogger csvLogger(std::cout);
             logger = &csvLogger;
+        } else {
+            ReadableLogger readLogger(std::cout);
+            logger = &readLogger;
         }
     } else {
         ReadableLogger readLogger(std::cout);

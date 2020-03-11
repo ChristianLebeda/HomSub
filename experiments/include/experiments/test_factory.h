@@ -24,6 +24,7 @@ private:
     static void Test2(TestSettings& settings, TestLogger& logger);
     static void Test3(TestSettings& settings, TestLogger& logger);
     static void Test4(TestSettings& settings, TestLogger& logger);
+    static void Test5(TestSettings& settings, TestLogger& logger);
     static int milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop);
 };
 
