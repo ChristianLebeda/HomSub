@@ -16,17 +16,25 @@
 #include "experiments/test_settings.h"
 #include <memory>
 
-#define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::high_resolution_clock::now();auto stop = start;SubStep step;long exp = 0;
+#define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
 #define END_TEST logger.NotifyTestEnd(duration);
 
-#define SUBSTEP_START(substep) start = std::chrono::high_resolution_clock::now();step = substep;
+#define SUBSTEP_START(substep) step = substep;
 
-#define SUBSTEP_END(note) stop = std::chrono::high_resolution_clock::now();duration = microSecondDifferene(start, stop);logger.NotifyTestSubstep(step, note, duration);
+#define SUBSTEP_END(note) logger.NotifyTestSubstep(step, note, duration);
 
 #define ASSERT_START(expected) exp = expected;
 
 #define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
+
+#define START_CLOCK start = std::chrono::steady_clock::now()
+
+#define STOP_CLOCK stop = std::chrono::steady_clock::now();duration = milliSecondDifferene(start, stop)
+
+#define ITERATIVE_START n = 1; while( ((float)duration/1000.0) < settings.GetPrTestTime()) {
+
+#define ITERATIVE_END n++;} logger.NotifyTestIterative(n, "", duration);
 
 std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
     switch (i) {
@@ -37,6 +45,8 @@ std::function<void(TestSettings, TestLogger)> TestFactory::GetTest(int i) {
             return Test2;
         case 3:
             return Test3;
+        case 4:
+            return Test4;
         default:
             return nullptr;
     }
@@ -54,11 +64,15 @@ void TestFactory::Test1(TestSettings settings, TestLogger logger)
     GraphGenerator::CompleteGrid(h, 2, 2);
     
     SUBSTEP_START(SubStep::CREATE_SPASM);
+    START_CLOCK;
     auto spasm = Main::spasmFromGraph(h);
+    STOP_CLOCK;
     SUBSTEP_END("");
     
     SUBSTEP_START(SubStep::DECOMPOSE_SPASM);
+    START_CLOCK;
     Main::decomposedSpasmFromSpasm(spasm);
+    STOP_CLOCK;
     SUBSTEP_END("");
     
     END_TEST;
@@ -71,19 +85,27 @@ void TestFactory::Test2(TestSettings settings, TestLogger logger)
     GraphGenerator::CompleteGrid(h, 2, 2); //Should h be initialised between steps?
     
     SUBSTEP_START(SubStep::CREATE_SPASM);
+    START_CLOCK;
     Main::spasmFromGraph(h);
+    STOP_CLOCK;
     SUBSTEP_END("Method1");
     
     SUBSTEP_START(SubStep::CREATE_SPASM);
+    START_CLOCK;
     Main::spasmFromGraph(h);
+    STOP_CLOCK;
     SUBSTEP_END("Method2");
     
     SUBSTEP_START(SubStep::CREATE_SPASM);
+    START_CLOCK;
     Main::spasmFromGraph(h);
+    STOP_CLOCK;
     SUBSTEP_END("Method3");
     
     SUBSTEP_START(SubStep::CREATE_SPASM);
+    START_CLOCK;
     Main::spasmFromGraph(h);
+    STOP_CLOCK;
     SUBSTEP_END("Method4");
     
     END_TEST;
@@ -112,6 +134,24 @@ void TestFactory::Test3(TestSettings settings, TestLogger logger) {
     END_TEST;
 }
 
-int TestFactory::microSecondDifferene(std::chrono::time_point<std::chrono::high_resolution_clock> start, std::chrono::time_point<std::chrono::high_resolution_clock> stop) {
-    return std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+void TestFactory::Test4(TestSettings settings, TestLogger logger)
+{
+    
+    BEGIN_TEST("SquareInN-Grid");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    GraphGenerator::CompleteGrid(h, 2, 2);
+    
+    ITERATIVE_START;
+    GraphGenerator::CompleteGrid(g, n*2, n*2);
+    START_CLOCK;
+    Main::subgraphsGraph(h, g);
+    STOP_CLOCK;
+    ITERATIVE_END;
+    
+    END_TEST;
+}
+
+int TestFactory::milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 }

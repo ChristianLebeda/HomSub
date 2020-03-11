@@ -34,6 +34,14 @@ void TestLogger::NotifyTestAssert(std::string note,bool passed) {
     }
 }
 
+void TestLogger::NotifyTestIterative(int n, std::string note, float duration) {
+    if(note.length() > 0) {
+        stream_ << n << " - " << note << ": " << duration << std::endl;
+    } else {
+        stream_ << "n = " << n << ": " << duration << std::endl;
+    }
+}
+
 std::string TestLogger::subStepToString(SubStep step) {
     switch (step) {
         case SubStep::CREATE_SPASM:

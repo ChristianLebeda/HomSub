@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
         int time = std::stoi(argMap["-time"]);
         settings.SetPrTestTime(time);
     } else {
-        settings.SetPrTestTime(10);
+        settings.SetPrTestTime(5);
     }
     
     TestLogger logger(std::cout);
