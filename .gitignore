@@ -15,3 +15,5 @@ test/main.cpp
 cmake-build-debug/
 third-party/
 homomorphism/include/homomorphism/third_party.h
+.vscode/
+
