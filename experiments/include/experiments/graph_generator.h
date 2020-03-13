@@ -9,6 +9,7 @@
 class GraphGenerator
 {
 public:
+    // TODO: Cleanup. decide between static or not and remove one clique implementation
     static void CompleteGrid(std::shared_ptr<Graph> g, int rows, int columns);
     void RandomConnectedGrid(std::shared_ptr<Graph> g, int rows, int columns);
     void Path(std::shared_ptr<Graph> g, int length);
