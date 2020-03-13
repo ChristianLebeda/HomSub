@@ -8,6 +8,8 @@
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/iterator_remapper.h"
 #include "homomorphism/main.h"
+#include "homomorphism/configuration_factory.h"
+#include "homomorphism/tamaki_runner.h"
 
 #define BEGIN_TEST(name, type) logger.NotifyTestStart(name);type exp;
 
@@ -39,6 +41,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return forgetLastTest;
         case INTRODUCE_HANDLER_COMPLETE:
             return introduceLastCompleteTest;
+        case HOMOMORPHISM_COUNTER_DEFAULT:
+            return defaultHomomorphismTest;
         default:
             return nullptr;
     }
@@ -243,4 +247,81 @@ void SanityTestFactory::prepareIntroduceCompleteTest(std::vector<size_t>& input,
     for (size_t i = 0; i < expected.size(); ++i) {
         expected[i] = i / n;
     }
+}
+
+void SanityTestFactory::defaultHomomorphismTest(TestSettings& settings, TestLogger& logger) {
+    logger.NotifyTestStart("Default homomorphism configuration");
+    return homomorphismTest(settings, logger, ConfigurationFactory::defaultSettings());
+}
+
+void SanityTestFactory::homomorphismTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
+    homomorphismHandcraftedTest(settings, logger, hom);
+    homomorphismLoopTest(settings, logger, hom);
+}
+
+void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
+    BEGIN_TEST("Handcrafted", long)
+
+    TamakiRunner tam;
+    GraphGenerator gen;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<NiceTreeDecomposition> ntd;
+    long result;
+
+    gen.Cycle(h, 4);
+    ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    ASSERT_START(32);
+    result = HomomorphismCounter(h, h, ntd, hom).compute();
+    ASSERT_END("SquareToSquare", result)
+
+    gen.Cycle(h, 4);
+    h->addEdge(0, 2);
+    ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    ASSERT_START(16);
+    result = HomomorphismCounter(h, h, ntd, hom).compute();
+    ASSERT_END("ExtractMiddle", result)
+
+    END_TEST
+}
+
+void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
+    BEGIN_LOOP_TEST("Loop", long)
+
+    TamakiRunner tam;
+    GraphGenerator gen;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<NiceTreeDecomposition> ntd;
+    long result;
+
+    LOOP_START
+    for(size_t k = 3; k < 10; k += 2) {
+        gen.Cycle(h, k);
+        ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+        for(size_t r = 2; r < 10; r += 2) {
+            for(size_t c = 2; c < 5; c++) {
+                GraphGenerator::CompleteGrid(g, r, c);
+                LOOP_ASSERT_START(0)
+                result = HomomorphismCounter(h, g, ntd, hom).compute();
+                std::stringstream str;
+                str << "OddCycleInGridK" << k << "R" << r << "C" << c;
+                LOOP_ASSERT_END(str.str(), result)
+            }
+        }
+    }
+    LOOP_END("NoOddCycleInGrid");
+
+    LOOP_START
+    gen.Path(h, 4);
+    ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    for(size_t n = 1; n < 10; n++) {
+        gen.Clique(g, n);
+        LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
+        result = HomomorphismCounter(h, g, ntd, hom).compute();
+        std::stringstream str;
+        str << "PathInCompleteGraphN" << n;
+        LOOP_ASSERT_END(str.str(), result)
+    }
+    LOOP_END("PathInCompleteGraph");
+
+    END_TEST
 }
