@@ -100,3 +100,22 @@ void GraphGenerator::EdgeProbabilityGraph(std::shared_ptr<Graph> g, size_t verts
         }
     }
 }
+
+void GraphGenerator::VertexPairs(std::shared_ptr<Graph> g, int pairCount) {
+    g->clear(pairCount*2);
+    for(int i = 0; i < pairCount; i++) {
+        g->addEdge(i*2, i*2+1);
+    }
+}
+
+void GraphGenerator::Clique(std::shared_ptr<Graph> g, int size)
+{
+    g->clear(size);
+    for(int i = 0; i < size; i++) {
+        for(int j = 0; j < size; j++) {
+            if(i < j) {
+                g->addEdge(i, j);
+            }
+        }
+    }
+}

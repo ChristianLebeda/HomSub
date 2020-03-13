@@ -44,9 +44,9 @@ void CSVLogger::NotifyFailed()
 
 void CSVLogger::NotifyRunStart()
 {
-    stream_ << "testName, info, coment, result" << std::endl;
+    stream_ << "testName,info,coment,result" << std::endl;
 }
 
 void CSVLogger::logCSV(std::string info, std::string comment, std::string result) {
-    stream_ << currentTestName_ << ", " << info << ", " << comment << ", " << result << std::endl;
+    stream_ << currentTestName_ << "," << info << "," << comment << "," << result << std::endl;
 }
