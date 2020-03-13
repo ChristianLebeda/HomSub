@@ -8,13 +8,16 @@
 #include "experiments/test_settings.h"
 #include "homomorphism/remapper.h"
 
-enum TestCase {SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, FORGET_HANDLER,
-            INTRODUCE_HANDLER_COMPLETE, HOMOMORPHISM_COUNTER_DEFAULT};
+#define TESTCASES \
+    { SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
+    FORGET_HANDLER, INTRODUCE_HANDLER_COMPLETE, HOMOMORPHISM_COUNTER_DEFAULT }
+
+enum TestCase TESTCASES;
 
 class SanityTestFactory {
 public:
     static std::function<void(TestSettings&, TestLogger&)> getTest(TestCase t);
-    static std::vector<std::function<void(TestSettings&, TestLogger&)>> allTests();
+    static std::vector<TestCase> allTests();
 private:
     static void squarePatternTest(TestSettings& settings, TestLogger& logger);
     static void calculationRemapperTest(TestSettings& settings, TestLogger& logger);

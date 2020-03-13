@@ -48,9 +48,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
     }
 }
 
-std::vector<std::function<void(TestSettings&, TestLogger&)>> SanityTestFactory::allTests() {
-    //TODO: Needs to add manually currently
-    return std::vector<std::function<void(TestSettings&, TestLogger&)>> {squarePatternTest, calculationRemapperTest};
+std::vector<TestCase> SanityTestFactory::allTests() {
+    return std::vector<TestCase> TESTCASES;
 }
 
 void SanityTestFactory::squarePatternTest(TestSettings& settings, TestLogger& logger) {
