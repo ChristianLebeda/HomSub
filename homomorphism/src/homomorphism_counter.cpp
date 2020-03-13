@@ -1,7 +1,8 @@
+#include <homomorphism/calculation_remapper.h>
 #include "homomorphism/homomorphism_counter.h"
 
 long HomomorphismCounter::compute() {
-    allocator_.setSize(n_, tdc_->getWidth());
+    allocator_->setSize(n_, tdc_->getWidth());
 
     DPState res = computeRec(tdc_->getRoot());
 
@@ -49,15 +50,15 @@ DPState HomomorphismCounter::computeIntroduceRec(const std::shared_ptr<NTDNode>&
     }
 
     // Introduce the last vertex
-    std::vector<size_t> mapping = allocator_.get(bag.size() + 1);
-    introducer_.introduceLast(c.mappings, mapping, c.bag, h_, g_, n_, x);
-    allocator_.free(c.mappings, bag.size());
+    std::vector<size_t> mapping = allocator_->get(bag.size() + 1);
+    introducer_->introduceLast(c.mappings, mapping, c.bag, h_, g_, n_, x);
+    allocator_->free(c.mappings, bag.size());
 
     // Remap vertex to correct position
-    std::vector<size_t> result = allocator_.get(bag.size() + 1);
-    mapper_.SetSizes(n_, bag.size() + 1);
-    mapper_.Insert(mapping, result, pos);
-    allocator_.free(mapping, bag.size() + 1);
+    std::vector<size_t> result = allocator_->get(bag.size() + 1);
+    mapper_->SetSizes(n_, bag.size() + 1);
+    mapper_->Insert(mapping, result, pos);
+    allocator_->free(mapping, bag.size() + 1);
 
     bag.insert(bag.begin() + pos, x);
 
@@ -82,15 +83,15 @@ DPState HomomorphismCounter::computeForgetRec(const std::shared_ptr<NTDNode>& ch
     }
 
     // Remap vertex to last position
-    std::vector<size_t> mapping = allocator_.get(bag.size());
-    mapper_.SetSizes(n_, bag.size());
-    mapper_.Extract(c.mappings, mapping, pos);
-    allocator_.free(c.mappings, bag.size());
+    std::vector<size_t> mapping = allocator_->get(bag.size());
+    mapper_->SetSizes(n_, bag.size());
+    mapper_->Extract(c.mappings, mapping, pos);
+    allocator_->free(c.mappings, bag.size());
 
     // Forget the last vertex
-    std::vector<size_t> result = allocator_.get(bag.size() - 1);
-    forgetter_.forgetLast(mapping, result, n_);
-    allocator_.free(mapping, bag.size());
+    std::vector<size_t> result = allocator_->get(bag.size() - 1);
+    forgetter_->forgetLast(mapping, result, n_);
+    allocator_->free(mapping, bag.size());
 
     bag.erase(bag.begin() + pos);
 
@@ -102,7 +103,7 @@ DPState HomomorphismCounter::computeJoinRec(const std::shared_ptr<NTDNode>& chil
     DPState c1 = computeRec(child1);
     DPState c2 = computeRec(child2);
 
-    std::vector<size_t> joined = joiner_.join(c1.mappings, c2.mappings);
+    std::vector<size_t> joined = joiner_->join(c1.mappings, c2.mappings);
 
     return { c1.bag, joined };
 }
