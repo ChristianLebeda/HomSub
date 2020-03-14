@@ -9,10 +9,13 @@
 #include "homomorphism/remapper.h"
 
 #define TESTCASES \
-    { SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
-    FORGET_HANDLER, INTRODUCE_HANDLER_COMPLETE, HOMOMORPHISM_COUNTER_DEFAULT }
+    SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
+    FORGET_HANDLER, INTRODUCE_HANDLER_CONSISTENCY, INTRODUCE_HANDLER_COMPLETE, \
+    HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT
 
-enum TestCase TESTCASES;
+#define COMPOSITETESTCASES HOMOMORPHISM_COUNTER_DEFAULT, INTRODUCE_HANDLER_TEST
+
+enum TestCase { TESTCASES, COMPOSITETESTCASES };
 
 class SanityTestFactory {
 public:
@@ -26,12 +29,16 @@ private:
     static void forgetLastTest(TestSettings& settings, TestLogger& logger);
     static void prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                     std::vector<size_t>& result, size_t n, size_t b);
+    static void introduceLastTest(TestSettings& settings, TestLogger& logger);
+    static void introduceLastEdgeConsistencyTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger);
     static void prepareIntroduceCompleteTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                                              std::vector<size_t>& result, std::vector<size_t>& bag,
                                              size_t n, size_t b);
     static void defaultHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
+    static void defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
+    stativ void defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
     static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
 };
