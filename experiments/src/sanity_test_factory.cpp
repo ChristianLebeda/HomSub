@@ -39,8 +39,16 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return iteratorRemapperTest;
         case FORGET_HANDLER:
             return forgetLastTest;
+        case INTRODUCE_HANDLER_CONSISTENCY:
+            return introduceLastEdgeConsistencyTest;
         case INTRODUCE_HANDLER_COMPLETE:
             return introduceLastCompleteTest;
+        case HOMOMORPHISM_HANDCRAFTED_DEFAULT:
+            return defaultHomomorphismHandcraftedTest;
+        case HOMOMORPHISM_LOOP_DEFAULT:
+            return defaultHomomorphismLoopTest;
+        case INTRODUCE_HANDLER_TEST:
+            return introduceLastTest;
         case HOMOMORPHISM_COUNTER_DEFAULT:
             return defaultHomomorphismTest;
         default:
@@ -49,7 +57,7 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
 }
 
 std::vector<TestCase> SanityTestFactory::allTests() {
-    return std::vector<TestCase> TESTCASES;
+    return std::vector<TestCase> { TESTCASES };
 }
 
 void SanityTestFactory::squarePatternTest(TestSettings& settings, TestLogger& logger) {
@@ -161,8 +169,53 @@ void SanityTestFactory::prepareForgetTest(std::vector<size_t>& input, std::vecto
     }
 }
 
+void SanityTestFactory::introduceLastTest(TestSettings &settings, TestLogger &logger) {
+    logger.NotifyTestStart("IntroduceHandlerSanity");
+    introduceLastCompleteTest(settings, logger);
+    introduceLastEdgeConsistencyTest(settings, logger);
+}
+
+void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings, TestLogger &logger) {
+    // Some small handcrafted examples for introduce with 3 vertices
+    BEGIN_TEST("IntroduceHandlerEdgeConsistencySanity", std::vector<size_t>)
+
+    std::vector<size_t> input(9), expected(27), result(27), bag {0, 1};
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    // G has no edge 0-2
+    g->clear(3);
+    g->addEdge(0, 1);
+    g->addEdge(1, 2);
+
+    for (size_t i = 0; i < input.size(); ++i) {
+        input[i] = i + 1;
+    }
+
+    IntroduceHandler ih;
+
+    h->clear(3);
+    expected = std::vector<size_t> {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceNonEdgesH", result)
+
+    h->addEdge(0, 2);
+    expected = std::vector<size_t> {0, 1, 0, 0, 2, 0, 0, 3, 0, 4, 0, 4, 5, 0, 5, 6, 0, 6, 0, 7, 0, 0, 8, 0, 0, 9, 0};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceEdgeAndNonEdgeH", result)
+
+    h->addEdge(1, 2);
+    expected = std::vector<size_t> {0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 5, 0, 5, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 9, 0};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceBothEdgesH", result)
+
+    END_TEST
+}
+
 void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLogger &logger) {
-    BEGIN_LOOP_TEST("IntroduceHandlerCompleteGraphSanity", std::vector<size_t>);
+    BEGIN_LOOP_TEST("IntroduceHandlerCompleteGraphSanity", std::vector<size_t>)
 
     std::vector<size_t> input, expected, result, bag;
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
@@ -250,12 +303,20 @@ void SanityTestFactory::prepareIntroduceCompleteTest(std::vector<size_t>& input,
 
 void SanityTestFactory::defaultHomomorphismTest(TestSettings& settings, TestLogger& logger) {
     logger.NotifyTestStart("Default homomorphism configuration");
-    return homomorphismTest(settings, logger, ConfigurationFactory::defaultSettings());
+    homomorphismTest(settings, logger, ConfigurationFactory::defaultSettings());
 }
 
 void SanityTestFactory::homomorphismTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
     homomorphismHandcraftedTest(settings, logger, hom);
     homomorphismLoopTest(settings, logger, hom);
+}
+
+void SanityTestFactory::defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger) {
+    homomorphismHandcraftedTest(settings, logger, ConfigurationFactory::defaultSettings());
+}
+
+void SanityTestFactory::defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger) {
+    homomorphismLoopTest(settings, logger, ConfigurationFactory::defaultSettings());
 }
 
 void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
