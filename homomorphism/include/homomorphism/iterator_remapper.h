@@ -10,6 +10,7 @@ public:
     void Insert(std::vector<size_t>& in, std::vector<size_t>& out, size_t pos) override;
 private:
     size_t n_, b_;
+    std::vector<size_t> offsets;
 };
 
 #endif
