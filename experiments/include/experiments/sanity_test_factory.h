@@ -13,7 +13,7 @@
     FORGET_HANDLER, INTRODUCE_HANDLER_CONSISTENCY, INTRODUCE_HANDLER_COMPLETE, \
     HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT
 
-#define COMPOSITETESTCASES HOMOMORPHISM_COUNTER_DEFAULT, INTRODUCE_HANDLER_TEST
+#define COMPOSITETESTCASES HOMOMORPHISM_COUNTER_DEFAULT, INTRODUCE_HANDLER_TEST, ALL_TESTS
 
 enum TestCase { TESTCASES, COMPOSITETESTCASES };
 
@@ -21,11 +21,12 @@ class SanityTestFactory {
 public:
     static std::function<void(TestSettings&, TestLogger&)> getTest(TestCase t);
     static std::vector<TestCase> allTests();
+    static void runAllTests(TestSettings& settings, TestLogger& logger);
 private:
     static void squarePatternTest(TestSettings& settings, TestLogger& logger);
     static void calculationRemapperTest(TestSettings& settings, TestLogger& logger);
     static void iteratorRemapperTest(TestSettings& settings, TestLogger& logger);
-    static void remapperTest(TestSettings& settings, TestLogger& logger, Remapper& mapper);
+    static void remapperTest(TestSettings& settings, TestLogger& logger, Remapper& mapper, std::string name);
     static void forgetLastTest(TestSettings& settings, TestLogger& logger);
     static void prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                     std::vector<size_t>& result, size_t n, size_t b);
@@ -38,7 +39,7 @@ private:
     static void defaultHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
     static void defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
-    stativ void defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
+    static void defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
     static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
 };

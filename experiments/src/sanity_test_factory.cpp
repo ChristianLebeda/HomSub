@@ -13,7 +13,7 @@
 
 #define BEGIN_TEST(name, type) logger.NotifyTestStart(name);type exp;
 
-#define END_TEST //logger.NotifyTestEnd(duration);
+#define END_TEST logger.NotifyTestEnd(0);
 
 #define ASSERT_START(expected) exp = expected;
 
@@ -51,6 +51,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return introduceLastTest;
         case HOMOMORPHISM_COUNTER_DEFAULT:
             return defaultHomomorphismTest;
+        case ALL_TESTS:
+            return runAllTests;
         default:
             return nullptr;
     }
@@ -58,6 +60,13 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
 
 std::vector<TestCase> SanityTestFactory::allTests() {
     return std::vector<TestCase> { TESTCASES };
+}
+
+void SanityTestFactory::runAllTests(TestSettings &settings, TestLogger &logger) {
+    for(auto& tc : allTests()) {
+        auto next = getTest(tc);
+        next(settings, logger);
+    }
 }
 
 void SanityTestFactory::squarePatternTest(TestSettings& settings, TestLogger& logger) {
@@ -85,16 +94,16 @@ void SanityTestFactory::squarePatternTest(TestSettings& settings, TestLogger& lo
 
 void SanityTestFactory::calculationRemapperTest(TestSettings& settings, TestLogger& logger) {
     CalculationRemapper mapper;
-    remapperTest(settings, logger, mapper);
+    remapperTest(settings, logger, mapper, "IteratorRemapperSanity");
 }
 
 void SanityTestFactory::iteratorRemapperTest(TestSettings& settings, TestLogger& logger) {
     IteratorRemapper mapper;
-    remapperTest(settings, logger, mapper);
+    remapperTest(settings, logger, mapper, "IteratorRemapperSanity");
 }
 
-void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger, Remapper& mapper) {
-    BEGIN_TEST("CalculationRemapperSanity", std::vector<size_t>);
+void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger, Remapper& mapper, std::string name) {
+    BEGIN_TEST(name, std::vector<size_t>);
     std::vector<size_t> input(8), result(8), expected;
 
     for (size_t i = 0; i < input.size(); ++i) {
