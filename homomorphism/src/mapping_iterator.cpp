@@ -25,12 +25,12 @@ MappingIterator MappingIterator::InsertIterator(size_t n, size_t k, size_t pos) 
     size_t offset = 1;
 
     for (int i = k - 2; i >= 0; --i) {
-        if(i == pos) {
-            offset *= n;
-            offsets[k - 1] = offset;
-        }
-        offset *= n;
         offsets[i] = offset;
+        offset *= n;
+        if(i == pos) {
+            offsets[k - 1] = offset;
+            offset *= n;
+        }
     }
 
     return MappingIterator(n, k, offsets);
@@ -52,7 +52,7 @@ size_t MappingIterator::next() {
             return next;
         } else {
             mapping_[i] = 0;
-            current_ -= offsets_[i] * n_;
+            current_ -= offsets_[i] * (n_ - 1);
         }
     }
 

@@ -6,6 +6,7 @@
 class ConfigurationFactory {
 public:
     static HomomorphismSettings defaultSettings();
+    static HomomorphismSettings iteratorRemapper();
 };
 
 #endif
