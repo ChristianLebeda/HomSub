@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "homomorphism//nice_tree_decomposition.h"
+#include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/vector_allocator.h"
 #include "homomorphism/join_handler.h"
 #include "homomorphism/forget_handler.h"
