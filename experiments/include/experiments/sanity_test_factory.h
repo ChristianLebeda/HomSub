@@ -11,9 +11,12 @@
 #define TESTCASES \
     SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
     FORGET_HANDLER, INTRODUCE_HANDLER_CONSISTENCY, INTRODUCE_HANDLER_COMPLETE, \
-    HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT
+    HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
+    HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR
 
-#define COMPOSITETESTCASES HOMOMORPHISM_COUNTER_DEFAULT, INTRODUCE_HANDLER_TEST, ALL_TESTS
+#define COMPOSITETESTCASES \
+    HOMOMORPHISM_COUNTER_DEFAULT, HOMOMORPHISM_COUNTER_ITERATOR, \
+    INTRODUCE_HANDLER_TEST, ALL_TESTS
 
 enum TestCase { TESTCASES, COMPOSITETESTCASES };
 
@@ -37,11 +40,17 @@ private:
                                              std::vector<size_t>& result, std::vector<size_t>& bag,
                                              size_t n, size_t b);
     static void defaultHomomorphismTest(TestSettings& settings, TestLogger& logger);
-    static void homomorphismTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
+    static void iteratorHomomorphismTest(TestSettings& settings, TestLogger& logger);
+    static void homomorphismTest(TestSettings& settings, TestLogger& logger,
+                    HomomorphismSettings hom, const std::string& settingsName);
     static void defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
     static void defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
-    static void homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
-    static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom);
+    static void iteratorHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
+    static void iteratorHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
+    static void homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
+                    HomomorphismSettings hom, const std::string& settingsName);
+    static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
+                    HomomorphismSettings hom, const std::string& settingsName);
 };
 
 #endif

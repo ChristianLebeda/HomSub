@@ -47,10 +47,16 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return defaultHomomorphismHandcraftedTest;
         case HOMOMORPHISM_LOOP_DEFAULT:
             return defaultHomomorphismLoopTest;
+        case HOMOMORPHISM_HANDCRAFTED_ITERATOR:
+            return iteratorHomomorphismHandcraftedTest;
+        case HOMOMORPHISM_LOOP_ITERATOR:
+            return iteratorHomomorphismLoopTest;
         case INTRODUCE_HANDLER_TEST:
             return introduceLastTest;
         case HOMOMORPHISM_COUNTER_DEFAULT:
             return defaultHomomorphismTest;
+        case HOMOMORPHISM_COUNTER_ITERATOR:
+            return iteratorHomomorphismTest;
         case ALL_TESTS:
             return runAllTests;
         default:
@@ -94,7 +100,7 @@ void SanityTestFactory::squarePatternTest(TestSettings& settings, TestLogger& lo
 
 void SanityTestFactory::calculationRemapperTest(TestSettings& settings, TestLogger& logger) {
     CalculationRemapper mapper;
-    remapperTest(settings, logger, mapper, "IteratorRemapperSanity");
+    remapperTest(settings, logger, mapper, "CalculationRemapperSanity");
 }
 
 void SanityTestFactory::iteratorRemapperTest(TestSettings& settings, TestLogger& logger) {
@@ -312,24 +318,43 @@ void SanityTestFactory::prepareIntroduceCompleteTest(std::vector<size_t>& input,
 
 void SanityTestFactory::defaultHomomorphismTest(TestSettings& settings, TestLogger& logger) {
     logger.NotifyTestStart("Default homomorphism configuration");
-    homomorphismTest(settings, logger, ConfigurationFactory::defaultSettings());
+    homomorphismTest(settings, logger, ConfigurationFactory::defaultSettings(), "DefaultHomomorphism");
 }
 
-void SanityTestFactory::homomorphismTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
-    homomorphismHandcraftedTest(settings, logger, hom);
-    homomorphismLoopTest(settings, logger, hom);
+void SanityTestFactory::iteratorHomomorphismTest(TestSettings& settings, TestLogger& logger) {
+    logger.NotifyTestStart("Iterator homomorphism configuration");
+    homomorphismTest(settings, logger, ConfigurationFactory::iteratorRemapper(), "IteratorHomomorphism");
+}
+
+void SanityTestFactory::homomorphismTest(TestSettings& settings, TestLogger& logger,
+        HomomorphismSettings hom, const std::string& settingsName) {
+    homomorphismHandcraftedTest(settings, logger, hom, settingsName);
+    homomorphismLoopTest(settings, logger, hom, settingsName);
 }
 
 void SanityTestFactory::defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger) {
-    homomorphismHandcraftedTest(settings, logger, ConfigurationFactory::defaultSettings());
+    homomorphismHandcraftedTest(settings, logger,
+            ConfigurationFactory::defaultSettings(), "DefaultHomomorphism");
 }
 
 void SanityTestFactory::defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger) {
-    homomorphismLoopTest(settings, logger, ConfigurationFactory::defaultSettings());
+    homomorphismLoopTest(settings, logger,
+            ConfigurationFactory::defaultSettings(), "DefaultHomomorphism");
 }
 
-void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
-    BEGIN_TEST("Handcrafted", long)
+void SanityTestFactory::iteratorHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger) {
+    homomorphismHandcraftedTest(settings, logger,
+            ConfigurationFactory::iteratorRemapper(), "IteratorRemappingHomomorphism");
+}
+
+void SanityTestFactory::iteratorHomomorphismLoopTest(TestSettings& settings, TestLogger& logger) {
+    homomorphismLoopTest(settings, logger,
+            ConfigurationFactory::iteratorRemapper(), "IteratorRemappingHomomorphism");
+}
+
+void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
+            HomomorphismSettings hom, const std::string& settingsName) {
+    BEGIN_TEST(settingsName + "Handcrafted", long)
 
     TamakiRunner tam;
     GraphGenerator gen;
@@ -353,8 +378,9 @@ void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, Test
     END_TEST
 }
 
-void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger& logger, HomomorphismSettings hom) {
-    BEGIN_LOOP_TEST("Loop", long)
+void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
+            HomomorphismSettings hom, const std::string& settingsName) {
+    BEGIN_LOOP_TEST(settingsName + "Loop", long)
 
     TamakiRunner tam;
     GraphGenerator gen;

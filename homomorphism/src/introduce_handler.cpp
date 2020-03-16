@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "homomorphism/graph.h"
-#include "homomorphism/mapping_iterator.h"
+#include "homomorphism/mapping_iterator_old.h"
 
 std::vector<size_t>& IntroduceHandler::introduceLast(std::vector <size_t> &input, std::vector <size_t> &output,
                                                      std::vector <size_t>& bag, std::shared_ptr<Graph> h,
@@ -26,7 +26,7 @@ std::vector<size_t>& IntroduceHandler::introduceLast(std::vector <size_t> &input
         offsets[offsets.size() - i - 1] = offsets[offsets.size() - i] * n;
     }
 
-    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(n, bag.size());
+    std::shared_ptr<MappingIteratorOld> it = MappingIteratorOld::makeIterator(n, bag.size());
 
     do {
         size_t count = input[it->idx];

@@ -1,6 +1,6 @@
 #include "homomorphism/homomorphism_counter_old.h"
 
-#include "homomorphism/mapping_iterator.h"
+#include "homomorphism/mapping_iterator_old.h"
 
 std::shared_ptr<HomomorphismCounterOld> HomomorphismCounterOld::instantiate(std::shared_ptr<Graph> h,
     std::shared_ptr<Graph> g, std::shared_ptr<NiceTreeDecomposition> tree) {
@@ -82,7 +82,7 @@ DPState HomomorphismCounterOld::computeIntroduceRec(std::shared_ptr<NTDNode> chi
 
     std::vector<size_t> mapping(c.mappings.size() * n_, 0);
 
-    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(n_, bag.size());
+    std::shared_ptr<MappingIteratorOld> it = MappingIteratorOld::makeIterator(n_, bag.size());
 
     do {
         size_t count = c.mappings[it->idx];
@@ -144,7 +144,7 @@ DPState HomomorphismCounterOld::computeForgetRec(std::shared_ptr<NTDNode> child,
 
     std::vector<size_t> mapping(c.mappings.size() / n_, 0);
 
-    std::shared_ptr<MappingIterator> it = MappingIterator::makeIterator(n_, bag.size());
+    std::shared_ptr<MappingIteratorOld> it = MappingIteratorOld::makeIterator(n_, bag.size());
 
     do {
         size_t count = c.mappings[it->idx];
