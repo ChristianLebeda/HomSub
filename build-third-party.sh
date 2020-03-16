@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Build nauty and copy CLI dreadnaut
 # Used for finding canonical labelings
 mkdir -p third-party/nauty
