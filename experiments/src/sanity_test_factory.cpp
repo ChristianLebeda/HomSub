@@ -327,7 +327,7 @@ void SanityTestFactory::iteratorHomomorphismTest(TestSettings& settings, TestLog
 }
 
 void SanityTestFactory::homomorphismTest(TestSettings& settings, TestLogger& logger,
-        HomomorphismSettings hom, std::string settingsName) {
+        HomomorphismSettings hom, const std::string& settingsName) {
     homomorphismHandcraftedTest(settings, logger, hom, settingsName);
     homomorphismLoopTest(settings, logger, hom, settingsName);
 }
@@ -353,7 +353,7 @@ void SanityTestFactory::iteratorHomomorphismLoopTest(TestSettings& settings, Tes
 }
 
 void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
-            HomomorphismSettings hom, std::string settingsName) {
+            HomomorphismSettings hom, const std::string& settingsName) {
     BEGIN_TEST(settingsName + "Handcrafted", long)
 
     TamakiRunner tam;
@@ -379,7 +379,7 @@ void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, Test
 }
 
 void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
-            HomomorphismSettings hom, std::string settingsName) {
+            HomomorphismSettings hom, const std::string& settingsName) {
     BEGIN_LOOP_TEST(settingsName + "Loop", long)
 
     TamakiRunner tam;

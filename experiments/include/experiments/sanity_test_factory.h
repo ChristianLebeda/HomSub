@@ -42,15 +42,15 @@ private:
     static void defaultHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void iteratorHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismTest(TestSettings& settings, TestLogger& logger,
-                    HomomorphismSettings hom, std::string settingsName);
+                    HomomorphismSettings hom, const std::string& settingsName);
     static void defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
     static void defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
     static void iteratorHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
     static void iteratorHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
-                    HomomorphismSettings hom, std::string settingsName);
+                    HomomorphismSettings hom, const std::string& settingsName);
     static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
-                    HomomorphismSettings hom, std::string settingsName);
+                    HomomorphismSettings hom, const std::string& settingsName);
 };
 
 #endif
