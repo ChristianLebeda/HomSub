@@ -21,11 +21,12 @@ public:
     static int TestCount();
     static std::vector<std::function<void(TestSettings&, TestLogger&)>> GetAllTests();
 private:
-    static void Test1(TestSettings& settings, TestLogger& logger);
-    static void Test2(TestSettings& settings, TestLogger& logger);
-    static void Test3(TestSettings& settings, TestLogger& logger);
-    static void Test4(TestSettings& settings, TestLogger& logger);
-    static void Test5(TestSettings& settings, TestLogger& logger);
+    static void SquaresInGrid(TestSettings& settings, TestLogger& logger);
+    static void BinaryTreeInBinaryTree(TestSettings& settings, TestLogger& logger);
+    static void CliquesInClique(TestSettings& settings, TestLogger& logger);
+    static void EdgesInPath(TestSettings& settings, TestLogger& logger);
+    static void PathInRandomGraph(TestSettings& settings, TestLogger& logger);
+    static void RandomPatternsInRandomGraph(TestSettings& settings, TestLogger& logger);
     static int milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop);
 };
 
