@@ -14,22 +14,18 @@ public:
     void SetTWS(TreeWidthSolver *tws) {
         tws_ = tws;
     };
-    void SetTestMask(int mask) {
-        testMask_ = mask;
-        runTestMask_ = true;
-    };
-    int GetTestMask() {
-        return testMask_;
-    };
+    void SetRunAll(bool run) {
+        runAll_ = run;
+    }
+    bool GetRunAll() {
+        return runAll_;
+    }
     void SetSingleTest(int test) {
         singleTest_ = test;
         runSingleTest_ = true;
     };
     int GetSingleTest() {
         return singleTest_;
-    };
-    bool ShouldRunTestMask(){
-        return runTestMask_;
     };
     bool ShouldRunSingleTest(){
         return runSingleTest_;
@@ -42,10 +38,9 @@ public:
     }
 private:
     int randomSeed_;
-    int testMask_;
     int singleTest_;
-    bool runTestMask_;
     bool runSingleTest_;
+    bool runAll_;
     int prTestTime_;
     TreeWidthSolver *tws_;
 };

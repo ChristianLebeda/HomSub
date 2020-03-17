@@ -24,14 +24,22 @@ int main(int argc, char *argv[])
     
     TestSettings settings;
     
-    for(int i = 1; i < argc; i = i+2) {
+    for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
         if(arg.compare("-help") == 0) {
             TestRunner::PrintHelp();
             return 0;
         } else {
-            std::string value = argv[i+1];
-            argMap[arg] = value;
+            if(i+1 < argc) {
+                std::string value = argv[i+1];
+                if (value.rfind("-", 0) != 0) {
+                    argMap[arg] = "";
+                } else {
+                    argMap[arg] = value;
+                }
+            } else {
+                argMap[arg] = "";
+            }
         }
     }
     
@@ -60,14 +68,13 @@ int main(int argc, char *argv[])
         settings.SetSingleTest(testNum);
     }
     
-    //Set several tests
-    if(argMap.count("-mask")) {
-        int testMask = std::stoi(argMap["-mask"]);
-        settings.SetTestMask(testMask);
+    if(argMap.count("-all")) {
+        settings.SetRunAll(true);
     }
     
+    
     if(argMap.count("-run")) {
-        std::cout << "This should run the agorithm on files " << argMap["-run"] << std::endl;
+        std::cout << "This should run the agorithm on files provided but does nothing"<< std::endl;
     }
     
     if(argMap.count("-time")) {
@@ -79,14 +86,9 @@ int main(int argc, char *argv[])
     
     TestLogger *logger;
     
-    if(argMap.count("-logMode")) {
-        if(argMap["-logMode"].compare("csv") == 0) {
-            CSVLogger csvLogger(std::cout);
-            logger = &csvLogger;
-        } else {
-            ReadableLogger readLogger(std::cout);
-            logger = &readLogger;
-        }
+    if(argMap.count("-csv")) {
+        CSVLogger csvLogger(std::cout);
+        logger = &csvLogger;
     } else {
         ReadableLogger readLogger(std::cout);
         logger = &readLogger;

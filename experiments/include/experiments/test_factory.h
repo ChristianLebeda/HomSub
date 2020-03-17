@@ -19,6 +19,7 @@ class TestFactory
 public:
     static std::function<void(TestSettings&, TestLogger&)> GetTest(int i);
     static int TestCount();
+    static std::vector<std::function<void(TestSettings&, TestLogger&)>> GetAllTests();
 private:
     static void Test1(TestSettings& settings, TestLogger& logger);
     static void Test2(TestSettings& settings, TestLogger& logger);

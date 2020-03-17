@@ -14,6 +14,7 @@ private:
     TestLogger& logger_;
     void RunTestFromMask(int mask);
     void RunTest(int testNum);
+    void RunTestFromList(std::vector<std::function<void(TestSettings&, TestLogger&)>> tests);
 };
 
 #endif /* test_runner_h */

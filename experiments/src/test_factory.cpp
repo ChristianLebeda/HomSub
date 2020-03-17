@@ -37,21 +37,18 @@
 #define ITERATIVE_END n++;} logger.NotifyTestIterative(n, "", duration);
 
 std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
-    switch (i) {
-        case 1:
-            return Test1;
-            break;
-        case 2:
-            return Test2;
-        case 3:
-            return Test3;
-        case 4:
-            return Test4;
-        case 5:
-            return Test5;
-        default:
-            return nullptr;
+    auto tests = GetAllTests();
+    if(i < tests.size()) {
+        return tests[i];
+    } else {
+        return nullptr;
     }
+}
+
+std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
+    std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
+        {Test1, Test2, Test3, Test4, Test5};
+    return tests;
 }
 
 int TestFactory::TestCount() {
