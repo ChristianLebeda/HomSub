@@ -32,10 +32,12 @@ int main(int argc, char *argv[])
         } else {
             if(i+1 < argc) {
                 std::string value = argv[i+1];
+                
                 if (value.rfind("-", 0) != 0) {
-                    argMap[arg] = "";
-                } else {
                     argMap[arg] = value;
+                    i++;
+                } else {
+                    argMap[arg] = "";
                 }
             } else {
                 argMap[arg] = "";
@@ -71,7 +73,6 @@ int main(int argc, char *argv[])
     if(argMap.count("-all")) {
         settings.SetRunAll(true);
     }
-    
     
     if(argMap.count("-run")) {
         std::cout << "This should run the agorithm on files provided but does nothing"<< std::endl;

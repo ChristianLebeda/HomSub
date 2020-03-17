@@ -16,6 +16,7 @@
 #include "experiments/test_settings.h"
 #include <memory>
 #include "homomorphism/configuration_factory.h"
+#include <future>
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
@@ -33,9 +34,11 @@
 
 #define STOP_CLOCK stop = std::chrono::steady_clock::now();duration = milliSecondDifferene(start, stop);
 
-#define ITERATIVE_START n = 1; while( ((float)duration/1000.0) < settings.GetPrTestTime()) {
+#define ITERATIVE_START(init) n = init; while( ((float)duration/1000.0) < settings.GetPrTestTime()) {
 
-#define ITERATIVE_END n++;} logger.NotifyTestIterative(n, "", duration);
+#define ITERATIVE_END(incr) logger.NotifyTestIterative(n, "", duration);incr;}
+
+#define LOG(note) 
 
 #define STEPLOOP_START \
     for(int k = 2; k <= 5; k++) { \
@@ -58,7 +61,15 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
 
 std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
     std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
-        {Test1, Test2, Test3, Test4, Test5};
+        {
+            SquaresInGrid,
+            BinaryTreeInBinaryTree,
+            CliquesInClique,
+            EdgesInPath,
+            PathInRandomGraph,
+            RandomPatternsInRandomGraph,
+            joinHandler
+        };
     return tests;
 }
 
@@ -66,115 +77,117 @@ int TestFactory::TestCount() {
     return 0;
 }
 
-void TestFactory::Test1(TestSettings& settings, TestLogger& logger)
+void TestFactory::SquaresInGrid(TestSettings& settings, TestLogger& logger)
 {
-    BEGIN_TEST("DecomposeSquare");
+    BEGIN_TEST("SquareInNGrid");
     
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     GraphGenerator::CompleteGrid(h, 2, 2);
     
-    SUBSTEP_START(SubStep::CREATE_SPASM);
-    START_CLOCK;
-    auto spasm = Main::spasmFromGraph(h);
-    STOP_CLOCK;
-    SUBSTEP_END("");
-    
-    SUBSTEP_START(SubStep::DECOMPOSE_SPASM);
-    START_CLOCK;
-    Main::decomposedSpasmFromSpasm(spasm);
-    STOP_CLOCK;
-    SUBSTEP_END("");
-    
-    END_TEST;
-}
-
-void TestFactory::Test2(TestSettings& settings, TestLogger& logger)
-{
-    BEGIN_TEST("SpasmFromSquare");
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2); //Should h be initialised between steps?
-    
-    SUBSTEP_START(SubStep::CREATE_SPASM);
-    START_CLOCK;
-    Main::spasmFromGraph(h);
-    STOP_CLOCK;
-    SUBSTEP_END("Method1");
-    
-    SUBSTEP_START(SubStep::CREATE_SPASM);
-    START_CLOCK;
-    Main::spasmFromGraph(h);
-    STOP_CLOCK;
-    SUBSTEP_END("Method2");
-    
-    SUBSTEP_START(SubStep::CREATE_SPASM);
-    START_CLOCK;
-    Main::spasmFromGraph(h);
-    STOP_CLOCK;
-    SUBSTEP_END("Method3");
-    
-    SUBSTEP_START(SubStep::CREATE_SPASM);
-    START_CLOCK;
-    Main::spasmFromGraph(h);
-    STOP_CLOCK;
-    SUBSTEP_END("Method4");
-    
-    END_TEST;
-}
-
-void TestFactory::Test3(TestSettings& settings, TestLogger& logger) {
-    BEGIN_TEST("SquareSanity");
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    GraphGenerator::CompleteGrid(g, 2, 2);
-    ASSERT_START(1);
-    long result = Main::subgraphsGraph(h, g);
-    ASSERT_END("InSquare", result)
-    
-    GraphGenerator::CompleteGrid(g, 3, 3);
-    ASSERT_START(4);
-    result = Main::subgraphsGraph(h, g);
-    ASSERT_END("In3x3", result)
-    
-    GraphGenerator::CompleteGrid(g, 4, 3);
-    ASSERT_START(6);
-    result = Main::subgraphsGraph(h, g);
-    ASSERT_END("In4x3", result)
-    END_TEST;
-}
-
-void TestFactory::Test4(TestSettings& settings, TestLogger& logger)
-{
-    
-    BEGIN_TEST("SquareInN-Grid");
-    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
-    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
-    GraphGenerator::CompleteGrid(h, 2, 2);
-    
-    ITERATIVE_START;
-    GraphGenerator::CompleteGrid(g, n*2, n*2);
+    ITERATIVE_START(1);
+    GraphGenerator::CompleteGrid(g, n, n);
     START_CLOCK;
     Main::subgraphsGraph(h, g);
     STOP_CLOCK;
-    ITERATIVE_END;
+    ITERATIVE_END(n = n*2);
+     
     
     END_TEST;
 }
 
-void TestFactory::Test5(TestSettings& settings, TestLogger& logger)
+void TestFactory::BinaryTreeInBinaryTree(TestSettings& settings, TestLogger& logger)
 {
+    BEGIN_TEST("BinaryTreeInBinaryTree");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g  = AdjacencyMatrixGraph::testGraph();
     
-    BEGIN_TEST("DecomposeNClique");
+
+    for(int k = 1; k < 4; k++) {
+        GraphGenerator::CompleteBinaryTree(h, k);
+        GraphGenerator::CompleteBinaryTree(g, k+3);
+        
+        START_CLOCK;
+        Main::subgraphsGraph(h, g);
+        STOP_CLOCK;
+        logger.NotifyTestIterative(k, "", duration);
+    }
+    
+    
+    END_TEST;
+}
+
+void TestFactory::CliquesInClique(TestSettings& settings, TestLogger& logger) {
+    BEGIN_TEST("CliquesInLargerCliques");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    ITERATIVE_START;
-    GraphGenerator::Clique(g, n*2);
-    START_CLOCK;
-    auto spasm = Main::spasmFromGraph(g);
-    Main::decomposedSpasmFromSpasm(spasm);
-    STOP_CLOCK;
-    ITERATIVE_END;
+    for(int n = 1; n < 6; n++) {
+        GraphGenerator::Clique(h, n);
+        GraphGenerator::Clique(g, n*n);
+        START_CLOCK;
+        Main::subgraphsGraph(h, g);
+        STOP_CLOCK;
+        logger.NotifyTestIterative(n, "", duration);
+    }
+
+    END_TEST;
+}
+
+void TestFactory::EdgesInPath(TestSettings& settings, TestLogger& logger)
+{
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    
+    GraphGenerator::Path(h, 1);
+    
+    BEGIN_TEST("EdgesInPath");
+    
+    for(int n = 1; n < 1025; n = n*2) {
+        GraphGenerator::Path(g, n);
+        START_CLOCK;
+        Main::subgraphsGraph(h, g);
+        STOP_CLOCK;
+        logger.NotifyTestIterative(n, "", duration);
+    }
+    
+    END_TEST;
+}
+
+void TestFactory::PathInRandomGraph(TestSettings& settings, TestLogger& logger)
+{
+    
+    BEGIN_TEST("path in random graph");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    
+    for(int k = 1; k < 6; k++) {
+        GraphGenerator::Path(h, k);
+        GraphGenerator::EdgeProbabilityGraph(g, 1 << k, 0.5f);
+        START_CLOCK;
+        Main::subgraphsGraph(h, g);
+        STOP_CLOCK;
+        logger.NotifyTestIterative(k, "", duration);
+    }
+    
+    END_TEST;
+}
+
+void TestFactory::RandomPatternsInRandomGraph(TestSettings &settings, TestLogger &logger)
+{
+    BEGIN_TEST("random pattern in random graph");
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    
+    for(int k = 1; k < 6; k++) {
+        GraphGenerator::EdgeProbabilityGraph(h, k, 0.5f);
+        GraphGenerator::EdgeProbabilityGraph(g, 1 << k, 0.5f);
+        START_CLOCK;
+        Main::subgraphsGraph(h, g);
+        STOP_CLOCK;
+        logger.NotifyTestIterative(k, "", duration);
+    }
     
     END_TEST;
 }

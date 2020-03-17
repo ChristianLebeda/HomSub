@@ -51,7 +51,8 @@ void TestRunner::PrintHelp()
     std::cout << "-test t   | Run a specific test" << std::endl;
     std::cout << "-group g  | Runs a test group: correctness (c), performance (p) or all (a)" << std::endl;
     std::cout << "-csv      | Test results formatted as csv" << std::endl;
-    std::cout << "-seed     | Specify the seed used by the random graphs";
+    std::cout << "-seed     | Specify the seed used by the random graphs" << std::endl;
+    std::cout << "-time     | Set the timout limit for incremental tests" << std::endl;
     //std::cout << "-mask m   | Run several tests masked by given signed integer (-1 runs all)" << std::endl;
     //std::cout << "-run h g | Count occurences of pattern h in host g" << std::endl;
     

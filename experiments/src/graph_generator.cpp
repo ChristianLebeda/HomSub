@@ -34,7 +34,6 @@ void GraphGenerator::CompleteBinaryTree(std::shared_ptr<Graph> g, int depth) {
     g->clear(verts);
     for(int i = 1; i < verts; i++) {
         g->addEdge(i, ((i+1) >> 1) - 1);
-        std::cout << "connected " << i << " to " << ((i+1) >> 1)-1 << std::endl;
     }
 }
 
