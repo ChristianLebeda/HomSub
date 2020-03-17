@@ -26,7 +26,9 @@ private:
     static void Test3(TestSettings& settings, TestLogger& logger);
     static void Test4(TestSettings& settings, TestLogger& logger);
     static void Test5(TestSettings& settings, TestLogger& logger);
+    static void joinHandler(TestSettings& settings, TestLogger& logger);
     static int milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop);
+    static void fillVector(std::vector<size_t> data);
 };
 
 #endif /* test_factory_h */

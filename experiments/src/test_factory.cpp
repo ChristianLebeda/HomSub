@@ -15,6 +15,7 @@
 #include "experiments/graph_generator.h"
 #include "experiments/test_settings.h"
 #include <memory>
+#include "homomorphism/configuration_factory.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
@@ -28,13 +29,23 @@
 
 #define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
 
-#define START_CLOCK start = std::chrono::steady_clock::now()
+#define START_CLOCK start = std::chrono::steady_clock::now();
 
-#define STOP_CLOCK stop = std::chrono::steady_clock::now();duration = milliSecondDifferene(start, stop)
+#define STOP_CLOCK stop = std::chrono::steady_clock::now();duration = milliSecondDifferene(start, stop);
 
 #define ITERATIVE_START n = 1; while( ((float)duration/1000.0) < settings.GetPrTestTime()) {
 
 #define ITERATIVE_END n++;} logger.NotifyTestIterative(n, "", duration);
+
+#define STEPLOOP_START \
+    for(int k = 2; k <= 5; k++) { \
+        for(int logn = 3; logn <= 10; logn++) { \
+            int n = 1 << logn; \
+            int c = k * logn; \
+            // Skip too small or too large cases \
+            if(15 > c || c > 28) { continue; }
+
+#define STEPLOOP_END } }
 
 std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
     auto tests = GetAllTests();
@@ -168,6 +179,35 @@ void TestFactory::Test5(TestSettings& settings, TestLogger& logger)
     END_TEST;
 }
 
+void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("JoinHandler")
+
+    JoinHandler jh;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+    vec1.resize(1 << c);
+    fillVector(vec1);
+    vec2.resize(1 << c);
+    fillVector(vec2);
+    // TODO: Update log
+    START_CLOCK
+    jh.join(vec1, vec2);
+    STOP_CLOCK
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
 int TestFactory::milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop) {
     return std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+}
+
+void TestFactory::fillVector(std::vector<size_t> data) {
+    for(auto & entry : data) {
+        entry = rand();
+    }
 }
