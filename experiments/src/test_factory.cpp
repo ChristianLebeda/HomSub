@@ -17,6 +17,8 @@
 #include <memory>
 #include "homomorphism/configuration_factory.h"
 #include <future>
+#include "homomorphism/calculation_remapper.h"
+#include "homomorphism/iterator_remapper.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
@@ -45,8 +47,9 @@
         for(int logn = 3; logn <= 10; logn++) { \
             int n = 1 << logn; \
             int c = k * logn; \
-            // Skip too small or too large cases \
-            if(15 > c || c > 28) { continue; }
+            /* Skip too small or too large cases */ \
+            if(15 > c || c > 28) { continue; } \
+            size_t size = 1 << c;
 
 #define STEPLOOP_END } }
 
@@ -68,7 +71,12 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             EdgesInPath,
             PathInRandomGraph,
             RandomPatternsInRandomGraph,
-            joinHandler
+            ForgetLeastSignificant,
+            joinHandler,
+            InsertClosedForm,
+            ExtractClosedForm,
+            InsertIterator,
+            ExtractIterator
         };
     return tests;
 }
@@ -192,6 +200,29 @@ void TestFactory::RandomPatternsInRandomGraph(TestSettings &settings, TestLogger
     END_TEST;
 }
 
+void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ForgetLeastSignificant")
+
+    ForgetHandler handler;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+        vec1.resize(size);
+        fillVector(vec1);
+        vec2.resize(size / n);
+        fillVector(vec2);
+        // TODO: Update log
+        START_CLOCK
+        handler.forgetLast(vec1, vec2, n);
+        STOP_CLOCK
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
 void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("JoinHandler")
 
@@ -201,14 +232,110 @@ void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
 
     STEPLOOP_START
 
-    vec1.resize(1 << c);
-    fillVector(vec1);
-    vec2.resize(1 << c);
-    fillVector(vec2);
-    // TODO: Update log
-    START_CLOCK
-    jh.join(vec1, vec2);
-    STOP_CLOCK
+        vec1.resize(size);
+        fillVector(vec1);
+        vec2.resize(size);
+        fillVector(vec2);
+        // TODO: Update log
+        START_CLOCK
+        jh.join(vec1, vec2);
+        STOP_CLOCK
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::InsertClosedForm(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("InsertClosedForm")
+
+    CalculationRemapper remapper;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+        vec1.resize(size);
+        fillVector(vec1);
+        vec2.resize(size);
+        remapper.SetSizes(n, k);
+        for(int pos = 0; pos < k - 1; pos++) {
+            START_CLOCK
+            remapper.Insert(vec1, vec2, pos);
+            STOP_CLOCK
+        }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::ExtractClosedForm(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ExtractClosedForm")
+
+    CalculationRemapper remapper;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+        vec1.resize(size);
+        fillVector(vec1);
+        vec2.resize(size);
+        remapper.SetSizes(n, k);
+        for(int pos = 0; pos < k - 1; pos++) {
+            START_CLOCK
+            remapper.Extract(vec1, vec2, pos);
+            STOP_CLOCK
+        }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::InsertIterator(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("InsertIterator")
+
+    IteratorRemapper remapper;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+        vec1.resize(size);
+        fillVector(vec1);
+        vec2.resize(size);
+        remapper.SetSizes(n, k);
+        for(int pos = 0; pos < k - 1; pos++) {
+            START_CLOCK
+            remapper.Insert(vec1, vec2, pos);
+            STOP_CLOCK
+        }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::ExtractIterator(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ExtractIterator")
+
+    IteratorRemapper remapper;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+        vec1.resize(size);
+        fillVector(vec1);
+        vec2.resize(size);
+        remapper.SetSizes(n, k);
+        for(int pos = 0; pos < k - 1; pos++) {
+            START_CLOCK
+            remapper.Extract(vec1, vec2, pos);
+            STOP_CLOCK
+        }
 
     STEPLOOP_END
 
