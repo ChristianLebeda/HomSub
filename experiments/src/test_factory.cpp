@@ -20,17 +20,9 @@
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/iterator_remapper.h"
 
-#define BEGIN_TEST(name) logger.NotifyTestStart(name);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
+#define BEGIN_TEST(name) logger.NotifyTestStart(name);std::vector<int> durations(settings.GetRepetitions(),0);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
 #define END_TEST logger.NotifyTestEnd(duration);
-
-#define SUBSTEP_START(substep) step = substep;
-
-#define SUBSTEP_END(note) logger.NotifyTestSubstep(step, note, duration);
-
-#define ASSERT_START(expected) exp = expected;
-
-#define ASSERT_END(note, result) logger.NotifyTestAssert(note,exp == result);
 
 #define START_CLOCK start = std::chrono::steady_clock::now();
 
@@ -40,7 +32,15 @@
 
 #define ITERATIVE_END(incr) logger.NotifyTestIterative(n, "", duration);incr;}
 
-#define LOG(note) 
+#define REPEATED_CLOCK_START \
+    for(int r = 0; r < settings.GetRepetitions(); r++) { \
+        START_CLOCK;
+
+#define REPEATED_CLOCK_END \
+        STOP_CLOCK; \
+        durations[r] = duration; \
+    }
+    
 
 #define STEPLOOP_START \
     for(int k = 2; k <= 5; k++) { \
@@ -94,14 +94,14 @@ void TestFactory::SquaresInGrid(TestSettings& settings, TestLogger& logger)
     
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    ITERATIVE_START(1);
-    GraphGenerator::CompleteGrid(g, n, n);
-    START_CLOCK;
-    Main::subgraphsGraph(h, g);
-    STOP_CLOCK;
-    ITERATIVE_END(n = n*2);
-     
-    
+    for(int n = 1; n < 17; n = n * 2) {
+        GraphGenerator::CompleteGrid(g, n, n);
+        REPEATED_CLOCK_START;
+        Main::subgraphsGraph(h, g);
+        REPEATED_CLOCK_END;
+        logger.Log("", n, 4, averageDuration(durations));
+    }
+
     END_TEST;
 }
 
@@ -116,10 +116,10 @@ void TestFactory::BinaryTreeInBinaryTree(TestSettings& settings, TestLogger& log
         GraphGenerator::CompleteBinaryTree(h, k);
         GraphGenerator::CompleteBinaryTree(g, k+3);
         
-        START_CLOCK;
+        REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
-        STOP_CLOCK;
-        logger.NotifyTestIterative(k, "", duration);
+        REPEATED_CLOCK_END;
+        logger.Log("", k+3, k, averageDuration(durations));
     }
     
     
@@ -134,10 +134,10 @@ void TestFactory::CliquesInClique(TestSettings& settings, TestLogger& logger) {
     for(int n = 1; n < 6; n++) {
         GraphGenerator::Clique(h, n);
         GraphGenerator::Clique(g, n*n);
-        START_CLOCK;
+        REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
-        STOP_CLOCK;
-        logger.NotifyTestIterative(n, "", duration);
+        REPEATED_CLOCK_END;
+        logger.Log("", n*n, n, averageDuration(durations));
     }
 
     END_TEST;
@@ -154,10 +154,10 @@ void TestFactory::EdgesInPath(TestSettings& settings, TestLogger& logger)
     
     for(int n = 1; n < 1025; n = n*2) {
         GraphGenerator::Path(g, n);
-        START_CLOCK;
+        REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
-        STOP_CLOCK;
-        logger.NotifyTestIterative(n, "", duration);
+        REPEATED_CLOCK_END;
+        logger.Log("", n, 2, duration);
     }
     
     END_TEST;
@@ -166,17 +166,17 @@ void TestFactory::EdgesInPath(TestSettings& settings, TestLogger& logger)
 void TestFactory::PathInRandomGraph(TestSettings& settings, TestLogger& logger)
 {
     
-    BEGIN_TEST("path in random graph");
+    BEGIN_TEST("PathInRandomGraph");
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    for(int k = 1; k < 6; k++) {
+    for(int k = 1; k < 8; k++) {
         GraphGenerator::Path(h, k);
         GraphGenerator::EdgeProbabilityGraph(g, 1 << k, 0.5f);
-        START_CLOCK;
+        REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
-        STOP_CLOCK;
-        logger.NotifyTestIterative(k, "", duration);
+        REPEATED_CLOCK_END;
+        logger.Log("", 1 << k, k+1);
     }
     
     END_TEST;
@@ -184,17 +184,17 @@ void TestFactory::PathInRandomGraph(TestSettings& settings, TestLogger& logger)
 
 void TestFactory::RandomPatternsInRandomGraph(TestSettings &settings, TestLogger &logger)
 {
-    BEGIN_TEST("random pattern in random graph");
+    BEGIN_TEST("RandomPatternInRandomGraph");
     std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    for(int k = 1; k < 6; k++) {
+    for(int k = 1; k < 7; k++) {
         GraphGenerator::EdgeProbabilityGraph(h, k, 0.5f);
         GraphGenerator::EdgeProbabilityGraph(g, 1 << k, 0.5f);
-        START_CLOCK;
+        REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
-        STOP_CLOCK;
-        logger.NotifyTestIterative(k, "", duration);
+        REPEATED_CLOCK_END;
+        logger.Log("", 1 << k, k, averageDuration(durations));
     }
     
     END_TEST;
@@ -350,4 +350,13 @@ void TestFactory::fillVector(std::vector<size_t> data) {
     for(auto & entry : data) {
         entry = rand();
     }
+}
+
+float TestFactory::averageDuration(std::vector<int> durations)
+{
+    float sum = 0;
+    for(int i = 0 ; i <durations.size(); i++) {
+        sum += durations[i];
+    }
+    return sum / durations.size();
 }

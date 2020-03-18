@@ -50,8 +50,23 @@ void ReadableLogger::NotifyFailed()
     }
 }
 
+
 void ReadableLogger::NotifyRunStart()
 {
     
 }
 
+void ReadableLogger::Log(std::string comment, int n, float duration)
+{
+    
+}
+
+void ReadableLogger::Log(std::string comment, int n, int k, float duration)
+{
+    
+}
+
+void ReadableLogger::Log(std::string comment, int n, int k, int i, float duration)
+{
+    
+}

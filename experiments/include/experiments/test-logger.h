@@ -15,6 +15,9 @@ public:
     virtual void NotifyTestAssert(std::string note,bool passed) = 0;
     virtual void NotifyFailed() = 0;
     virtual void NotifyRunStart() = 0;
+    virtual void Log(std::string comment, int n, float duration) = 0;
+    virtual void Log(std::string comment, int n, int k, float duration) = 0;
+    virtual void Log(std::string comment, int n, int k, int i, float duration) = 0;
     static std::string subStepToString(SubStep step);
 };
 

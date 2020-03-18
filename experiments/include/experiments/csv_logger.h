@@ -14,10 +14,12 @@ public:
     void NotifyTestAssert(std::string note,bool passed);
     void NotifyFailed();
     void NotifyRunStart();
+    void Log(std::string comment, int n, float duration);
+    void Log(std::string comment, int n, int k, float duration);
+    void Log(std::string comment, int n, int k, int i, float duration);
 private:
     std::ostream &stream_;
     std::string currentTestName_;
-    void logCSV(std::string info, std::string comment, std::string result);
 };
 
 #endif /* csv_logger_h */

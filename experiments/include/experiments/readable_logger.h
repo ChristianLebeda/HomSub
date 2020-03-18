@@ -14,6 +14,9 @@ public:
     void NotifyTestAssert(std::string note,bool passed);
     void NotifyFailed();
     void NotifyRunStart();
+    void Log(std::string comment, int n, float duration);
+    void Log(std::string comment, int n, int k, float duration);
+    void Log(std::string comment, int n, int k, int i, float duration);
 private:
     size_t failed_;
     std::ostream &stream_;

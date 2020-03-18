@@ -36,12 +36,19 @@ public:
     int GetPrTestTime() {
         return prTestTime_;
     }
+    int GetRepetitions() {
+        return repetitions_;
+    }
+    void SetRepetitions(int repetitions) {
+        repetitions_ = repetitions;
+    }
 private:
     int randomSeed_;
     int singleTest_;
     bool runSingleTest_;
     bool runAll_;
     int prTestTime_;
+    int repetitions_;
     TreeWidthSolver *tws_;
 };
 
