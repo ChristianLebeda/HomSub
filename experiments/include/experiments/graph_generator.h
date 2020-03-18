@@ -11,18 +11,17 @@ class GraphGenerator
 public:
     // TODO: Cleanup. decide between static or not and remove one clique implementation
     static void CompleteGrid(std::shared_ptr<Graph> g, int rows, int columns);
-    void RandomConnectedGrid(std::shared_ptr<Graph> g, int rows, int columns);
+    static void RandomConnectedGrid(std::shared_ptr<Graph> g, int rows, int columns);
     static void Path(std::shared_ptr<Graph> g, int length);
     static void Cycle(std::shared_ptr<Graph> g, int length);
     static void CompleteBinaryTree(std::shared_ptr<Graph> g, int depth);
-    void Clique(std::shared_ptr<Graph> g, size_t n);
-    void RandomConnectedGraph(std::shared_ptr<Graph> g, size_t verts, size_t edges);
+    static void RandomConnectedGraph(std::shared_ptr<Graph> g, size_t verts, size_t edges);
     static void EdgeProbabilityGraph(std::shared_ptr<Graph> g, size_t verts, float probability);
     static void VertexPairs(std::shared_ptr<Graph> g, int pairCount);
     static void Clique(std::shared_ptr<Graph> g, int size);
 private:
     static float RandomFloat();
-    size_t RandomSize(size_t max);
+    static size_t RandomSize(size_t max);
 };
 
 #endif

@@ -17,18 +17,6 @@
     }
 }
 
-void GraphGenerator::RandomConnectedGrid(std::shared_ptr<Graph> g, int rows, int columns)
-{
-    for(int c = 0; c < columns; c++) {
-        for(int r = 0; r < rows; r++) {
-            size_t neighbours = g->getNeighbourhood(rows * c + r).size();
-            if(!neighbours) {
-                size_t toAdd = RandomSize(4);
-            }
-        }
-    }
-}
-
 void GraphGenerator::CompleteBinaryTree(std::shared_ptr<Graph> g, int depth) {
     size_t verts = ~(-1 << depth);
     g->clear(verts);
@@ -77,15 +65,6 @@ void GraphGenerator::Path(std::shared_ptr<Graph> g, int length) {
 void GraphGenerator::Cycle(std::shared_ptr<Graph> g, int length) {
     Path(g, length);
     g->addEdge(length-1, 0);
-}
-
-void GraphGenerator::Clique(std::shared_ptr<Graph> g, size_t n) {
-    g->clear(n);
-    for(size_t u = 0 ;u < n; u++) {
-        for(size_t v = u + 1 ; v < n; v++) {
-            g->addEdge(u, v);
-        }
-    }
 }
 
 void GraphGenerator::EdgeProbabilityGraph(std::shared_ptr<Graph> g, size_t verts, float probability)
