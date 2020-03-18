@@ -1,8 +1,11 @@
 #ifndef TEST_RUNNER_h
 #define TEST_RUNNER_h
 
+#include <functional>
+
 #include "experiments/test_settings.h"
 #include "experiments/test-logger.h"
+
 class TestRunner
 {
 public:

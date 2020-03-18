@@ -27,7 +27,15 @@ private:
     static void EdgesInPath(TestSettings& settings, TestLogger& logger);
     static void PathInRandomGraph(TestSettings& settings, TestLogger& logger);
     static void RandomPatternsInRandomGraph(TestSettings& settings, TestLogger& logger);
+    static void ForgetLeastSignificant(TestSettings& settings, TestLogger& logger);
+    //static void ForgetMostSignificant(TestSettings& settings, TestLogger& logger);
+    static void joinHandler(TestSettings& settings, TestLogger& logger);
+    static void InsertClosedForm(TestSettings& settings, TestLogger& logger);
+    static void ExtractClosedForm(TestSettings& settings, TestLogger& logger);
+    static void InsertIterator(TestSettings& settings, TestLogger& logger);
+    static void ExtractIterator(TestSettings& settings, TestLogger& logger);
     static int milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop);
+    static void fillVector(std::vector<size_t> data);
 };
 
 #endif /* test_factory_h */
