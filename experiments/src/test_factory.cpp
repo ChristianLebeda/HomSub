@@ -152,7 +152,7 @@ void TestFactory::EdgesInPath(TestSettings& settings, TestLogger& logger)
     
     BEGIN_TEST("EdgesInPath");
     
-    for(int n = 1; n < 1025; n = n*2) {
+    for(int n = 1; n < 4097; n = n*2) {
         GraphGenerator::Path(g, n);
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
@@ -214,9 +214,10 @@ void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &log
         vec2.resize(size / n);
         fillVector(vec2);
         // TODO: Update log
-        START_CLOCK
+        REPEATED_CLOCK_START;
         handler.forgetLast(vec1, vec2, n);
-        STOP_CLOCK
+        REPEATED_CLOCK_END;
+        logger.Log("", n, k, duration);
 
     STEPLOOP_END
 
@@ -228,7 +229,7 @@ void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
 
     JoinHandler jh;
 
-    std::vector<size_t> vec1, vec2;
+    std::vector<size_t> vec1, vec1Copy, vec2;
 
     STEPLOOP_START
 
@@ -236,10 +237,12 @@ void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
         fillVector(vec1);
         vec2.resize(size);
         fillVector(vec2);
+        vec1Copy = vec1;
         // TODO: Update log
-        START_CLOCK
-        jh.join(vec1, vec2);
-        STOP_CLOCK
+        REPEATED_CLOCK_START;
+        jh.join(vec1Copy, vec2);
+        REPEATED_CLOCK_END;
+        logger.Log("", n, k, duration);
 
     STEPLOOP_END
 
@@ -260,9 +263,10 @@ void TestFactory::InsertClosedForm(TestSettings &settings, TestLogger &logger) {
         vec2.resize(size);
         remapper.SetSizes(n, k);
         for(int pos = 0; pos < k - 1; pos++) {
-            START_CLOCK
+            REPEATED_CLOCK_START;
             remapper.Insert(vec1, vec2, pos);
-            STOP_CLOCK
+            REPEATED_CLOCK_END;
+            logger.Log("", n, k, pos, duration);
         }
 
     STEPLOOP_END
@@ -284,9 +288,10 @@ void TestFactory::ExtractClosedForm(TestSettings &settings, TestLogger &logger) 
         vec2.resize(size);
         remapper.SetSizes(n, k);
         for(int pos = 0; pos < k - 1; pos++) {
-            START_CLOCK
+            REPEATED_CLOCK_START;
             remapper.Extract(vec1, vec2, pos);
-            STOP_CLOCK
+            REPEATED_CLOCK_END;
+            logger.Log("", n, k, pos, duration);
         }
 
     STEPLOOP_END
@@ -308,9 +313,10 @@ void TestFactory::InsertIterator(TestSettings &settings, TestLogger &logger) {
         vec2.resize(size);
         remapper.SetSizes(n, k);
         for(int pos = 0; pos < k - 1; pos++) {
-            START_CLOCK
+            REPEATED_CLOCK_START;
             remapper.Insert(vec1, vec2, pos);
-            STOP_CLOCK
+            REPEATED_CLOCK_END;
+            logger.Log("", n, k, pos, duration);
         }
 
     STEPLOOP_END
@@ -332,9 +338,10 @@ void TestFactory::ExtractIterator(TestSettings &settings, TestLogger &logger) {
         vec2.resize(size);
         remapper.SetSizes(n, k);
         for(int pos = 0; pos < k - 1; pos++) {
-            START_CLOCK
+            REPEATED_CLOCK_START;
             remapper.Extract(vec1, vec2, pos);
-            STOP_CLOCK
+            REPEATED_CLOCK_END;
+            logger.Log("", n, k, pos, duration);
         }
 
     STEPLOOP_END
