@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
             if(i+1 < argc) {
                 std::string value = argv[i+1];
                 
-                if (value.rfind("-", 0) != 0) {
+                if (value.rfind('-', 0) != 0) {
                     argMap[arg] = value;
                     i++;
                 } else {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     
     //Set TreeWidthSolver settings
     if(argMap.count("-tws")) {
-        if(argMap["-tws"].compare("tamaki") == 0) {
+        if(argMap["-tws"] == "tamaki") {
             TamakiRunner t;
             settings.SetTWS(&t);
         }
@@ -69,13 +69,13 @@ int main(int argc, char *argv[])
         int testNum = std::stoi(argMap["-test"]);
         settings.SetSingleTest(testNum);
     }
-    
-    if(argMap.count("-all")) {
+
+    if(argMap.count("-all") || !argMap.count("-test")) {
         settings.SetRunAll(true);
     }
     
     if(argMap.count("-run")) {
-        std::cout << "This should run the agorithm on files provided but does nothing"<< std::endl;
+        std::cout << "This should run the algorithm on files provided but does nothing"<< std::endl;
     }
     
     if(argMap.count("-time")) {
@@ -84,9 +84,24 @@ int main(int argc, char *argv[])
     } else {
         settings.SetPrTestTime(5);
     }
+
+    if(argMap.count("-group")) {
+        if(argMap["-group"] == "a" || argMap["-group"] == "(a)" || argMap["-group"] == "all") {
+            settings.SetGroup(true, true);
+        } else if(argMap["-group"] == "c" || argMap["-group"] == "(c)" || argMap["-group"] == "correctness") {
+            settings.SetGroup(true, false);
+        } else if(argMap["-group"] == "p" || argMap["-group"] == "(p)" || argMap["-group"] == "performance") {
+            settings.SetGroup(false, true);
+        } else {
+            std::cout << "Unknown value for group. Use: correctness, performance or all" << std::endl;
+            return 1;
+        }
+    } else {
+        settings.SetGroup(false, true);
+    }
     
     TestLogger *logger;
-    
+
     if(argMap.count("-csv")) {
         CSVLogger csvLogger(std::cout);
         logger = &csvLogger;
