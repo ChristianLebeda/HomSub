@@ -18,7 +18,7 @@ public:
     AdjacencyMatrixGraph(size_t v, size_t e) : vertices_(v), edges_(e), matrix_(Matrix(v * v,  0 )) { };
     AdjacencyMatrixGraph(size_t v, size_t e, Matrix a) : vertices_(v), edges_(e), matrix_(a) { };
     
-    static std::shared_ptr<AdjacencyMatrixGraph> fromGraph6(std::string graph6);
+    static std::shared_ptr<AdjacencyMatrixGraph> fromGraph6(std::string graph6, bool includeG);
     static std::shared_ptr<AdjacencyMatrixGraph> fromFile(std::string path);
     static std::shared_ptr<AdjacencyMatrixGraph> testGraph();
     static std::shared_ptr<AdjacencyMatrixGraph> parseNautyFormat(const std::string& nauty, size_t n);

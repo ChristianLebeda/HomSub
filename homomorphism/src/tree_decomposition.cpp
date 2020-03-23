@@ -10,6 +10,7 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::istream& inpu
     } while (line[0] == 'c');
     size_t bagN, width, n;
     if (!std::sscanf(line.c_str(), "s td %zd %zd %zd", &bagN, &width, &n)) return nullptr;
+    width--;
     //TODO: Specific Graph. Maybe this should be generic
     std::shared_ptr <EdgeSetGraph> G = std::make_shared<EdgeSetGraph>(n);
  
@@ -51,7 +52,7 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::istream& inpu
 std::string TreeDecomposition::toTd() 
 {
     std::ostringstream str;
-    str << "s td " << bags.size() << " " << width_ << " " << graph->vertCount() << "\n";
+    str << "s td " << bags.size() << " " << (width_ + 1) << " " << graph->vertCount() << "\n";
 
     for (size_t i = 0; i < bags.size(); i++)
     {

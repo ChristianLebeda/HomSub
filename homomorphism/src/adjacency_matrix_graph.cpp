@@ -17,10 +17,12 @@ void AdjacencyMatrixGraph::clear(size_t v)
     matrix_ = Matrix(v * v, 0 );
 }
 
-std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::string graph6) {
+std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::fromGraph6(std::string graph6, bool includeG) {
     std::stringstream str(graph6);
     unsigned char input;
-    str >> input;
+    if(includeG) {
+        str >> input;
+    }
 
     size_t n = Graph6helper::readN(str);
 

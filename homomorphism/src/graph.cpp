@@ -5,9 +5,12 @@
 
 #include "homomorphism/graph6helper.h"
 
-std::string Graph::toGraph6() {
+std::string Graph::toGraph6(bool includeG) {
     std::ostringstream str;
-    str << "G" << Graph6helper::N(vertCount());
+    if(includeG) {
+        str << "G";
+    }
+    str << Graph6helper::N(vertCount());
     std::bitset<6> buffer;
     int idx = 6;
     for (size_t u = 1; u < vertCount(); u++)
