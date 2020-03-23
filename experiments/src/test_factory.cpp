@@ -176,7 +176,7 @@ void TestFactory::PathInRandomGraph(TestSettings& settings, TestLogger& logger)
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
         REPEATED_CLOCK_END;
-        logger.Log("", 1 << k, k+1);
+        logger.Log("", 1 << k, k, averageDuration(durations));
     }
     
     END_TEST;
