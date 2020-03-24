@@ -63,14 +63,18 @@ void TestRunner::PrintHelp()
 {
     std::cout
         << "Give the program a sequence of parameters in order to adjust execution. Supported parameters are described here:\n" << std::endl
-        << "-help     | Get this help screen" << std::endl
+        << "-help      | Get this help screen" << std::endl
         //<< "-list     | List all tests" << std::endl
-        << "-test t   | Run a specific test based on its number" << std::endl
-        << "-group g  | Runs a test group: correctness (c), performance (p) or all (a)" << std::endl
-        << "            Performance group is default" << std::endl
-        << "-csv      | Output test results formatted as csv" << std::endl
-        << "-seed     | Specify the seed used by the random graphs" << std::endl
-        << "-time     | Set the timout limit for incremental tests" << std::endl
+        << "-test t    | Run a specific test based on its number" << std::endl
+        << "-group g   | Runs a test group: correctness (c), performance (p) or all (a)" << std::endl
+        << "             Performance group is default" << std::endl
+        << "-csv       | Output test results formatted as csv" << std::endl
+        << "-seed      | Specify the seed used by the random graphs" << std::endl
+        << "-time      | Set the timout limit for incremental tests" << std::endl
+        << "-in        | Specifies the path to the input file" << std::endl
+        << "-out       | Specifies the path for the output file" << std::endl
+        << "-spasms    | Converts all graphs from the input file to spasms" << std::endl
+        << "-convertgr | Converts the input file from graph6 to .gr format" << std::endl
         //<< "-mask m   | Run several tests masked by given signed integer (-1 runs all)" << std::endl
         //<< "-run h g | Count occurences of pattern h in host g" << std::endl
         << std::endl;

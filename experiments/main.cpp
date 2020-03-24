@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     TestSettings settings;
 
     std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time",
-                                     "-createspasm", "-convertgr", "-in", "-out"};
+                                     "-spasms", "-convertgr", "-in", "-out"};
 
     for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
         settings.SetPrTestTime(5);
     }
 
-    settings.SetRunSpasmCreation(argMap.count("-createspasm"));
+    settings.SetRunSpasmCreation(argMap.count("-spasms"));
 
     settings.SetRunConvertGr(argMap.count("-convertgr"));
 

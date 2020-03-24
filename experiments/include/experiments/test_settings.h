@@ -62,10 +62,10 @@ public:
         out_ = &filename;
     }
     std::string GetIn() {
-        return *in_;
+        return in_ ? *in_ : "";
     }
     std::string GetOut() {
-        return *out_;
+        return out_ ? *out_ : "";
     }
     int GetPrTestTime() {
         return prTestTime_;
@@ -85,7 +85,7 @@ private:
     bool runPerformance_;
     bool runCreateSpasm_;
     bool runConvertGr_;
-    std::string *in_, *out_;
+    std::string *in_ = nullptr, *out_ = nullptr;
     int prTestTime_;
     int repetitions_;
     TreeWidthSolver *tws_;

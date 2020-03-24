@@ -10,6 +10,11 @@
 void GraphFilesExperiments::CreateAllSpasms(TestSettings &settings, TestLogger &logger) {
     logger.NotifyTestStart("CreatingSpasms");
 
+    if(settings.GetIn().empty() || settings.GetOut().empty()) {
+        std::cerr << "You must specify an input and output file" << std::endl;
+        return;
+    }
+
     std::ifstream input(settings.GetIn());
     std::ofstream output(settings.GetOut());
     auto test = settings.GetIn();
@@ -36,6 +41,12 @@ void GraphFilesExperiments::CreateAllSpasms(TestSettings &settings, TestLogger &
 
 void GraphFilesExperiments::ConvertAllToGr(TestSettings &settings, TestLogger &logger) {
     logger.NotifyTestStart("ConvertGr");
+
+    if(settings.GetIn().empty() || settings.GetOut().empty()) {
+        std::cerr << "You must specify an input and output file" << std::endl;
+        return;
+    }
+
     std::string line;
     std::ifstream input(settings.GetIn());
     std::ofstream output(settings.GetOut());
