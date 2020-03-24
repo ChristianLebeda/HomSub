@@ -4,3 +4,6 @@
 [submodule "nauty"]
 	path = nauty
 	url = https://github.com/lonnen/nauty
+[submodule "ExperimentsResults"]
+	path = ExperimentsResults
+	url = https://github.itu.dk/chle/ExperimentsResults.git
