@@ -5,10 +5,10 @@
 //  Created by Jonas Mortensen on 26/02/2020.
 //
 
-#ifndef TEST_FACTORY_h
-#define TEST_FACTORY_h
+#ifndef EXPERIMENTS_TEST_FACTORY_H
+#define EXPERIMENTS_TEST_FACTORY_H
 #include "experiments/test_settings.h"
-#include "experiments/test-logger.h"
+#include "experiments/test_logger.h"
 
 #include <chrono>
 #include <functional>

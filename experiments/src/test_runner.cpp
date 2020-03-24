@@ -1,22 +1,39 @@
-#include <iostream>
 #include "experiments/test_runner.h"
+
+#include <iostream>
+
 #include "experiments/test_factory.h"
-#include <chrono>
+#include "experiments/graph_files_experiments.h"
+#include "experiments/sanity_test_factory.h"
 
 
 void TestRunner::Run() {
     logger_.NotifyRunStart();
-    
-    srand(settings_.GetRandomSeed());
-    if(settings_.ShouldRunSingleTest()) {
-        RunTest(settings_.GetSingleTest());
+
+    if(settings_.GetRunCreateSpasm()) {
+        GraphFilesExperiments::CreateAllSpasms(settings_, logger_);
+        return;
     }
-    
-    if(settings_.GetRunAll()) {
-        RunTestFromList(TestFactory::GetAllTests());
+    if(settings_.GetRunConvertGr()) {
+        GraphFilesExperiments::ConvertAllToGr(settings_, logger_);
+        return;
     }
 
-    logger_.NotifyFailed();
+    if(settings_.GetRunSanity()) {
+        SanityTestFactory::runAllTests(settings_, logger_);
+        logger_.NotifyFailed();
+    }
+
+    if(settings_.GetRunPerformance()) {
+        srand(settings_.GetRandomSeed());
+        if (settings_.ShouldRunSingleTest()) {
+            RunTest(settings_.GetSingleTest());
+        }
+
+        if (settings_.GetRunAll()) {
+            RunTestFromList(TestFactory::GetAllTests());
+        }
+    }
 }
 
 void TestRunner::RunTestFromMask(int mask)
@@ -36,25 +53,29 @@ void TestRunner::RunTest(int testNum)
     }
 }
 
-void TestRunner::RunTestFromList(std::vector<std::function<void (TestSettings &, TestLogger &)> > tests) {
-    for(int i = 0 ; i < tests.size(); i++) {
-        std::function<void(TestSettings&, TestLogger&)> t = tests[i];
+void TestRunner::RunTestFromList(const std::vector<std::function<void (TestSettings &, TestLogger &)>>& tests) {
+    for(auto t : tests) {
         t(settings_, logger_);
     }
 }
 
 void TestRunner::PrintHelp()
 {
-    std::cout << "Give the program a sequence of parameters in order to adjust execution. Supported parameters are described here:\n" << std::endl;
-    std::cout << "-help     | Get this help screen" << std::endl;
-    //std::cout << "-list     | List all tests" << std::endl;
-    std::cout << "-test t   | Run a specific test" << std::endl;
-    std::cout << "-group g  | Runs a test group: correctness (c), performance (p) or all (a)" << std::endl;
-    std::cout << "-csv      | Test results formatted as csv" << std::endl;
-    std::cout << "-seed     | Specify the seed used by the random graphs" << std::endl;
-    std::cout << "-time     | Set the timout limit for incremental tests" << std::endl;
-    //std::cout << "-mask m   | Run several tests masked by given signed integer (-1 runs all)" << std::endl;
-    //std::cout << "-run h g | Count occurences of pattern h in host g" << std::endl;
-    
-    std::cout << std::endl;
+    std::cout
+        << "Give the program a sequence of parameters in order to adjust execution. Supported parameters are described here:\n" << std::endl
+        << "-help      | Get this help screen" << std::endl
+        //<< "-list     | List all tests" << std::endl
+        << "-test t    | Run a specific test based on its number" << std::endl
+        << "-group g   | Runs a test group: correctness (c), performance (p) or all (a)" << std::endl
+        << "             Performance group is default" << std::endl
+        << "-csv       | Output test results formatted as csv" << std::endl
+        << "-seed      | Specify the seed used by the random graphs" << std::endl
+        << "-time      | Set the timout limit for incremental tests" << std::endl
+        << "-in        | Specifies the path to the input file" << std::endl
+        << "-out       | Specifies the path for the output file" << std::endl
+        << "-spasms    | Converts all graphs from the input file to spasms" << std::endl
+        << "-convertgr | Converts the input file from graph6 to .gr format" << std::endl
+        //<< "-mask m   | Run several tests masked by given signed integer (-1 runs all)" << std::endl
+        //<< "-run h g | Count occurences of pattern h in host g" << std::endl
+        << std::endl;
 }

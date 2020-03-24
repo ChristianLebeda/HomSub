@@ -172,7 +172,7 @@ std::shared_ptr<Spasm> Spasm::deserialize(std::istream& input) {
     std::string g6;
 
     getline(input, g6);
-    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromGraph6(g6);
+    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromGraph6(g6, false);
 
     for (size_t i = 0; i < size; i++)
     {
@@ -182,7 +182,7 @@ std::shared_ptr<Spasm> Spasm::deserialize(std::istream& input) {
 
         str >> coef >> g6;
 
-        graphs.push_back({ AdjacencyMatrixGraph::fromGraph6(g6), coef });
+        graphs.push_back({ AdjacencyMatrixGraph::fromGraph6(g6, false), coef });
     }
 
     return std::make_shared<Spasm>(graphs, g);
@@ -197,13 +197,13 @@ std::string Spasm::serialize() {
     str << "sp " << graphs_.size() << " " << graphs_[0].graph->vertCount() << " "
         << graphs_[0].graph->edgeCount() << "\n";
 
-    str << g_->toGraph6() << "\n";
+    str << g_->toGraph6(false) << "\n";
 
     std::vector<SpasmEntry>::iterator it = graphs_.begin();
 
     while (it != graphs_.end()) {
         SpasmEntry next = *it;
-        str << next.coefficient << " " << next.graph->toGraph6() << "\n";
+        str << next.coefficient << " " << next.graph->toGraph6(false) << "\n";
         it++;
     }
 

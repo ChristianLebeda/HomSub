@@ -99,7 +99,7 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream
 	std::string g6;
 
     getline(input, g6);
-    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromGraph6(g6);
+    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromGraph6(g6, false);
 
 	for (size_t i = 0; i < size; i++)
 	{
@@ -111,7 +111,7 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::deserialize(std::istream
 
 		SpasmDecompositionEntry spe;
 		spe.coefficient = coef;
-		spe.graph = AdjacencyMatrixGraph::fromGraph6(g6);
+		spe.graph = AdjacencyMatrixGraph::fromGraph6(g6, false);
 
 		graphs.push_back(spe);
 	}
@@ -134,13 +134,13 @@ std::string SpasmDecomposition::serialize() {
 	str << "sp " << graphDecomps_.size() << " " << graph_->vertCount() << " "
 		<< graph_->edgeCount() << width_ << "\n";
 
-	str << graph_->toGraph6() << "\n";
+	str << graph_->toGraph6(false) << "\n";
 
 	std::vector<SpasmDecompositionEntry>::iterator it = graphDecomps_.begin();
 
 	while (it != graphDecomps_.end()) {
 		SpasmDecompositionEntry next = *it;
-		str << next.coefficient << " " << next.graph->toGraph6() << "\n";
+		str << next.coefficient << " " << next.graph->toGraph6(false) << "\n";
 		it++;
 	}
 

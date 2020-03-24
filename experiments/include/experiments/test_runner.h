@@ -1,10 +1,10 @@
-#ifndef TEST_RUNNER_h
-#define TEST_RUNNER_h
+#ifndef EXPERIMENTS_TEST_RUNNER_H
+#define EXPERIMENTS_TEST_RUNNER_H
 
 #include <functional>
 
 #include "experiments/test_settings.h"
-#include "experiments/test-logger.h"
+#include "experiments/test_logger.h"
 
 class TestRunner
 {
@@ -17,7 +17,7 @@ private:
     TestLogger& logger_;
     void RunTestFromMask(int mask);
     void RunTest(int testNum);
-    void RunTestFromList(std::vector<std::function<void(TestSettings&, TestLogger&)>> tests);
+    void RunTestFromList(const std::vector<std::function<void(TestSettings&, TestLogger&)>>& tests);
 };
 
 #endif /* test_runner_h */

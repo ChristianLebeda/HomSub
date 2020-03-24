@@ -1,8 +1,8 @@
-#ifndef READABLE_LOGGER_H
-#define READABLE_LOGGER_H
+#ifndef EXPERIMENTS_READABLE_LOGGER_H
+#define EXPERIMENTS_READABLE_LOGGER_H
 
 #include <string>
-#include "experiments/test-logger.h"
+#include "experiments/test_logger.h"
 
 class ReadableLogger : public TestLogger {
 public:

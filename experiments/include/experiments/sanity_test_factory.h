@@ -4,7 +4,7 @@
 #include <functional>
 
 #include "homomorphism/homomorphism_counter.h"
-#include "experiments/test-logger.h"
+#include "experiments/test_logger.h"
 #include "experiments/test_settings.h"
 #include "homomorphism/remapper.h"
 

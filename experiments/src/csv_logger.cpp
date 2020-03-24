@@ -1,13 +1,6 @@
-//
-//  csv_logger.cpp
-//  experiments
-//
-//  Created by Jonas Mortensen on 11/03/2020.
-//
-
-#include <stdio.h>
-#include <iostream>
 #include "experiments/csv_logger.h"
+
+#include <iostream>
 
 void CSVLogger::NotifyTestStart(std::string name)
 {

@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include "experiments/readable_logger.h"
+
 #include <iostream>
 
 void ReadableLogger::NotifyTestStart(std::string name)
@@ -47,6 +47,8 @@ void ReadableLogger::NotifyFailed()
         //error_ << "Failed " << failed_ << " tests" << std::endl;
         stream_ << "Failed " << failed_ << " tests" << std::endl;
         failed_ = 0;
+    } else {
+        stream_ << "Passed all tests" << std::endl;
     }
 }
 

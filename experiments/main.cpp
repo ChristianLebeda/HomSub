@@ -23,9 +23,17 @@ int main(int argc, char *argv[])
     std::unordered_map<std::string, std::string> argMap;
     
     TestSettings settings;
-    
+
+    std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time",
+                                     "-spasms", "-convertgr", "-in", "-out"};
+
     for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
+        if(arguments.find(arg) == arguments.end()) {
+            std::cout << "Unknown argument " << arg << std::endl;
+            std::cout << "Use -help" << std::endl;
+            return 1;
+        }
         if(arg.compare("-help") == 0) {
             TestRunner::PrintHelp();
             return 0;
@@ -33,7 +41,7 @@ int main(int argc, char *argv[])
             if(i+1 < argc) {
                 std::string value = argv[i+1];
                 
-                if (value.rfind("-", 0) != 0) {
+                if (value.rfind('-', 0) != 0) {
                     argMap[arg] = value;
                     i++;
                 } else {
@@ -48,7 +56,7 @@ int main(int argc, char *argv[])
     
     //Set TreeWidthSolver settings
     if(argMap.count("-tws")) {
-        if(argMap["-tws"].compare("tamaki") == 0) {
+        if(argMap["-tws"] == "tamaki") {
             TamakiRunner t;
             settings.SetTWS(&t);
         }
@@ -69,13 +77,13 @@ int main(int argc, char *argv[])
         int testNum = std::stoi(argMap["-test"]);
         settings.SetSingleTest(testNum);
     }
-    
-    if(argMap.count("-all")) {
+
+    if(argMap.count("-all") || !argMap.count("-test")) {
         settings.SetRunAll(true);
     }
     
     if(argMap.count("-run")) {
-        std::cout << "This should run the agorithm on files provided but does nothing"<< std::endl;
+        std::cout << "This should run the algorithm on files provided but does nothing"<< std::endl;
     }
     
     if(argMap.count("-time")) {
@@ -84,9 +92,36 @@ int main(int argc, char *argv[])
     } else {
         settings.SetPrTestTime(5);
     }
+
+    settings.SetRunSpasmCreation(argMap.count("-spasms"));
+
+    settings.SetRunConvertGr(argMap.count("-convertgr"));
+
+    if(argMap.count("-in")) {
+        settings.SetIn(argMap["-in"]);
+    }
+
+    if(argMap.count("-out")) {
+        settings.SetOut(argMap["-out"]);
+    }
+
+    if(argMap.count("-group")) {
+        if(argMap["-group"] == "a" || argMap["-group"] == "(a)" || argMap["-group"] == "all") {
+            settings.SetGroup(true, true);
+        } else if(argMap["-group"] == "c" || argMap["-group"] == "(c)" || argMap["-group"] == "correctness") {
+            settings.SetGroup(true, false);
+        } else if(argMap["-group"] == "p" || argMap["-group"] == "(p)" || argMap["-group"] == "performance") {
+            settings.SetGroup(false, true);
+        } else {
+            std::cout << "Unknown value for group. Use: correctness, performance or all" << std::endl;
+            return 1;
+        }
+    } else {
+        settings.SetGroup(false, true);
+    }
     
     TestLogger *logger;
-    
+
     if(argMap.count("-csv")) {
         CSVLogger csvLogger(std::cout);
         logger = &csvLogger;

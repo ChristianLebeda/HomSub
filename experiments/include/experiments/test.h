@@ -1,5 +1,5 @@
-#ifndef TEST_h
-#define TEST_h
+#ifndef EXPERIMENTS_TEST_H
+#define EXPERIMENTS_TEST_H
 #include <string>
 class Test
 {

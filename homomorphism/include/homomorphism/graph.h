@@ -21,7 +21,7 @@ public:
     
     std::string toString();
     std::string toGr();
-    std::string toGraph6();
+    std::string toGraph6(bool includeG);
     void prettyPrint(std::ostream& os);
 };
 
