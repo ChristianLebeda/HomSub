@@ -23,9 +23,16 @@ int main(int argc, char *argv[])
     std::unordered_map<std::string, std::string> argMap;
     
     TestSettings settings;
-    
+
+    std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time"};
+
     for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
+        if(arguments.find(arg) == arguments.end()) {
+            std::cout << "Unknown argument " << arg << std::endl;
+            std::cout << "Use -help" << std::endl;
+            return 1;
+        }
         if(arg.compare("-help") == 0) {
             TestRunner::PrintHelp();
             return 0;
