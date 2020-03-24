@@ -1,5 +1,5 @@
-#ifndef TEST_TEST_LOGGER_h
-#define TEST_TEST_LOGGER_h
+#ifndef EXPERIMENTS_TEST_LOGGER_H
+#define EXPERIMENTS_TEST_LOGGER_H
 
 #include <string>
 

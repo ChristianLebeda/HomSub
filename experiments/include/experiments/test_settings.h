@@ -1,5 +1,5 @@
-#ifndef TEST_SETTINGS_h
-#define TEST_SETTINGS_h
+#ifndef EXPERIMENTS_TEST_SETTINGS_H
+#define EXPERIMENTS_TEST_SETTINGS_H
 
 #include "homomorphism/tree_width_solver.h"
 
@@ -37,11 +37,35 @@ public:
         runSanity_ = runSanity;
         runPerformance_ = runPerformance;
     }
+    void SetRunSpasmCreation(bool val) {
+        runCreateSpasm_ = val;
+    }
+    void SetRunConvertGr(bool val) {
+        runConvertGr_ = val;
+    }
     bool GetRunSanity() {
         return runSanity_;
     }
     bool GetRunPerformance() {
         return runPerformance_;
+    }
+    bool GetRunCreateSpasm() {
+        return runCreateSpasm_;
+    }
+    bool GetRunConvertGr() {
+        return runConvertGr_;
+    }
+    void SetIn(std::string& filename) {
+        in_ = &filename;
+    }
+    void SetOut(std::string& filename) {
+        out_ = &filename;
+    }
+    std::string GetIn() {
+        return *in_;
+    }
+    std::string GetOut() {
+        return *out_;
     }
     int GetPrTestTime() {
         return prTestTime_;
@@ -59,6 +83,9 @@ private:
     bool runAll_ = false;
     bool runSanity_;
     bool runPerformance_;
+    bool runCreateSpasm_;
+    bool runConvertGr_;
+    std::string *in_, *out_;
     int prTestTime_;
     int repetitions_;
     TreeWidthSolver *tws_;

@@ -1,12 +1,4 @@
-//
-//  test-logger.cpp
-//  test
-//
-//  Created by Jonas Mortensen on 03/03/2020.
-//
-
-#include <iostream>
-#include "experiments/test-logger.h"
+#include "experiments/test_logger.h"
 
 std::string TestLogger::subStepToString(SubStep step) {
     switch (step) {

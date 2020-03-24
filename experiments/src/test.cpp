@@ -1,5 +1,4 @@
 #include "experiments/test.h"
-#include <stdio.h>
 
 std::string Test::GetName()
 {

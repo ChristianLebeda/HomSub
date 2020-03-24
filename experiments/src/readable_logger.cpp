@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include "experiments/readable_logger.h"
+
 #include <iostream>
 
 void ReadableLogger::NotifyTestStart(std::string name)

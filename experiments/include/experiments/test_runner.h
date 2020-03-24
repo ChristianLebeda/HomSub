@@ -1,10 +1,10 @@
-#ifndef TEST_RUNNER_h
-#define TEST_RUNNER_h
+#ifndef EXPERIMENTS_TEST_RUNNER_H
+#define EXPERIMENTS_TEST_RUNNER_H
 
 #include <functional>
 
 #include "experiments/test_settings.h"
-#include "experiments/test-logger.h"
+#include "experiments/test_logger.h"
 
 class TestRunner
 {

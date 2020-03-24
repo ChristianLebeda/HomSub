@@ -1,7 +1,7 @@
-#ifndef CSV_LOGGER_H
-#define CSV_LOGGER_H
+#ifndef EXPERIMENTS_CSV_LOGGER_H
+#define EXPERIMENTS_CSV_LOGGER_H
 
-#include "experiments/test-logger.h"
+#include "experiments/test_logger.h"
 
 
 class CSVLogger : public TestLogger {

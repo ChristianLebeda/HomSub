@@ -1,12 +1,23 @@
-#include <iostream>
 #include "experiments/test_runner.h"
+
+#include <iostream>
+
 #include "experiments/test_factory.h"
-#include <chrono>
+#include "experiments/graph_files_experiments.h"
 #include "experiments/sanity_test_factory.h"
 
 
 void TestRunner::Run() {
     logger_.NotifyRunStart();
+
+    if(settings_.GetRunCreateSpasm()) {
+        GraphFilesExperiments::CreateAllSpasms(settings_, logger_);
+        return;
+    }
+    if(settings_.GetRunConvertGr()) {
+        GraphFilesExperiments::ConvertAllToGr(settings_, logger_);
+        return;
+    }
 
     if(settings_.GetRunSanity()) {
         SanityTestFactory::runAllTests(settings_, logger_);

@@ -1,4 +1,5 @@
 #include "experiments/graph_generator.h"
+
 #include <vector>
 
  void GraphGenerator::CompleteGrid(std::shared_ptr<Graph> g, int rows, int columns)
