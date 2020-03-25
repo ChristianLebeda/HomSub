@@ -40,6 +40,11 @@
         STOP_CLOCK; \
         durations[r] = duration; \
     }
+
+#define LOG_DURATIONS(args) \
+for(int q = 0; q < durations.size(); q++) { \
+    logger.log(args, durations[q]) \
+}
     
 
 #define STEPLOOP_START \
@@ -99,7 +104,9 @@ void TestFactory::SquaresInGrid(TestSettings& settings, TestLogger& logger)
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
         REPEATED_CLOCK_END;
-        logger.Log("", n, 4, averageDuration(durations));
+        for(int d : durations) {
+            logger.Log("", n, 4, d);
+        }
     }
 
     END_TEST;
@@ -119,7 +126,9 @@ void TestFactory::BinaryTreeInBinaryTree(TestSettings& settings, TestLogger& log
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
         REPEATED_CLOCK_END;
-        logger.Log("", k+3, k, averageDuration(durations));
+        for(int d : durations) {
+            logger.Log("", k+3, k, d);
+        }
     }
     
     
@@ -137,7 +146,9 @@ void TestFactory::CliquesInClique(TestSettings& settings, TestLogger& logger) {
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
         REPEATED_CLOCK_END;
-        logger.Log("", n*n, n, averageDuration(durations));
+        for(int d : durations) {
+            logger.Log("", n*n, n, d);
+        }
     }
 
     END_TEST;
@@ -157,7 +168,9 @@ void TestFactory::EdgesInPath(TestSettings& settings, TestLogger& logger)
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
         REPEATED_CLOCK_END;
-        logger.Log("", n, 2, duration);
+        for(int d : durations) {
+            logger.Log("", n, 2, d);
+        }
     }
     
     END_TEST;
@@ -176,7 +189,9 @@ void TestFactory::PathInRandomGraph(TestSettings& settings, TestLogger& logger)
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
         REPEATED_CLOCK_END;
-        logger.Log("", 1 << k, k, averageDuration(durations));
+        for(int d : durations) {
+            logger.Log("", 1 << k, k, d);
+        }
     }
     
     END_TEST;
@@ -194,7 +209,9 @@ void TestFactory::RandomPatternsInRandomGraph(TestSettings &settings, TestLogger
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
         REPEATED_CLOCK_END;
-        logger.Log("", 1 << k, k, averageDuration(durations));
+        for(int d : durations) {
+            logger.Log("", 1 << k, k, d);
+        }
     }
     
     END_TEST;
@@ -217,7 +234,9 @@ void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &log
         REPEATED_CLOCK_START;
         handler.forgetLast(vec1, vec2, n);
         REPEATED_CLOCK_END;
-        logger.Log("", n, k, duration);
+        for(int d : durations) {
+            logger.Log("",n, k, d);
+        }
 
     STEPLOOP_END
 
@@ -243,6 +262,9 @@ void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
         jh.join(vec1Copy, vec2);
         REPEATED_CLOCK_END;
         logger.Log("", n, k, duration);
+        for(int d : durations) {
+            logger.Log("", n, k, d);
+        }
 
     STEPLOOP_END
 
@@ -266,7 +288,9 @@ void TestFactory::InsertClosedForm(TestSettings &settings, TestLogger &logger) {
             REPEATED_CLOCK_START;
             remapper.Insert(vec1, vec2, pos);
             REPEATED_CLOCK_END;
-            logger.Log("", n, k, pos, duration);
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
         }
 
     STEPLOOP_END
@@ -291,7 +315,9 @@ void TestFactory::ExtractClosedForm(TestSettings &settings, TestLogger &logger) 
             REPEATED_CLOCK_START;
             remapper.Extract(vec1, vec2, pos);
             REPEATED_CLOCK_END;
-            logger.Log("", n, k, pos, duration);
+            for(int d : durations) {
+                logger.Log("", n, k, pos, d);
+            }
         }
 
     STEPLOOP_END
@@ -316,7 +342,9 @@ void TestFactory::InsertIterator(TestSettings &settings, TestLogger &logger) {
             REPEATED_CLOCK_START;
             remapper.Insert(vec1, vec2, pos);
             REPEATED_CLOCK_END;
-            logger.Log("", n, k, pos, duration);
+            for(int d : durations) {
+                logger.Log("", n, k, pos, d);
+            }
         }
 
     STEPLOOP_END
@@ -341,7 +369,9 @@ void TestFactory::ExtractIterator(TestSettings &settings, TestLogger &logger) {
             REPEATED_CLOCK_START;
             remapper.Extract(vec1, vec2, pos);
             REPEATED_CLOCK_END;
-            logger.Log("", n, k, pos, duration);
+            for(int d : durations) {
+                logger.Log("", n, k, pos, d);
+            }
         }
 
     STEPLOOP_END
