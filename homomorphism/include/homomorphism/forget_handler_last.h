@@ -5,7 +5,7 @@
 
 class ForgetHandlerLast : public ForgetHandler {
 public:
-    std::vector<size_t>& forget(std::vector<size_t>& input, std::vector<size_t>& output, size_t n);
+    std::vector<size_t>& forget(std::vector<size_t>& input, std::vector<size_t>& output, size_t n) override;
 };
 
 #endif
