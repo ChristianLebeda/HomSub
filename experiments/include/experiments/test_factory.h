@@ -28,7 +28,7 @@ private:
     static void PathInRandomGraph(TestSettings& settings, TestLogger& logger);
     static void RandomPatternsInRandomGraph(TestSettings& settings, TestLogger& logger);
     static void ForgetLeastSignificant(TestSettings& settings, TestLogger& logger);
-    //static void ForgetMostSignificant(TestSettings& settings, TestLogger& logger);
+    static void ForgetMostSignificant(TestSettings& settings, TestLogger& logger);
     static void joinHandler(TestSettings& settings, TestLogger& logger);
     static void InsertClosedForm(TestSettings& settings, TestLogger& logger);
     static void ExtractClosedForm(TestSettings& settings, TestLogger& logger);

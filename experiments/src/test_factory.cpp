@@ -12,6 +12,8 @@
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/main.h"
+#include "homomorphism/forget_handler_first.h"
+#include "homomorphism/forget_handler_last.h"
 #include "experiments/graph_generator.h"
 #include "experiments/test_settings.h"
 #include <memory>
@@ -77,6 +79,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             PathInRandomGraph,
             RandomPatternsInRandomGraph,
             ForgetLeastSignificant,
+            ForgetMostSignificant,
             joinHandler,
             InsertClosedForm,
             ExtractClosedForm,
@@ -220,7 +223,7 @@ void TestFactory::RandomPatternsInRandomGraph(TestSettings &settings, TestLogger
 void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("ForgetLeastSignificant")
 
-    ForgetHandler handler;
+    ForgetHandlerLast handler;
 
     std::vector<size_t> vec1, vec2;
 
@@ -230,13 +233,37 @@ void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &log
         fillVector(vec1);
         vec2.resize(size / n);
         fillVector(vec2);
-        // TODO: Update log
         REPEATED_CLOCK_START;
-        handler.forgetLast(vec1, vec2, n);
+        handler.forget(vec1, vec2, n);
         REPEATED_CLOCK_END;
         for(int d : durations) {
             logger.Log("",n, k, d);
         }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::ForgetMostSignificant(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ForgetMostSignificant")
+
+    ForgetHandlerFirst handler;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size / n);
+            fillVector(vec2);
+            REPEATED_CLOCK_START;
+                handler.forget(vec1, vec2, n);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("",n, k, d);
+            }
 
     STEPLOOP_END
 
@@ -257,7 +284,6 @@ void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
         vec2.resize(size);
         fillVector(vec2);
         vec1Copy = vec1;
-        // TODO: Update log
         REPEATED_CLOCK_START;
         jh.join(vec1Copy, vec2);
         REPEATED_CLOCK_END;

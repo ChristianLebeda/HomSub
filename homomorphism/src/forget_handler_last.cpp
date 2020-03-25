@@ -1,6 +1,6 @@
-#include "homomorphism/forget_handler.h"
+#include "homomorphism/forget_handler_last.h"
 
-std::vector<size_t>& ForgetHandler::forgetLast(std::vector<size_t>& input, std::vector<size_t>& output, size_t n) {
+std::vector<size_t>& ForgetHandlerLast::forget(std::vector<size_t>& input, std::vector<size_t>& output, size_t n) {
     size_t offset = 0;
 
     for(size_t & i : output) {
