@@ -90,7 +90,7 @@ DPState HomomorphismCounter::computeForgetRec(const std::shared_ptr<NTDNode>& ch
 
     // Forget the last vertex
     std::vector<size_t> result = allocator_->get(bag.size() - 1);
-    forgetter_->forgetLast(mapping, result, n_);
+    forgetter_->forget(mapping, result, n_);
     allocator_->free(mapping, bag.size());
 
     bag.erase(bag.begin() + pos);
