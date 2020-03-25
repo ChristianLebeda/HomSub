@@ -343,11 +343,11 @@ void SanityTestFactory::prepareIntroduceCompleteTest(std::vector<size_t>& input,
     }
 
     for (size_t i = 0; i < input.size(); ++i) {
-        input[i] = i;
+        input[i] = i + 1;
     }
 
     for (size_t i = 0; i < expected.size(); ++i) {
-        expected[i] = i / n;
+        expected[i] = (i / n) + 1;
     }
 }
 
@@ -443,7 +443,7 @@ void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger&
     LOOP_START
     gen.Path(h, 4);
     ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
-    for(size_t n = 1; n < 10; n++) {
+    for(size_t n = 2; n < 10; n++) {
         gen.Clique(g, n);
         LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
         result = HomomorphismCounter(h, g, ntd, hom).compute();
