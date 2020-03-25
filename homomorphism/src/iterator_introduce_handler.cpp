@@ -1,11 +1,12 @@
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/iterator_introduce_handler.h"
 
 #include <memory>
 #include <vector>
 
 #include "homomorphism/graph.h"
+#include "homomorphism/mapping_iterator.h"
 
-std::vector<size_t>& IntroduceHandler::introduceLast(std::vector <size_t> &input, std::vector <size_t> &output,
+std::vector<size_t>& IteratorIntroduceHandler::introduceLast(std::vector <size_t> &input, std::vector <size_t> &output,
                                                      std::vector <size_t>& bag, std::shared_ptr<Graph> h,
                                                      std::shared_ptr<Graph> g, size_t n, size_t x) {
 
@@ -23,19 +24,13 @@ std::vector<size_t>& IntroduceHandler::introduceLast(std::vector <size_t> &input
         connected.push_back(h->edgeExist(x, v));
     }
 
-    // Compute offsets values to compute the new index
-    std::vector<size_t> offsets(bag.size());
+    MappingIterator it(n, bag.size());
 
-    offsets[offsets.size() - 1] = 1;
+    //for(size_t idx = 0; idx < input.size(); idx++) {
+    while(it.idx < input.size()) {
+        size_t count = input[it.idx];
 
-    for (int i = 1; i < offsets.size(); ++i) {
-        offsets[offsets.size() - i - 1] = offsets[offsets.size() - i] * n;
-    }
-
-    for(size_t idx = 0; idx < input.size(); idx++) {
-        size_t count = input[idx];
-
-        size_t newidx = idx * n;
+        size_t newidx = it.idx * n;
 
         // Add all valid assignments of vertex x
         for (size_t i = 0; i < n; i++)
@@ -44,7 +39,7 @@ std::vector<size_t>& IntroduceHandler::introduceLast(std::vector <size_t> &input
             bool valid = true;
             for (size_t j = 0; j < connected.size(); j++)
             {
-                if (connected[j] && !g->edgeExist(i, (idx / offsets[j]) % n)) {
+                if (connected[j] && !g->edgeExist(i, it.mapping[j])) {
                     valid = false;
                     break;
                 }
@@ -52,6 +47,8 @@ std::vector<size_t>& IntroduceHandler::introduceLast(std::vector <size_t> &input
 
             output[newidx + i] = valid ? count : 0;
         }
+
+        it.Increment();
     }
 
     return output;

@@ -3,7 +3,8 @@
 #include "experiments/graph_generator.h"
 #include "homomorphism/forget_handler_last.h"
 #include "homomorphism/forget_handler_first.h"
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/introduce_handler_compute.h"
+#include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/calculation_remapper.h"
@@ -241,7 +242,7 @@ void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings,
         input[i] = i + 1;
     }
 
-    IntroduceHandler ih;
+    IntroduceHandlerCompute ih;
 
     h->clear(3);
     expected = std::vector<size_t> {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9};
@@ -272,7 +273,7 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
     size_t x = 0;
     GraphGenerator gen;
 
-    IntroduceHandler handler;
+    IntroduceHandlerCompute handler;
 
     LOOP_START
     bag.clear();
