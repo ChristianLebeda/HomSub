@@ -10,13 +10,13 @@
 
 #define TESTCASES \
     SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
-    FORGET_HANDLER_LAST, FORGET_HANDLER_FIRST, INTRODUCE_HANDLER_CONSISTENCY, INTRODUCE_HANDLER_COMPLETE, \
+    FORGET_HANDLER_LAST, FORGET_HANDLER_FIRST, INTRODUCE_HANDLER_COMPUTE, INTRODUCE_HANDLER_ITERATOR, \
     HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
     HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR
 
 #define COMPOSITETESTCASES \
     HOMOMORPHISM_COUNTER_DEFAULT, HOMOMORPHISM_COUNTER_ITERATOR, \
-    INTRODUCE_HANDLER_TEST, ALL_TESTS
+    ALL_TESTS
 
 enum TestCase { TESTCASES, COMPOSITETESTCASES };
 
@@ -34,9 +34,10 @@ private:
     static void forgetFirstTest(TestSettings& settings, TestLogger& logger);
     static void prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                     std::vector<size_t>& result, size_t n, size_t b, bool last);
-    static void introduceLastTest(TestSettings& settings, TestLogger& logger);
-    static void introduceLastEdgeConsistencyTest(TestSettings& settings, TestLogger& logger);
-    static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger);
+    static void introduceLastComputeTest(TestSettings& settings, TestLogger& logger);
+    static void introduceLastIteratorTest(TestSettings& settings, TestLogger& logger);
+    static void introduceLastEdgeConsistencyTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
+    static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
     static void prepareIntroduceCompleteTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                                              std::vector<size_t>& result, std::vector<size_t>& bag,
                                              size_t n, size_t b);
