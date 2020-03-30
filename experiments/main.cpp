@@ -13,8 +13,20 @@
 #include "experiments/readable_logger.h"
 #include "experiments/csv_logger.h"
 
+#include "homomorphism/traversal_homomorphism_counter.h"
+
 int main(int argc, char *argv[])
 {
+    std::shared_ptr<EdgeSetGraph> g = std::make_shared<EdgeSetGraph>(1);
+    GraphGenerator::CompleteGrid(g, 2, 2);
+    
+    auto traversals = TraversalHomomorphismCounter::GetKTraversals(g, 2);
+    
+    std::cout << "Count: " << traversals.size() << std::endl;
+    
+    return 0;
+    
+    
     if(argc < 2) {
         std::cout << "use -help" << std::endl;
         return 1;

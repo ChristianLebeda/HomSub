@@ -3,15 +3,15 @@
 
 #include <vector>
 #include "homomorphism/edge_set_graph.h"
+#include <memory>
 
 class TraversalHomomorphismCounter {
 public:
     static int Count(EdgeSetGraph h, EdgeSetGraph g);
-    
+    static std::vector<std::vector<size_t>> GetKTraversals(std::shared_ptr<EdgeSetGraph> g, int k);
 private:
     static bool CheckHomomorphism(EdgeSetGraph h, EdgeSetGraph g, std::vector<size_t> mapping);
-    static std::vector<std::vector<size_t>> GetKTraversals(EdgeSetGraph g, int k);
-    static std::vector<std::vector<size_t>> GetKTraversalsUtil(EdgeSetGraph g, std::vector<size_t> visited, int k);
+    static std::vector<std::vector<size_t>> GetKTraversalsUtil(std::shared_ptr<EdgeSetGraph> g, std::vector<size_t> visited, int k);
 };
 
 

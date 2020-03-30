@@ -4,8 +4,8 @@
 
 void EdgeSetGraph::clear(size_t v)
 {
-    verts_ = 0;
-    edges_ = 0;
+    verts_ = v;
+    edges_ = v;
     std::vector<std::unordered_set<size_t>> nei;
     nei.resize(v);
     neighbours_ = nei;
