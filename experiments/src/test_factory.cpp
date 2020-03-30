@@ -298,7 +298,7 @@ void TestFactory::IntroduceComplete(TestSettings &settings, TestLogger &logger,
 
     STEPLOOP_START
 
-            bag.reserve(k - 1);
+            bag.resize(k - 1);
             for(int i = 0; i < bag.size(); i++) {
                 bag[i] = i + 1;
             }
@@ -329,7 +329,7 @@ void TestFactory::IntroduceOneEdge(TestSettings &settings, TestLogger &logger,
 
     STEPLOOP_START
 
-            bag.reserve(k - 1);
+            bag.resize(k - 1);
             for(int i = 0; i < bag.size(); i++) {
                 bag[i] = i + 1;
             }
@@ -361,7 +361,7 @@ void TestFactory::IntroduceConsistency(TestSettings &settings, TestLogger &logge
 
     STEPLOOP_START
 
-            bag.reserve(k - 1);
+            bag.resize(k - 1);
             for(int i = 0; i < bag.size(); i++) {
                 bag[i] = i + 1;
             }
