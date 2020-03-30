@@ -14,15 +14,40 @@
 #include "experiments/csv_logger.h"
 
 #include "homomorphism/traversal_homomorphism_counter.h"
+#include "homomorphism/homomorphism_counter.h"
+#include "homomorphism/configuration_factory.h"
 
 int main(int argc, char *argv[])
 {
-    std::shared_ptr<EdgeSetGraph> g = std::make_shared<EdgeSetGraph>(1);
-    GraphGenerator::CompleteGrid(g, 2, 2);
+    int k = 2;
+    int n = 3;
     
-    auto traversals = TraversalHomomorphismCounter::GetKTraversals(g, 2);
+    std::shared_ptr<EdgeSetGraph> hSet = std::make_shared<EdgeSetGraph>(1);
+    GraphGenerator::CompleteGrid(hSet, k, k);
     
-    std::cout << "Count: " << traversals.size() << std::endl;
+    std::shared_ptr<EdgeSetGraph> gSet = std::make_shared<EdgeSetGraph>(1);
+    GraphGenerator::CompleteGrid(gSet, n, n);
+    
+    std::shared_ptr<Graph> hAdj = std::make_shared<AdjacencyMatrixGraph>(1);
+    GraphGenerator::CompleteGrid(hAdj, k, k);
+    
+    std::shared_ptr<Graph> gAdj = std::make_shared<AdjacencyMatrixGraph>(1);
+    GraphGenerator::CompleteGrid(gAdj, n, n);
+    
+    size_t setCount = TraversalHomomorphismCounter::Count(hSet, gSet);
+    
+    
+    TamakiRunner tam;
+    std::shared_ptr<NiceTreeDecomposition> ntd;
+    ntd = NiceTreeDecomposition::FromTd(tam.decompose(hAdj));
+    
+    HomomorphismSettings s = ConfigurationFactory::defaultSettings();
+    HomomorphismCounter counter(hAdj, gAdj, ntd, s);
+    long adjCount = counter.compute();
+    
+    
+    std::cout << "SetCount: " << setCount << std::endl;
+    std::cout << "AdjCount: " << adjCount << std::endl;
     
     return 0;
     

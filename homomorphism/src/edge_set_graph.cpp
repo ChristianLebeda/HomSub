@@ -29,7 +29,7 @@ void EdgeSetGraph::addEdge(size_t u, size_t v)
 
 bool EdgeSetGraph::edgeExist(size_t u, size_t v)
 {
-    return neighbours_[u].count(v);
+    return neighbours_[u].count(v) || neighbours_[v].count(u);
 }
 
 bool EdgeSetGraph::isIsomorphic(std::shared_ptr<Graph> g)
