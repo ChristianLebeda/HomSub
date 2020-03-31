@@ -59,6 +59,9 @@ std::vector<std::vector<size_t>> TraversalHomomorphismCounter::GetKTraversalsUti
         }
     } else {
         choices = GetOpenNeighbourhood(g, visited);
+        for(size_t v : visited) {
+            choices.insert(v);
+        }
     }
     
     //try each available choice
@@ -83,7 +86,13 @@ std::vector<size_t> TraversalHomomorphismCounter::GetFirstTraversal(std::shared_
     std::vector<size_t> traversal {0};
     for(int i = 1; i < g->vertCount(); i++) {
         std::unordered_set<size_t> on = GetOpenNeighbourhood(g, traversal);
-        traversal.push_back(*on.begin());
+        for(size_t v : on) {
+            if(std::find(traversal.begin(), traversal.end(), v) == traversal.end()) {
+                traversal.push_back(v);
+                break;
+            }
+        }
+        
     }
     return traversal;
 }

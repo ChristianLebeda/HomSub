@@ -19,7 +19,7 @@
 
 int main(int argc, char *argv[])
 {
-    int k = 2;
+    int k = 3;
     int n = 3;
     
     std::shared_ptr<EdgeSetGraph> hSet = std::make_shared<EdgeSetGraph>(1);
@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     
     size_t setCount = TraversalHomomorphismCounter::Count(hSet, gSet);
     
+    std::cout << "SetCount: " << setCount << std::endl;
     
     TamakiRunner tam;
     std::shared_ptr<NiceTreeDecomposition> ntd;
@@ -46,7 +47,6 @@ int main(int argc, char *argv[])
     long adjCount = counter.compute();
     
     
-    std::cout << "SetCount: " << setCount << std::endl;
     std::cout << "AdjCount: " << adjCount << std::endl;
     
     return 0;
