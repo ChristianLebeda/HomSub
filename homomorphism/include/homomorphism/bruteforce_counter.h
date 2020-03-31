@@ -9,7 +9,7 @@ public:
     BruteforceCounter(std::shared_ptr<Graph> h, std::shared_ptr<Graph> g) 
         : h_(h), g_(g), k_(h->vertCount()), n_(g_->vertCount()) { }
 
-    size_t compute();
+    size_t compute() override;
 private:
     std::shared_ptr<Graph> h_, g_;
     size_t k_, n_;

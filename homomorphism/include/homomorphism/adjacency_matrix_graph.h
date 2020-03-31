@@ -23,14 +23,14 @@ public:
     static std::shared_ptr<AdjacencyMatrixGraph> testGraph();
     static std::shared_ptr<AdjacencyMatrixGraph> parseNautyFormat(const std::string& nauty, size_t n);
     
-    void clear(size_t v);
-    size_t vertCount();
-    size_t edgeCount();
-    void addEdge(size_t u, size_t v);
-    bool edgeExist(size_t u, size_t v);
-    std::unordered_set<size_t> getNeighbourhood(size_t v);
-    bool isIsomorphic(std::shared_ptr<Graph> g);
-    std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size);
+    void clear(size_t v) override;
+    size_t vertCount() override;
+    size_t edgeCount() override;
+    void addEdge(size_t u, size_t v) override;
+    bool edgeExist(size_t u, size_t v) override;
+    std::unordered_set<size_t> getNeighbourhood(size_t v) override;
+    bool isIsomorphic(std::shared_ptr<Graph> g) override;
+    std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size) override;
 
 private:
     size_t vertices_;

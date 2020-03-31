@@ -1,24 +1,20 @@
-#ifndef HOMOMORPHISM_MAPPING_ITERATOR_H_
-#define HOMOMORPHISM_MAPPING_ITERATOR_H_
+#ifndef HOMOMORPHISM_MAPPING_ITERATOR_H
+#define HOMOMORPHISM_MAPPING_ITERATOR_H
 
-#include <memory>
-#include <utility>
 #include <vector>
 
 class MappingIterator
 {
 public:
-    MappingIterator(size_t n, size_t k, std::vector<size_t> offsets):
-            n_(n), k_(k), offsets_(std::move(offsets)), current_(0), mapping_(std::vector<size_t> (k, 0)) {}
+    MappingIterator(int n, int k) : n_(n), mapping(std::vector<size_t>(k, 0)) {}
 
-    static MappingIterator ExtractIterator(size_t n, size_t k, size_t pos);
-    static MappingIterator InsertIterator(size_t n, size_t k, size_t pos);
-    static MappingIterator CustomIterator(size_t n, size_t k, std::vector<size_t> offsets);
+    std::vector<size_t> mapping;
+    size_t idx = 0;
 
-    size_t next();
+    void Increment();
 private:
-    size_t n_, k_, current_;
-    std::vector<size_t> offsets_, mapping_;
+    size_t n_;
 };
+
 
 #endif

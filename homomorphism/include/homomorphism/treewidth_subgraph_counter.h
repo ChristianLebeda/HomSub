@@ -14,7 +14,7 @@ public:
 
 	static std::shared_ptr<TreewidthSubgraphCounter> instatiate(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g);
 	
-	long compute();
+	long compute() override;
 private:
 	std::shared_ptr<SpasmDecomposition> spdc_;
 	std::shared_ptr<Graph> g_;
