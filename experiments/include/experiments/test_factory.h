@@ -7,12 +7,15 @@
 
 #ifndef EXPERIMENTS_TEST_FACTORY_H
 #define EXPERIMENTS_TEST_FACTORY_H
+
 #include "experiments/test_settings.h"
 #include "experiments/test_logger.h"
 
 #include <chrono>
 #include <functional>
 #include <memory>
+
+#include "homomorphism/introduce_handler.h"
 
 class TestFactory
 {
@@ -29,6 +32,14 @@ private:
     static void RandomPatternsInRandomGraph(TestSettings& settings, TestLogger& logger);
     static void ForgetLeastSignificant(TestSettings& settings, TestLogger& logger);
     static void ForgetMostSignificant(TestSettings& settings, TestLogger& logger);
+    static void IntroduceIterator(TestSettings& settings, TestLogger& logger);
+    static void IntroduceCompute(TestSettings& settings, TestLogger& logger);
+    static void IntroduceComplete(TestSettings& settings, TestLogger& logger,
+                    IntroduceHandler& ih, const std::string& handlername);
+    static void IntroduceOneEdge(TestSettings& settings, TestLogger& logger,
+                    IntroduceHandler& ih, const std::string& handlername);
+    static void IntroduceConsistency(TestSettings& settings, TestLogger& logger,
+                                 IntroduceHandler& ih, const std::string& handlername);
     static void joinHandler(TestSettings& settings, TestLogger& logger);
     static void InsertClosedForm(TestSettings& settings, TestLogger& logger);
     static void ExtractClosedForm(TestSettings& settings, TestLogger& logger);

@@ -46,5 +46,7 @@ std::vector<std::shared_ptr<TreeDecomposition>> TamakiRunner::decomposeAll(std::
         output.close();
     } else std::cerr << "Unable to open file" << std::endl;
 
+    remove("tam.out");
+
     return decomps;
 }
