@@ -19,39 +19,6 @@
 
 int main(int argc, char *argv[])
 {
-    int k = 3;
-    int n = 3;
-    
-    std::shared_ptr<EdgeSetGraph> hSet = std::make_shared<EdgeSetGraph>(1);
-    GraphGenerator::CompleteGrid(hSet, k, k);
-    
-    std::shared_ptr<EdgeSetGraph> gSet = std::make_shared<EdgeSetGraph>(1);
-    GraphGenerator::CompleteGrid(gSet, n, n);
-    
-    std::shared_ptr<Graph> hAdj = std::make_shared<AdjacencyMatrixGraph>(1);
-    GraphGenerator::CompleteGrid(hAdj, k, k);
-    
-    std::shared_ptr<Graph> gAdj = std::make_shared<AdjacencyMatrixGraph>(1);
-    GraphGenerator::CompleteGrid(gAdj, n, n);
-    
-    size_t setCount = TraversalHomomorphismCounter::Count(hSet, gSet);
-    
-    std::cout << "SetCount: " << setCount << std::endl;
-    
-    TamakiRunner tam;
-    std::shared_ptr<NiceTreeDecomposition> ntd;
-    ntd = NiceTreeDecomposition::FromTd(tam.decompose(hAdj));
-    
-    HomomorphismSettings s = ConfigurationFactory::defaultSettings();
-    HomomorphismCounter counter(hAdj, gAdj, ntd, s);
-    long adjCount = counter.compute();
-    
-    
-    std::cout << "AdjCount: " << adjCount << std::endl;
-    
-    return 0;
-    
-    
     if(argc < 2) {
         std::cout << "use -help" << std::endl;
         return 1;

@@ -98,3 +98,10 @@ void GraphGenerator::Clique(std::shared_ptr<Graph> g, int size)
         }
     }
 }
+
+void GraphGenerator::Star(std::shared_ptr<Graph> g, int size) {
+    g->clear(size);
+    for(int i = 1; i < size;i++) {
+        g->addEdge(0, i);
+    }
+}

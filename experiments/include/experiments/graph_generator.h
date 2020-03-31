@@ -19,6 +19,7 @@ public:
     static void EdgeProbabilityGraph(std::shared_ptr<Graph> g, size_t verts, float probability);
     static void VertexPairs(std::shared_ptr<Graph> g, int pairCount);
     static void Clique(std::shared_ptr<Graph> g, int size);
+    static void Star(std::shared_ptr<Graph> g, int size);
 private:
     static float RandomFloat();
     static size_t RandomSize(size_t max);

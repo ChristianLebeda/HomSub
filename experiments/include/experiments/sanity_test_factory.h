@@ -12,7 +12,7 @@
     SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
     FORGET_HANDLER, INTRODUCE_HANDLER_CONSISTENCY, INTRODUCE_HANDLER_COMPLETE, \
     HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
-    HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR
+HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR, MAX_DEGREE_TEST
 
 #define COMPOSITETESTCASES \
     HOMOMORPHISM_COUNTER_DEFAULT, HOMOMORPHISM_COUNTER_ITERATOR, \
@@ -51,6 +51,8 @@ private:
                     HomomorphismSettings hom, const std::string& settingsName);
     static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
                     HomomorphismSettings hom, const std::string& settingsName);
+    
+    static void maxDegreeTest(TestSettings& settings, TestLogger& logger);
 };
 
 #endif

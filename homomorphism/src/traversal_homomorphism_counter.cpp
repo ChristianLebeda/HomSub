@@ -26,56 +26,39 @@ bool TraversalHomomorphismCounter::CheckHomomorphism(std::shared_ptr<EdgeSetGrap
     return true;
 }
 
-int TraversalHomomorphismCounter::Count(std::shared_ptr<EdgeSetGraph> h, std::shared_ptr<EdgeSetGraph> g) {
-    std::vector<size_t> hTraversal = GetFirstTraversal(h);
-    
-    size_t count = 0;
-    auto traversals = GetKTraversals(g, h->vertCount());
-    std::cout << "Amount of traversals: " << traversals.size() << std::endl;
-    for(auto gTraversal : GetKTraversals(g, h->vertCount())) {
-        if(CheckHomomorphism(h, g, hTraversal, gTraversal)) count++;
-    }
-    
-    
-    return count;
+long TraversalHomomorphismCounter::Count(std::shared_ptr<EdgeSetGraph> h, std::shared_ptr<EdgeSetGraph> g) {
+    return TestKTraversals(h, g, GetFirstTraversal(h), std::vector<size_t>());
 }
 
-std::vector<std::vector<size_t>> TraversalHomomorphismCounter::GetKTraversals(std::shared_ptr<EdgeSetGraph> g, int k)
+long TraversalHomomorphismCounter::TestKTraversals(std::shared_ptr<EdgeSetGraph> h, std::shared_ptr<EdgeSetGraph> g, std::vector<size_t> hTraversal, std::vector<size_t> gTraversal)
 {
-    std::vector<size_t> empty;
-    return GetKTraversalsUtil(g, empty, k);
-}
-
-std::vector<std::vector<size_t>> TraversalHomomorphismCounter::GetKTraversalsUtil(std::shared_ptr<EdgeSetGraph> g, std::vector<size_t> visited, int k) {
-    
-    //These choives contain the open neighbourhood (no repeated verts might be wrong)
+    //These choices contain the open neighbourhood
     std::unordered_set<size_t> choices;
     choices.clear();
     
-    //Fill all options as first choice
-    if(visited.size() == 0) {
+    if(gTraversal.size() == 0) {
+        //Add all verts to first choice
         for(int i = 0; i < g->vertCount(); i++) {
             choices.insert(i);
         }
     } else {
-        choices = GetOpenNeighbourhood(g, visited);
-        for(size_t v : visited) {
+        //Add open neighbourhood
+        choices = GetOpenNeighbourhood(g, gTraversal);
+        for(size_t v : gTraversal) {
             choices.insert(v);
         }
     }
     
     //try each available choice
-    std::vector<std::vector<size_t>> result;
+    long result = 0;
     for(size_t choice : choices) {
-        std::vector<size_t> withChoice = visited;
+        std::vector<size_t> withChoice = gTraversal;
         withChoice.push_back(choice);
-        if(withChoice.size() == k) { //Return if traversal has size k
-            result.push_back(withChoice);
+
+        if(withChoice.size() == h->vertCount()) {
+            if(CheckHomomorphism(h, g, hTraversal, withChoice)) result++;
         } else {
-            std::vector<std::vector<size_t>> recursiveResult = GetKTraversalsUtil(g, withChoice, k); //Recurse if still not finished
-            for(auto traversal : recursiveResult) {
-                result.push_back(traversal);
-            }
+            result += TestKTraversals(h, g, hTraversal, withChoice);//Recurse if still not finished
         }
     }
     return result;

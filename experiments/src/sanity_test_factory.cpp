@@ -10,6 +10,7 @@
 #include "homomorphism/main.h"
 #include "homomorphism/configuration_factory.h"
 #include "homomorphism/tamaki_runner.h"
+#include "homomorphism/traversal_homomorphism_counter.h"
 
 #define BEGIN_TEST(name, type) logger.NotifyTestStart(name);type exp;
 
@@ -57,6 +58,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return defaultHomomorphismTest;
         case HOMOMORPHISM_COUNTER_ITERATOR:
             return iteratorHomomorphismTest;
+        case MAX_DEGREE_TEST:
+            return maxDegreeTest;
         case ALL_TESTS:
             return runAllTests;
         default:
@@ -420,3 +423,41 @@ void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger&
 
     END_TEST
 }
+
+void SanityTestFactory::maxDegreeTest(TestSettings &settings, TestLogger &logger) {
+    BEGIN_LOOP_TEST("MaxDegreeTest", long);
+    
+    std::shared_ptr<EdgeSetGraph> h = std::make_shared<EdgeSetGraph>(1);
+    GraphGenerator::Clique(h, 3);
+    
+    std::shared_ptr<EdgeSetGraph> g = std::make_shared<EdgeSetGraph>(1);
+    long result;
+    
+    LOOP_START
+    for(size_t r = 2; r < 10; r += 2) {
+        for(size_t c = 2; c < 5; c++) {
+            GraphGenerator::CompleteGrid(g, r, c);
+            LOOP_ASSERT_START(0)
+            result = TraversalHomomorphismCounter::Count(h, g);//HomomorphismCounter(h, g, ntd, hom).compute();
+            std::stringstream str;
+            str << "TriangleInGrid" << "R" << r << "C" << c;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+    LOOP_END("NoTriangleInGrid");
+    
+    LOOP_START
+    GraphGenerator::Path(h, 4);
+    for(size_t n = 1; n < 10; n++) {
+        GraphGenerator::Clique(g, n);
+        LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
+        result = TraversalHomomorphismCounter::Count(h, g);
+        std::stringstream str;
+        str << "PathInCompleteGraphN" << n;
+        LOOP_ASSERT_END(str.str(), result)
+    }
+    LOOP_END("PathInCompleteGraph");
+    
+    END_TEST;
+}
+
