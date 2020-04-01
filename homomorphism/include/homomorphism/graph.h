@@ -23,6 +23,7 @@ public:
     std::string toGr();
     std::string toGraph6(bool includeG);
     void prettyPrint(std::ostream& os);
+    std::string partitionNauty(std::set<size_t>* parts, size_t size);
 };
 
 #endif

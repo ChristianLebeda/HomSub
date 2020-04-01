@@ -87,3 +87,43 @@ std::string Graph::toNautyFormat() {
 
     return str.str();
 }
+
+std::string Graph::partitionNauty(std::set<size_t>* parts, size_t size) {
+    std::ostringstream str;
+
+    bool edgeFound;
+    std::set<size_t>::iterator uit, uend, vit, vend;
+
+    for(size_t u = 0; u < size; u++)
+    {
+        uend = parts[u].end();
+
+        for (size_t v = u + 1; v < size; v++)
+        {
+            edgeFound = false;
+            uit = parts[u].begin();
+            vend = parts[v].end();
+
+            while (!edgeFound && uit != uend) {
+                vit = parts[v].begin();
+
+                while (vit != vend) {
+                    if (edgeExist(*uit, *vit)) {
+                        edgeFound = true;
+                        break;
+                    }
+                    vit++;
+                }
+                uit++;
+            }
+
+            if (edgeFound) {
+                str << " " << v;
+            }
+        }
+
+        str << " ; ";
+    }
+
+    return str.str();
+}
