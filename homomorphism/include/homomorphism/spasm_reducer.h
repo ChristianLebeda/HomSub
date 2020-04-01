@@ -25,7 +25,6 @@ struct NautyEntry
 
 class SpasmReducer {
 public:
-    virtual std::vector<SpasmEntry> joinIsomorphic(const std::vector<SpasmEntry>& spasm) = 0;
     virtual std::vector<SpasmEntry> joinIsomorphic(std::unordered_map<std::string, int>& entries) = 0;
 };
 

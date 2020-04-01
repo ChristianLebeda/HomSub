@@ -10,17 +10,6 @@
 #include "homomorphism/pipe_handler.h"
 #include "homomorphism/third_party.h"
 
-std::vector<NautyEntry> Nauty::convertToNauty(const std::vector<SpasmEntry>& spasm) {
-    std::vector<NautyEntry> entries;
-
-    entries.reserve(spasm.size());
-    for(auto& entry : spasm) {
-        entries.push_back({entry.graph->toNautyFormat(), entry.graph->vertCount(), entry.coefficient});
-    }
-
-    return entries;
-}
-
 std::vector<NautyEntry> Nauty::combineEntries(std::vector<NautyEntry> entries) {
     std::vector<NautyEntry> joined;
 
@@ -51,51 +40,6 @@ std::vector<SpasmEntry> Nauty::convertToSpasm(const std::vector<NautyEntry>& ent
     }
 
     return spasm;
-}
-
-std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spasm) {
-    std::vector<NautyEntry> entries = combineEntries(convertToNauty(spasm));
-    std::ostringstream str;
-
-    // Canonical mode
-    str << "c\n";
-
-    for (auto &entry : entries) {
-        // Define graph
-        str << "n=" << entry.n << " g " << entry.graph;
-
-        // Execute nauty and display graph
-        str << "x b\n";
-    }
-
-    str << "q\n";
-
-    std::ofstream graphs;
-
-    //TODO: Use tmp files
-    graphs.open("nauty.in");
-    graphs << str.str();
-    graphs.close();
-
-    std::string command = ThirdParty::directory() + "nauty/dreadnaut < nauty.in > nauty.out";
-    system(command.c_str());
-
-    remove("nauty.in");
-
-    std::string line;
-    std::ifstream output("nauty.out");
-    if (output.is_open()) {
-        // Update graphs with new canonical labelling
-        for (auto &entry : entries) {
-            entry.graph = HelperFunctions::trimDreadnautOutput(output, entry.n);
-        }
-    } else std::cout << "Unable to open file";
-
-    remove("nauty.out");
-
-    std::vector<SpasmEntry> joined = convertToSpasm(combineEntries(entries));
-
-    return joined;
 }
 
 std::vector<SpasmEntry> Nauty::joinIsomorphic(std::unordered_map<std::string, int>& entries) {
