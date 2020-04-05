@@ -34,6 +34,7 @@ private:
     static void ExtractClosedForm(TestSettings& settings, TestLogger& logger);
     static void InsertIterator(TestSettings& settings, TestLogger& logger);
     static void ExtractIterator(TestSettings& settings, TestLogger& logger);
+    static void MaxDegreeHomomorphismCount(TestSettings& settings, TestLogger& logger);
     static int milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop);
     static float averageDuration(std::vector<int> durations);
     static void fillVector(std::vector<size_t> data);

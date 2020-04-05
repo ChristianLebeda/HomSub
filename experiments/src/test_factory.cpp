@@ -19,6 +19,7 @@
 #include <future>
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/iterator_remapper.h"
+#include "homomorphism/traversal_homomorphism_counter.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);std::vector<int> durations(settings.GetRepetitions(),0);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
@@ -81,7 +82,8 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             InsertClosedForm,
             ExtractClosedForm,
             InsertIterator,
-            ExtractIterator
+            ExtractIterator,
+            MaxDegreeHomomorphismCount
         };
     return tests;
 }
@@ -377,6 +379,28 @@ void TestFactory::ExtractIterator(TestSettings &settings, TestLogger &logger) {
     STEPLOOP_END
 
     END_TEST
+}
+
+void TestFactory::MaxDegreeHomomorphismCount(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("MaxDegreeHomomorphismCount");
+    
+    std::shared_ptr<EdgeSetGraph> h = std::make_shared<EdgeSetGraph>(0);
+    GraphGenerator::Cycle(h, 4);
+    
+    std::shared_ptr<EdgeSetGraph> g = std::make_shared<EdgeSetGraph>(0);
+    
+    for(int n = 2; n < 65; n = n*2) {
+        GraphGenerator::CompleteGrid(g, n, n);
+        REPEATED_CLOCK_START;
+        TraversalHomomorphismCounter::Count(h, g);
+        REPEATED_CLOCK_END;
+        
+        for(int i = 1; i < durations.size(); i++) {
+            logger.Log("SquareInGrid", n*n, 4, durations[i]);
+        }
+    }
+    
+    END_TEST;
 }
 
 int TestFactory::milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop) {
