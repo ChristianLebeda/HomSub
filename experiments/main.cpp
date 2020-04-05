@@ -13,6 +13,10 @@
 #include "experiments/readable_logger.h"
 #include "experiments/csv_logger.h"
 
+#include "homomorphism/traversal_homomorphism_counter.h"
+#include "homomorphism/homomorphism_counter.h"
+#include "homomorphism/configuration_factory.h"
+
 int main(int argc, char *argv[])
 {
     if(argc < 2) {

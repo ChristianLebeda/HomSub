@@ -4,8 +4,8 @@
 
 void EdgeSetGraph::clear(size_t v)
 {
-    verts_ = 0;
-    edges_ = 0;
+    verts_ = v;
+    edges_ = v;
     std::vector<std::unordered_set<size_t>> nei;
     nei.resize(v);
     neighbours_ = nei;
@@ -29,7 +29,7 @@ void EdgeSetGraph::addEdge(size_t u, size_t v)
 
 bool EdgeSetGraph::edgeExist(size_t u, size_t v)
 {
-    return neighbours_[u].count(v);
+    return neighbours_[u].count(v) || neighbours_[v].count(u);
 }
 
 bool EdgeSetGraph::isIsomorphic(std::shared_ptr<Graph> g)
