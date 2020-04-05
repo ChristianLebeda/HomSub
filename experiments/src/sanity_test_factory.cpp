@@ -1,8 +1,10 @@
 #include "experiments/sanity_test_factory.h"
 
 #include "experiments/graph_generator.h"
-#include "homomorphism/forget_handler.h"
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/forget_handler_last.h"
+#include "homomorphism/forget_handler_first.h"
+#include "homomorphism/introduce_handler_compute.h"
+#include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/calculation_remapper.h"
@@ -38,12 +40,14 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return calculationRemapperTest;
         case REMAPPER_ITERATOR:
             return iteratorRemapperTest;
-        case FORGET_HANDLER:
+        case FORGET_HANDLER_LAST:
             return forgetLastTest;
-        case INTRODUCE_HANDLER_CONSISTENCY:
-            return introduceLastEdgeConsistencyTest;
-        case INTRODUCE_HANDLER_COMPLETE:
-            return introduceLastCompleteTest;
+        case FORGET_HANDLER_FIRST:
+            return forgetFirstTest;
+        case INTRODUCE_HANDLER_COMPUTE:
+            return introduceLastComputeTest;
+        case INTRODUCE_HANDLER_ITERATOR:
+            return introduceLastIteratorTest;
         case HOMOMORPHISM_HANDCRAFTED_DEFAULT:
             return defaultHomomorphismHandcraftedTest;
         case HOMOMORPHISM_LOOP_DEFAULT:
@@ -52,8 +56,6 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return iteratorHomomorphismHandcraftedTest;
         case HOMOMORPHISM_LOOP_ITERATOR:
             return iteratorHomomorphismLoopTest;
-        case INTRODUCE_HANDLER_TEST:
-            return introduceLastTest;
         case HOMOMORPHISM_COUNTER_DEFAULT:
             return defaultHomomorphismTest;
         case HOMOMORPHISM_COUNTER_ITERATOR:
@@ -145,19 +147,19 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
 }
 
 void SanityTestFactory::forgetLastTest(TestSettings &settings, TestLogger &logger) {
-    BEGIN_LOOP_TEST("ForgetHandlerSanity", std::vector<size_t>);
+    BEGIN_LOOP_TEST("ForgetHandlerLastSanity", std::vector<size_t>);
 
     std::vector<size_t> input, expected, result;
 
-    ForgetHandler handler;
+    ForgetHandlerLast handler;
 
     LOOP_START
 
     for(size_t n = 1; n < 10; n++) {
         for(size_t b = 1; b < 5; b++) {
-            prepareForgetTest(input, expected, result, n, b);
+            prepareForgetTest(input, expected, result, n, b, true);
             LOOP_ASSERT_START(expected)
-            result = handler.forgetLast(input, result, n);
+            result = handler.forget(input, result, n);
             std::stringstream str;
             str << "ForgetHandlerN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -169,7 +171,33 @@ void SanityTestFactory::forgetLastTest(TestSettings &settings, TestLogger &logge
     END_TEST;
 }
 
-void SanityTestFactory::prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected, std::vector<size_t>& result, size_t n, size_t b) {
+
+void SanityTestFactory::forgetFirstTest(TestSettings &settings, TestLogger &logger) {
+    BEGIN_LOOP_TEST("ForgetHandlerFirstSanity", std::vector<size_t>);
+
+    std::vector<size_t> input, expected, result;
+
+    ForgetHandlerFirst handler;
+
+    LOOP_START
+
+    for(size_t n = 1; n < 10; n++) {
+        for(size_t b = 1; b < 5; b++) {
+            prepareForgetTest(input, expected, result, n, b, false);
+            LOOP_ASSERT_START(expected)
+            result = handler.forget(input, result, n);
+            std::stringstream str;
+            str << "ForgetHandlerFirstN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+
+    LOOP_END("ForgetFirstVaryingSizes");
+
+    END_TEST;
+}
+
+void SanityTestFactory::prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected, std::vector<size_t>& result, size_t n, size_t b, bool last) {
     size_t size = HelperFunctions::pow(n, b);
 
     input.resize(size);
@@ -181,19 +209,37 @@ void SanityTestFactory::prepareForgetTest(std::vector<size_t>& input, std::vecto
     }
 
     size_t sum = n * (n - 1) / 2;
-    size_t offset = n * n;
-    for (size_t i = 0; i < expected.size(); ++i) {
-        expected[i] = sum + i * offset;
+    if(last) {
+        size_t offset = n * n;
+        for (size_t i = 0; i < expected.size(); ++i) {
+            expected[i] = sum + i * offset;
+        }
+    } else {
+        for (size_t i = 0; i < expected.size(); ++i) {
+            expected[i] = sum * expected.size() + i * n;
+        }
     }
 }
 
-void SanityTestFactory::introduceLastTest(TestSettings &settings, TestLogger &logger) {
-    logger.NotifyTestStart("IntroduceHandlerSanity");
-    introduceLastCompleteTest(settings, logger);
-    introduceLastEdgeConsistencyTest(settings, logger);
+void SanityTestFactory::introduceLastComputeTest(TestSettings &settings, TestLogger &logger) {
+    logger.NotifyTestStart("IntroduceHandlerComputeSanity");
+
+    IntroduceHandlerCompute ih;
+
+    introduceLastCompleteTest(settings, logger, ih);
+    introduceLastEdgeConsistencyTest(settings, logger, ih);
 }
 
-void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings, TestLogger &logger) {
+void SanityTestFactory::introduceLastIteratorTest(TestSettings &settings, TestLogger &logger) {
+    logger.NotifyTestStart("IntroduceHandlerIteratorSanity");
+
+    IteratorIntroduceHandler ih;
+
+    introduceLastCompleteTest(settings, logger, ih);
+    introduceLastEdgeConsistencyTest(settings, logger, ih);
+}
+
+void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings, TestLogger &logger, IntroduceHandler &ih) {
     // Some small handcrafted examples for introduce with 3 vertices
     BEGIN_TEST("IntroduceHandlerEdgeConsistencySanity", std::vector<size_t>)
 
@@ -208,8 +254,6 @@ void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings,
     for (size_t i = 0; i < input.size(); ++i) {
         input[i] = i + 1;
     }
-
-    IntroduceHandler ih;
 
     h->clear(3);
     expected = std::vector<size_t> {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9};
@@ -232,15 +276,13 @@ void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings,
     END_TEST
 }
 
-void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLogger &logger) {
+void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLogger &logger, IntroduceHandler &ih) {
     BEGIN_LOOP_TEST("IntroduceHandlerCompleteGraphSanity", std::vector<size_t>)
 
     std::vector<size_t> input, expected, result, bag;
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
     size_t x = 0;
     GraphGenerator gen;
-
-    IntroduceHandler handler;
 
     LOOP_START
     bag.clear();
@@ -251,7 +293,7 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
         result.resize(n);
         gen.Clique(g, n);
         LOOP_ASSERT_START(expected)
-        result = handler.introduceLast(input, result, bag, h, g, n, x);
+        result = ih.introduceLast(input, result, bag, h, g, n, x);
         LOOP_ASSERT_END("IntroduceHandlerEmpty", result)
     }
     LOOP_END("IntroduceHandlerEmpty");
@@ -267,7 +309,7 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
             LOOP_ASSERT_START(expected)
-            result = handler.introduceLast(input, result, bag, h, g, n, x);
+            result = ih.introduceLast(input, result, bag, h, g, n, x);
             std::stringstream str;
             str << "IntroduceHandlerCompleteN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -285,7 +327,7 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
             LOOP_ASSERT_START(expected)
-            result = handler.introduceLast(input, result, bag, h, g, n, x);
+            result = ih.introduceLast(input, result, bag, h, g, n, x);
             std::stringstream str;
             str << "IntroduceHandlerCycleN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -311,11 +353,11 @@ void SanityTestFactory::prepareIntroduceCompleteTest(std::vector<size_t>& input,
     }
 
     for (size_t i = 0; i < input.size(); ++i) {
-        input[i] = i;
+        input[i] = i + 1;
     }
 
     for (size_t i = 0; i < expected.size(); ++i) {
-        expected[i] = i / n;
+        expected[i] = (i / n) + 1;
     }
 }
 
@@ -411,7 +453,7 @@ void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger&
     LOOP_START
     gen.Path(h, 4);
     ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
-    for(size_t n = 1; n < 10; n++) {
+    for(size_t n = 2; n < 10; n++) {
         gen.Clique(g, n);
         LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
         result = HomomorphismCounter(h, g, ntd, hom).compute();

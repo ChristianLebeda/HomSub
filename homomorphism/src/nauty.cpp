@@ -91,6 +91,8 @@ std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spa
         }
     } else std::cout << "Unable to open file";
 
+    remove("nauty.out");
+
     std::vector<SpasmEntry> joined = convertToSpasm(combineEntries(entries));
 
     return joined;

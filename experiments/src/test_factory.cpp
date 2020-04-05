@@ -12,6 +12,8 @@
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/main.h"
+#include "homomorphism/forget_handler_first.h"
+#include "homomorphism/forget_handler_last.h"
 #include "experiments/graph_generator.h"
 #include "experiments/test_settings.h"
 #include <memory>
@@ -20,6 +22,8 @@
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/iterator_remapper.h"
 #include "homomorphism/traversal_homomorphism_counter.h"
+#include "homomorphism/iterator_introduce_handler.h"
+#include "homomorphism/introduce_handler_compute.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);std::vector<int> durations(settings.GetRepetitions(),0);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
@@ -78,6 +82,9 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             PathInRandomGraph,
             RandomPatternsInRandomGraph,
             ForgetLeastSignificant,
+            ForgetMostSignificant,
+            IntroduceIterator,
+            IntroduceCompute,
             joinHandler,
             InsertClosedForm,
             ExtractClosedForm,
@@ -222,7 +229,7 @@ void TestFactory::RandomPatternsInRandomGraph(TestSettings &settings, TestLogger
 void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("ForgetLeastSignificant")
 
-    ForgetHandler handler;
+    ForgetHandlerLast handler;
 
     std::vector<size_t> vec1, vec2;
 
@@ -232,13 +239,145 @@ void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &log
         fillVector(vec1);
         vec2.resize(size / n);
         fillVector(vec2);
-        // TODO: Update log
         REPEATED_CLOCK_START;
-        handler.forgetLast(vec1, vec2, n);
+        handler.forget(vec1, vec2, n);
         REPEATED_CLOCK_END;
         for(int d : durations) {
             logger.Log("",n, k, d);
         }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::ForgetMostSignificant(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ForgetMostSignificant")
+
+    ForgetHandlerFirst handler;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size / n);
+            fillVector(vec2);
+            REPEATED_CLOCK_START;
+                handler.forget(vec1, vec2, n);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("",n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceIterator(TestSettings &settings, TestLogger &logger) {
+    IteratorIntroduceHandler ih;
+    IntroduceComplete(settings, logger, ih, "Iterator");
+    IntroduceOneEdge(settings, logger, ih, "Iterator");
+    IntroduceConsistency(settings, logger, ih, "Iterator");
+}
+
+void TestFactory::IntroduceCompute(TestSettings &settings, TestLogger &logger) {
+    IntroduceHandlerCompute ih;
+    IntroduceComplete(settings, logger, ih, "Compute");
+    IntroduceOneEdge(settings, logger, ih, "Compute");
+    IntroduceConsistency(settings, logger, ih, "Compute");
+}
+
+void TestFactory::IntroduceComplete(TestSettings &settings, TestLogger &logger,
+        IntroduceHandler& ih, const std::string& handlername) {
+    BEGIN_TEST("IntroduceComplete" + handlername)
+
+    std::vector<size_t> vec1, vec2, bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            bag.resize(k - 1);
+            for(int i = 0; i < bag.size(); i++) {
+                bag[i] = i + 1;
+            }
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(h, k);
+            GraphGenerator::Clique(g, n);
+            REPEATED_CLOCK_START;
+                ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceOneEdge(TestSettings &settings, TestLogger &logger,
+        IntroduceHandler& ih, const std::string& handlername) {
+    BEGIN_TEST("IntroduceOneEdge" + handlername)
+
+    std::vector<size_t> vec1, vec2, bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            bag.resize(k - 1);
+            for(int i = 0; i < bag.size(); i++) {
+                bag[i] = i + 1;
+            }
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            h->clear(k);
+            h->addEdge(0, 1);
+            GraphGenerator::Clique(g, n);
+            REPEATED_CLOCK_START;
+                ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceConsistency(TestSettings &settings, TestLogger &logger,
+                                    IntroduceHandler& ih, const std::string& handlername) {
+    BEGIN_TEST("IntroduceConsistency" + handlername)
+
+    std::vector<size_t> vec1, vec2, bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            bag.resize(k - 1);
+            for(int i = 0; i < bag.size(); i++) {
+                bag[i] = i + 1;
+            }
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(h, k);
+            GraphGenerator::EdgeProbabilityGraph(g, n, 0.5);
+            REPEATED_CLOCK_START;
+                ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
 
     STEPLOOP_END
 
@@ -259,11 +398,9 @@ void TestFactory::joinHandler(TestSettings &settings, TestLogger &logger) {
         vec2.resize(size);
         fillVector(vec2);
         vec1Copy = vec1;
-        // TODO: Update log
         REPEATED_CLOCK_START;
         jh.join(vec1Copy, vec2);
         REPEATED_CLOCK_END;
-        logger.Log("", n, k, duration);
         for(int d : durations) {
             logger.Log("", n, k, d);
         }
