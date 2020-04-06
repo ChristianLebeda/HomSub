@@ -1,7 +1,5 @@
 #include "homomorphism/calculation_remapper.h"
 
-#include <iostream>
-
 void CalculationRemapper::Extract(std::vector <size_t>& in, std::vector <size_t>& out, size_t pos) {
     // Since index and exponents are inverted. If this is changed this line should be removed.
     pos = b_ - pos - 1;
