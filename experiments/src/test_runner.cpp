@@ -68,6 +68,7 @@ void TestRunner::PrintHelp()
         << "-test t    | Run a specific test based on its number" << std::endl
         << "-group g   | Runs a test group: correctness (c), performance (p) or all (a)" << std::endl
         << "             Performance group is default" << std::endl
+        << "-rep r     | Specify how maby times the repeated experiments should run" << std::endl
         << "-csv       | Output test results formatted as csv" << std::endl
         << "-seed      | Specify the seed used by the random graphs" << std::endl
         << "-time      | Set the timout limit for incremental tests" << std::endl
