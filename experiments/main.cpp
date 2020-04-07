@@ -134,7 +134,12 @@ int main(int argc, char *argv[])
         logger = &readLogger;
     }
     
-    settings.SetRepetitions(1);
+    if(argMap.count("-rep")) {
+        int reps = std::stoi(argMap["-rep"]);
+        settings.SetRepetitions(reps);
+    } else {
+        settings.SetRepetitions(1);
+    }
     
     TestRunner runner(settings, *logger);
     runner.Run();
