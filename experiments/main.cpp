@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
         logger = &readLogger;
     }
     
-    settings.SetRepetitions(5);
+    settings.SetRepetitions(1);
     
     TestRunner runner(settings, *logger);
     runner.Run();
