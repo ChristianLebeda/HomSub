@@ -24,6 +24,7 @@
 #include "homomorphism/traversal_homomorphism_counter.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/introduce_handler_compute.h"
+#include "homomorphism/tamaki_runner.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);std::vector<int> durations(settings.GetRepetitions(),0);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
 
@@ -90,7 +91,9 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             ExtractClosedForm,
             InsertIterator,
             ExtractIterator,
-            MaxDegreeHomomorphismCount
+            MaxDegreeHomomorphismCount,
+            CyclesInMaxDegreeRandom,
+            StarsIsMaxDegreeKRandom
         };
     return tests;
 }
@@ -532,8 +535,103 @@ void TestFactory::MaxDegreeHomomorphismCount(TestSettings &settings, TestLogger 
         TraversalHomomorphismCounter::Count(h, g);
         REPEATED_CLOCK_END;
         
-        for(int i = 1; i < durations.size(); i++) {
+        for(int i = 0; i < durations.size(); i++) {
             logger.Log("SquareInGrid", n*n, 4, durations[i]);
+        }
+    }
+    
+    END_TEST;
+}
+
+void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("CyclesInMaxDegree5Random");
+    std::shared_ptr<EdgeSetGraph> setH = std::make_shared<EdgeSetGraph>(0);
+    std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
+    
+    std::shared_ptr<Graph> adjH = std::make_shared<AdjacencyMatrixGraph>(0);
+    std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
+    
+    TamakiRunner tr;
+    
+    
+    
+    for(int n = 8; n < 4097; n = n*2 ) {
+        for(int k = 3; k < 6; k++) {
+            GraphGenerator::Cycle(setH, k);
+            GraphGenerator::MaxDegreeRandomGraph(setG, n, 5);
+            
+            REPEATED_CLOCK_START
+            TraversalHomomorphismCounter::Count(setH, setG);
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("maxDegree",n, k, durations[i]);
+            }
+            
+            if( (n > 1023 && k > 3) || n > 1024) {
+                continue;
+            }
+            
+            GraphGenerator::Cycle(adjH, k);
+            GraphGenerator::MaxDegreeRandomGraph(adjG, n, 5);
+
+            std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
+            std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
+            
+            HomomorphismSettings setting = ConfigurationFactory::defaultSettings();
+
+            REPEATED_CLOCK_START
+            HomomorphismCounter(adjH, adjG, ntd, setting).compute();
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("treeWidth",n, k, durations[i]);
+            }
+        }
+    }
+    
+    END_TEST;
+}
+
+void TestFactory::StarsIsMaxDegreeKRandom(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("StarsIsMaxDegreeKRandom");
+    std::shared_ptr<EdgeSetGraph> setH = std::make_shared<EdgeSetGraph>(0);
+    std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
+    
+    std::shared_ptr<Graph> adjH = std::make_shared<AdjacencyMatrixGraph>(0);
+    std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
+    
+    TamakiRunner tr;
+
+    for(int n = 8; n < 1025; n = n*2 ) {
+        for(int k = 3; k < 6; k++) {
+            GraphGenerator::Star(setH, k);
+            GraphGenerator::MaxDegreeRandomGraph(setG, n, k);
+            
+            REPEATED_CLOCK_START
+            TraversalHomomorphismCounter::Count(setH, setG);
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("maxDegree",n, k, durations[i]);
+            }
+            
+            GraphGenerator::Star(adjH, k);
+            
+            GraphGenerator::FromGraph(adjG, setG);
+
+            std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
+            std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
+            
+            HomomorphismSettings setting = ConfigurationFactory::defaultSettings();
+
+            REPEATED_CLOCK_START
+            HomomorphismCounter(adjH, adjG, ntd, setting).compute();
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("treeWidth",n, k, durations[i]);
+            }
         }
     }
     
