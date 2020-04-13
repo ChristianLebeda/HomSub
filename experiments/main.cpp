@@ -13,6 +13,10 @@
 #include "experiments/readable_logger.h"
 #include "experiments/csv_logger.h"
 
+#include "homomorphism/traversal_homomorphism_counter.h"
+#include "homomorphism/homomorphism_counter.h"
+#include "homomorphism/configuration_factory.h"
+
 int main(int argc, char *argv[])
 {
     if(argc < 2) {
@@ -130,7 +134,12 @@ int main(int argc, char *argv[])
         logger = &readLogger;
     }
     
-    settings.SetRepetitions(5);
+    if(argMap.count("-rep")) {
+        int reps = std::stoi(argMap["-rep"]);
+        settings.SetRepetitions(reps);
+    } else {
+        settings.SetRepetitions(1);
+    }
     
     TestRunner runner(settings, *logger);
     runner.Run();

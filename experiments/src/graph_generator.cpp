@@ -98,3 +98,42 @@ void GraphGenerator::Clique(std::shared_ptr<Graph> g, int size)
         }
     }
 }
+
+void GraphGenerator::Star(std::shared_ptr<Graph> g, int size) {
+    g->clear(size);
+    for(int i = 1; i < size;i++) {
+        g->addEdge(0, i);
+    }
+}
+
+void GraphGenerator::MaxDegreeRandomGraph(std::shared_ptr<Graph> g, size_t n, size_t maxDegree) {
+    g->clear(n);
+    
+    for(int i = 0; i < n; i++) {
+        size_t targetDegree = RandomSize(maxDegree);
+        size_t currentDegree = g->getNeighbourhood(i).size();
+        
+        while(currentDegree < targetDegree) {
+            size_t randomVert = RandomSize(n);
+            
+            if(!g->edgeExist(i, randomVert) &&
+               i != randomVert &&
+               g->getNeighbourhood(randomVert).size() < maxDegree)
+            {
+                g->addEdge(i, randomVert);
+                currentDegree++;
+            }
+        }
+    }
+}
+
+void GraphGenerator::FromGraph(std::shared_ptr<Graph> destination, std::shared_ptr<Graph> source) {
+    destination->clear(source->vertCount());
+    
+    for(size_t u = 0; u < source->vertCount(); u++) {
+        auto neighbours = source->getNeighbourhood(u);
+        for(size_t v : neighbours) {
+            destination->addEdge(u, v);
+        }
+    }
+}
