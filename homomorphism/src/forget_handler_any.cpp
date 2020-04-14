@@ -16,8 +16,8 @@ std::vector<size_t>& ForgetHandlerAny::forget(std::vector<size_t> &input, std::v
     }
 
     for (size_t y = 0; y < yMax; ++y) {
-        for (size_t x = 0; x < xMax; ++x) {
-            for (size_t z = 0; z < zMax; ++z) {
+        for (size_t z = 0; z < zMax; ++z) {
+            for (size_t x = 0; x < xMax; ++x) {
                 output[x + zOff * y] += input[x + yOff * y + zOff * z];
             }
         }
