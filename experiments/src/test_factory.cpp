@@ -12,6 +12,7 @@
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/main.h"
+#include "homomorphism/forget_handler_any.h"
 #include "homomorphism/forget_handler_first.h"
 #include "homomorphism/forget_handler_last.h"
 #include "experiments/graph_generator.h"
@@ -86,6 +87,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             RandomPatternsInRandomGraph,
             ForgetLeastSignificant,
             ForgetMostSignificant,
+            ForgetAny,
             IntroduceIterator,
             IntroduceCompute,
             joinHandler,
@@ -276,6 +278,34 @@ void TestFactory::ForgetMostSignificant(TestSettings &settings, TestLogger &logg
             REPEATED_CLOCK_END;
             for(int d : durations) {
                 logger.Log("",n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::ForgetAny(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ForgetAny")
+
+    ForgetHandlerAny handler;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size / n);
+            fillVector(vec2);
+            for(size_t idx = 0; idx < k; idx++) {
+                handler.SetSizesAndIndex(n, k, idx);
+                REPEATED_CLOCK_START;
+                    handler.forget(vec1, vec2, n);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("",n, k, idx, d);
+                }
             }
 
     STEPLOOP_END

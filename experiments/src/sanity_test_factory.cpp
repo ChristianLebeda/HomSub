@@ -3,6 +3,7 @@
 #include "experiments/graph_generator.h"
 #include "homomorphism/forget_handler_last.h"
 #include "homomorphism/forget_handler_first.h"
+#include "homomorphism/forget_handler_any.h"
 #include "homomorphism/introduce_handler_compute.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/helper_functions.h"
@@ -44,6 +45,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return forgetLastTest;
         case FORGET_HANDLER_FIRST:
             return forgetFirstTest;
+        case FORGET_HANDLER_ANY:
+            return forgetAnyTest;
         case INTRODUCE_HANDLER_COMPUTE:
             return introduceLastComputeTest;
         case INTRODUCE_HANDLER_ITERATOR:
@@ -193,6 +196,50 @@ void SanityTestFactory::forgetFirstTest(TestSettings &settings, TestLogger &logg
     }
 
     LOOP_END("ForgetFirstVaryingSizes");
+
+    END_TEST;
+}
+
+void SanityTestFactory::forgetAnyTest(TestSettings &settings, TestLogger &logger) {
+    BEGIN_LOOP_TEST("ForgetHandlerAnySanity", std::vector<size_t>);
+
+    std::vector<size_t> input, expected, result;
+
+    ForgetHandlerAny handler;
+
+    LOOP_START
+
+    for(size_t n = 1; n < 10; n++) {
+        for(size_t b = 1; b < 5; b++) {
+            handler.SetSizesAndIndex(n, b, 0);
+            prepareForgetTest(input, expected, result, n, b, false);
+            LOOP_ASSERT_START(expected)
+            result = handler.forget(input, result, n);
+            std::stringstream str;
+            str << "ForgetHandlerFirstN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+
+    LOOP_END("ForgetAnyIndex0VaryingSizes");
+
+    LOOP_START
+
+    for(size_t n = 1; n < 10; n++) {
+        for(size_t b = 1; b < 5; b++) {
+            handler.SetSizesAndIndex(n, b, b - 1);
+            prepareForgetTest(input, expected, result, n, b, true);
+            LOOP_ASSERT_START(expected)
+            result = handler.forget(input, result, n);
+            std::stringstream str;
+            str << "ForgetHandlerFirstN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+
+    LOOP_END("ForgetAnyIndexLastVaryingSizes");
+
+    //TODO: Could add test for index in the middle
 
     END_TEST;
 }

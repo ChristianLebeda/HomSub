@@ -22,6 +22,8 @@ std::vector<size_t>& ForgetHandlerAny::forget(std::vector<size_t> &input, std::v
             }
         }
     }
+
+    return output;
 }
 
 void ForgetHandlerAny::SetSizesAndIndex(size_t n, size_t b, size_t idx) {
