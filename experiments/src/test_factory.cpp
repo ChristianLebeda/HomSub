@@ -573,7 +573,7 @@ void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &lo
             }
             
             GraphGenerator::Cycle(adjH, k);
-            GraphGenerator::MaxDegreeRandomGraph(adjG, n, 5);
+            GraphGenerator::FromGraph(adjG, setG);
 
             std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
             std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
@@ -603,7 +603,7 @@ void TestFactory::StarsIsMaxDegreeKRandom(TestSettings &settings, TestLogger &lo
     
     TamakiRunner tr;
 
-    for(int n = 8; n < 1025; n = n*2 ) {
+    for(int n = 8; n < 4097; n = n*2 ) {
         for(int k = 3; k < 6; k++) {
             GraphGenerator::Star(setH, k);
             GraphGenerator::MaxDegreeRandomGraph(setG, n, k);
