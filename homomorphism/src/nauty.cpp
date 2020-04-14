@@ -10,17 +10,6 @@
 #include "homomorphism/pipe_handler.h"
 #include "homomorphism/third_party.h"
 
-std::vector<NautyEntry> Nauty::convertToNauty(const std::vector<SpasmEntry>& spasm) {
-    std::vector<NautyEntry> entries;
-
-    entries.reserve(spasm.size());
-    for(auto& entry : spasm) {
-        entries.push_back({entry.graph->toNautyFormat(), entry.graph->vertCount(), entry.coefficient});
-    }
-
-    return entries;
-}
-
 std::vector<NautyEntry> Nauty::combineEntries(std::vector<NautyEntry> entries) {
     std::vector<NautyEntry> joined;
 
@@ -53,8 +42,7 @@ std::vector<SpasmEntry> Nauty::convertToSpasm(const std::vector<NautyEntry>& ent
     return spasm;
 }
 
-std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spasm) {
-    std::vector<NautyEntry> entries = combineEntries(convertToNauty(spasm));
+std::vector<SpasmEntry> Nauty::joinIsomorphic(std::unordered_map<std::string, int>& entries) {
     std::ostringstream str;
 
     // Canonical mode
@@ -62,7 +50,8 @@ std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spa
 
     for (auto &entry : entries) {
         // Define graph
-        str << "n=" << entry.n << " g " << entry.graph;
+        str << "n=" << std::count(entry.first.begin(), entry.first.end(), ';')
+                << " g " << entry.first;
 
         // Execute nauty and display graph
         str << "x b\n";
@@ -84,16 +73,21 @@ std::vector<SpasmEntry> Nauty::joinIsomorphic(const std::vector<SpasmEntry>& spa
 
     std::string line;
     std::ifstream output("nauty.out");
+
+    std::vector<NautyEntry> spasm;
+    spasm.reserve(entries.size());
+
     if (output.is_open()) {
         // Update graphs with new canonical labelling
         for (auto &entry : entries) {
-            entry.graph = HelperFunctions::trimDreadnautOutput(output, entry.n);
+            size_t n = std::count(entry.first.begin(), entry.first.end(), ';');
+            spasm.push_back({HelperFunctions::trimDreadnautOutput(output, n), n, entry.second});
         }
     } else std::cout << "Unable to open file";
 
     remove("nauty.out");
 
-    std::vector<SpasmEntry> joined = convertToSpasm(combineEntries(entries));
+    std::vector<SpasmEntry> joined = convertToSpasm(combineEntries(spasm));
 
     return joined;
 }

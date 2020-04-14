@@ -1,8 +1,9 @@
-
 #include <stdio.h>
 #include "homomorphism/traversal_homomorphism_counter.h"
 #include <unordered_set>
+#include <algorithm>
 #include <iostream>
+
 
 bool TraversalHomomorphismCounter::CheckHomomorphism(std::shared_ptr<EdgeSetGraph> h, std::shared_ptr<EdgeSetGraph> g, std::vector<size_t> hTraversal, std::vector<size_t> gTraversal) {
     int k = hTraversal.size();

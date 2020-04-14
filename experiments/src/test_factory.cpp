@@ -19,6 +19,8 @@
 #include <memory>
 #include "homomorphism/configuration_factory.h"
 #include <future>
+#include "homomorphism/calculation_remapper_extract_variants.h"
+#include "homomorphism/calculation_remapper_insert_variants.h"
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/iterator_remapper.h"
 #include "homomorphism/traversal_homomorphism_counter.h"
@@ -91,6 +93,8 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             ExtractClosedForm,
             InsertIterator,
             ExtractIterator,
+            InsertClosedVariants,
+            ExtractClosedVariants,
             MaxDegreeHomomorphismCount,
             CyclesInMaxDegreeRandom,
             StarsIsMaxDegreeKRandom
@@ -431,7 +435,7 @@ void TestFactory::InsertClosedForm(TestSettings &settings, TestLogger &logger) {
             remapper.Insert(vec1, vec2, pos);
             REPEATED_CLOCK_END;
             for(int d : durations) {
-                logger.Log("", n, k, d);
+                logger.Log("", n, k, pos, d);
             }
         }
 
@@ -655,4 +659,228 @@ float TestFactory::averageDuration(std::vector<int> durations)
         sum += durations[i];
     }
     return sum / durations.size();
+}
+
+void TestFactory::InsertClosedVariants(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("InsertClosedVariants")
+
+    CalculationRemapperInsertVarients remapper;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.InsertXYZ(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("XYZ", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.InsertXZY(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("XZY", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.InsertYXZ(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("YXZ", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.InsertYZX(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("YZX", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.InsertZXY(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("ZXY", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.InsertZYX(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("ZYX", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::ExtractClosedVariants(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ExtractClosedVariants")
+
+    CalculationRemapperExtractVarients remapper;
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.ExtractXYZ(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("XYZ", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.ExtractXZY(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("XZY", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.ExtractYXZ(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("YXZ", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.ExtractYZX(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("YZX", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.ExtractZXY(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("ZXY", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    STEPLOOP_START
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size);
+            remapper.SetSizes(n, k);
+            for(int pos = 0; pos < k - 1; pos++) {
+                REPEATED_CLOCK_START;
+                    remapper.ExtractZYX(vec1, vec2, pos);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("ZYX", n, k, pos, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    END_TEST
 }

@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     TestSettings settings;
 
     std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time",
-                                     "-spasms", "-convertgr", "-in", "-out"};
+                                     "-spasms", "-convertgr", "-in", "-out", "-rep"};
 
     for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
@@ -123,7 +123,14 @@ int main(int argc, char *argv[])
     } else {
         settings.SetGroup(false, true);
     }
-    
+
+    if(argMap.count("-rep")) {
+        int reps = std::stoi(argMap["-rep"]);
+        settings.SetRepetitions(reps);
+    } else {
+        settings.SetRepetitions(1);
+    }
+
     TestLogger *logger;
 
     if(argMap.count("-csv")) {
@@ -132,13 +139,6 @@ int main(int argc, char *argv[])
     } else {
         ReadableLogger readLogger(std::cout);
         logger = &readLogger;
-    }
-    
-    if(argMap.count("-rep")) {
-        int reps = std::stoi(argMap["-rep"]);
-        settings.SetRepetitions(reps);
-    } else {
-        settings.SetRepetitions(1);
     }
     
     TestRunner runner(settings, *logger);

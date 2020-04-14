@@ -27,14 +27,13 @@ std::shared_ptr<Spasm> Spasm::fromFile(std::string path) {
 }
 
 std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H, SpasmReducer& red) {
-    std::vector<SpasmEntry> graphs{ {H, 1} };
+    std::unordered_map<std::string,int> graphs{ {H->toNautyFormat(), 1} };
     std::set<size_t>* parts = new std::set<size_t>[H->vertCount()]{};
-    
-    addPartitioningsRec(H, graphs, parts, 0, 0);
 
+    addPartitioningsRec(H, graphs, parts, 0, 0);
     delete[] parts;
 
-    graphs = red.joinIsomorphic(graphs);
+    auto entries = red.joinIsomorphic(graphs);
 
     auto lamb = [](SpasmEntry& g1, SpasmEntry& g2) -> bool
     {
@@ -43,9 +42,9 @@ std::shared_ptr<Spasm> Spasm::createSpasm(std::shared_ptr<Graph> H, SpasmReducer
                g1.graph->vertCount() > g2.graph->vertCount();
     };
 
-    sort(graphs.begin(), graphs.end(), lamb);
+    sort(entries.begin(), entries.end(), lamb);
 
-    return std::make_shared<Spasm>(graphs, H);
+    return std::make_shared<Spasm>(entries, H);
 }
 
 std::vector<SpasmEntry> Spasm::joinIsomorphic(std::vector<SpasmEntry> graphs) {
@@ -92,10 +91,12 @@ std::vector<SpasmEntry> Spasm::joinIsomorphic(std::vector<SpasmEntry> graphs) {
     return joined;
 }
 
-void Spasm::addPartitioningsRec(std::shared_ptr<Graph> H, std::vector<SpasmEntry>& graphs, std::set<size_t>* parts, size_t next, size_t size) {
+
+void Spasm::addPartitioningsRec(std::shared_ptr<Graph> H, std::unordered_map<std::string, int> &graphs,
+                                std::set<size_t> *parts, size_t next, size_t size) {
     if (H->vertCount() == next) {
         if (H->vertCount() != size) {
-            std::shared_ptr<Graph> quotient = H->partition(parts, size);
+            std::string quotient = H->partitionNauty(parts, size);
             // Use closed formula to find coefficient
             // product B in parts (|B| - 1)!
             // Sign is determined based on size of quotient graph
@@ -108,7 +109,11 @@ void Spasm::addPartitioningsRec(std::shared_ptr<Graph> H, std::vector<SpasmEntry
                     B--;
                 }
             }
-            graphs.push_back({ quotient, coef });
+            if(graphs.count(quotient)) {
+                graphs[quotient] += coef;
+            } else {
+                graphs.insert({ quotient, coef });
+            }
         }
         return;
     }

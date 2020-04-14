@@ -10,6 +10,8 @@ if (($#)); then
     echo "Note: Make sure you have build with the newest changes"
     time(
         echo "Using git revision `git rev-parse HEAD`"
+        echo "Running experiment:"
+        echo $@
         $@ -csv > $OUTDIR/experiment.csv
     ) &> $OUTDIR/experiment.log
 else
