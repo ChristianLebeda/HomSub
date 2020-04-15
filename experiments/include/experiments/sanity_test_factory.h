@@ -10,7 +10,7 @@
 
 #define TESTCASES \
     SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
-    FORGET_HANDLER_LAST, FORGET_HANDLER_FIRST, INTRODUCE_HANDLER_COMPUTE, INTRODUCE_HANDLER_ITERATOR, \
+    FORGET_HANDLER_LAST, FORGET_HANDLER_FIRST, FORGET_HANDLER_ANY, INTRODUCE_HANDLER_COMPUTE, INTRODUCE_HANDLER_ITERATOR, \
     HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
 HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR, MAX_DEGREE_TEST
 
@@ -32,6 +32,7 @@ private:
     static void remapperTest(TestSettings& settings, TestLogger& logger, Remapper& mapper, std::string name);
     static void forgetLastTest(TestSettings& settings, TestLogger& logger);
     static void forgetFirstTest(TestSettings& settings, TestLogger& logger);
+    static void forgetAnyTest(TestSettings& settings, TestLogger& logger);
     static void prepareForgetTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                     std::vector<size_t>& result, size_t n, size_t b, bool last);
     static void introduceLastComputeTest(TestSettings& settings, TestLogger& logger);
