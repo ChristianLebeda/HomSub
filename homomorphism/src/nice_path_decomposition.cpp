@@ -5,7 +5,7 @@ std::shared_ptr<NicePathDecomposition> NicePathDecomposition::FromTd(std::shared
         return nullptr;
     }
 
-    int next = -1;
+    int next = 0;
     // Find start vertex
     for(size_t i = 0; i < td->getGraph()->vertCount(); i++) {
         if(td->getGraph()->getNeighbourList()[i].size() == 1) {

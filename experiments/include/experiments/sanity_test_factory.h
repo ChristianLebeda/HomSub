@@ -7,12 +7,14 @@
 #include "experiments/test_logger.h"
 #include "experiments/test_settings.h"
 #include "homomorphism/remapper.h"
+#include "homomorphism/pathdecomposition_counter.h"
 
 #define TESTCASES \
     SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
     FORGET_HANDLER_LAST, FORGET_HANDLER_FIRST, FORGET_HANDLER_ANY, INTRODUCE_HANDLER_COMPUTE, INTRODUCE_HANDLER_ITERATOR, \
     HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
-HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR, MAX_DEGREE_TEST
+    HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR, MAX_DEGREE_TEST, \
+    PATHDECOMPCOUNTER_DEFAULT
 
 #define COMPOSITETESTCASES \
     HOMOMORPHISM_COUNTER_DEFAULT, HOMOMORPHISM_COUNTER_ITERATOR, \
@@ -54,7 +56,14 @@ private:
                     HomomorphismSettings hom, const std::string& settingsName);
     static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
                     HomomorphismSettings hom, const std::string& settingsName);
-    
+    static void DefaultPathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger);
+    static void PathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger,
+                                           PathdecompotisionSettings hom, const std::string& settingsName);
+    static void PathDecompHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
+                            PathdecompotisionSettings set, const std::string& settingsName);
+    static void PathdecompHomomorphismLoopTest(TestSettings& settings, TestLogger& logger,
+                                               PathdecompotisionSettings set, const std::string& settingsName);
+
     static void maxDegreeTest(TestSettings& settings, TestLogger& logger);
 };
 
