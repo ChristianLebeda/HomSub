@@ -12,7 +12,7 @@ std::shared_ptr<TreeDecomposition> TreeDecomposition::parseTd(std::istream& inpu
     if (!std::sscanf(line.c_str(), "s td %zd %zd %zd", &bagN, &width, &n)) return nullptr;
     width--;
     //TODO: Specific Graph. Maybe this should be generic
-    std::shared_ptr <EdgeSetGraph> G = std::make_shared<EdgeSetGraph>(n);
+    std::shared_ptr <EdgeSetGraph> G = std::make_shared<EdgeSetGraph>(bagN);
  
     std::vector<std::unordered_set<size_t>> bags;
     bags.resize(bagN);
@@ -76,6 +76,15 @@ std::string TreeDecomposition::toTd()
     }
 
     return str.str();
+}
+
+bool TreeDecomposition::IsPathDecomposition() {
+    for(auto & v : graph->getNeighbourList()) {
+        if(v.size() > 2) {
+            return false;
+        }
+    }
+    return true;
 }
 
 std::shared_ptr<EdgeSetGraph> TreeDecomposition::getGraph()
