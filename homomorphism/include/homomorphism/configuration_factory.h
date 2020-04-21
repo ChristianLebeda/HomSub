@@ -6,9 +6,9 @@
 
 class ConfigurationFactory {
 public:
-    static HomomorphismSettings defaultSettings();
-    static HomomorphismSettings iteratorRemapper();
-    static PathdecompotisionSettings DefaultPathSettings();
+    static HomomorphismSettings defaultSettings(size_t n, size_t k);
+    static HomomorphismSettings iteratorRemapper(size_t n, size_t k);
+    static PathdecompotisionSettings DefaultPathSettings(size_t n, size_t k);
 };
 
 #endif

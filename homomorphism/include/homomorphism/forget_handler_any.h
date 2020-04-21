@@ -5,11 +5,8 @@
 
 class ForgetHandlerAny : public ForgetHandler {
 public:
-    void SetSizesAndIndex(size_t n, size_t b, size_t idx);
-    std::vector<size_t>& forget(std::vector<size_t>& input, std::vector<size_t>& output, size_t n) override;
-private:
-    size_t n_, b_, idx_;
-    std::vector<size_t> powers_;
+    ForgetHandlerAny(size_t n, size_t k) : ForgetHandler(n, k) {}
+    std::vector<size_t>& forget(std::vector<size_t>& input, std::vector<size_t>& output, size_t b, size_t idx) override;
 };
 
 
