@@ -2,7 +2,7 @@
 #include "homomorphism/configuration_factory.h"
 
 #include "homomorphism/calculation_remapper.h"
-#include "homomorphism/forget_handler_last.h"
+#include "homomorphism/forget_handler_combined.h"
 #include "homomorphism/iterator_remapper.h"
 
 
@@ -19,7 +19,7 @@ HomomorphismSettings ConfigurationFactory::iteratorRemapper(size_t n, size_t k) 
 }
 
 PathdecompotisionSettings ConfigurationFactory::DefaultPathSettings(size_t n, size_t k) {
-    return {std::make_shared<ForgetHandlerAny>(n, k),
+    return {std::make_shared<ForgetHandlerCombined>(n, k),
             std::make_shared<IntroduceHandlerCompute>(),
             std::make_shared<VectorAllocator>()};
 }
