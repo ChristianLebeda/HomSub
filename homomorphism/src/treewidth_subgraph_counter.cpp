@@ -14,13 +14,20 @@ long TreewidthSubgraphCounter::compute() {
 	long count = 0;
 
     HomomorphismSettings settings = ConfigurationFactory::defaultSettings();
+    PathdecompotisionSettings set = ConfigurationFactory::DefaultPathSettings();
 
 	for (size_t i = 0; i < spdc_->size(); i++)
 	{
 		auto next = (*spdc_)[i];
-		auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-		auto hc = HomomorphismCounter(next.graph, g_, ntd, settings);
-		count += hc.compute() * next.coefficient;
+		if(next.decomposition->IsPathDecomposition()) {
+            auto npd = NicePathDecomposition::FromTd(next.decomposition);
+            auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
+            count += hc.compute() * next.coefficient;
+		} else {
+            auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
+            auto hc = HomomorphismCounter(next.graph, g_, ntd, settings);
+            count += hc.compute() * next.coefficient;
+		}
 	}
 
 	return count;

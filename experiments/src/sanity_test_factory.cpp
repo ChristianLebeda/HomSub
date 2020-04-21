@@ -63,6 +63,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return defaultHomomorphismTest;
         case HOMOMORPHISM_COUNTER_ITERATOR:
             return iteratorHomomorphismTest;
+        case PATHDECOMPCOUNTER_DEFAULT:
+            return DefaultPathdecompHomomorphismTest;
         case MAX_DEGREE_TEST:
             return maxDegreeTest;
         case ALL_TESTS:
@@ -465,7 +467,7 @@ void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, Test
     ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
     ASSERT_START(16);
     result = HomomorphismCounter(h, h, ntd, hom).compute();
-    ASSERT_END("ExtractMiddle", result)
+    ASSERT_END("SquareWithDiagonalToSelf", result)
 
     END_TEST
 }
@@ -504,6 +506,86 @@ void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger&
         gen.Clique(g, n);
         LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
         result = HomomorphismCounter(h, g, ntd, hom).compute();
+        std::stringstream str;
+        str << "PathInCompleteGraphN" << n;
+        LOOP_ASSERT_END(str.str(), result)
+    }
+    LOOP_END("PathInCompleteGraph");
+
+    END_TEST
+}
+
+void SanityTestFactory::DefaultPathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger) {
+    logger.NotifyTestStart("Default path decomposition homomorphism configuration");
+    PathdecompHomomorphismTest(settings, logger, ConfigurationFactory::DefaultPathSettings(), "DefaultPathDecomp");
+}
+
+void SanityTestFactory::PathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger,
+                                                   PathdecompotisionSettings hom, const std::string& settingsName) {
+    PathDecompHomomorphismHandcraftedTest(settings, logger, hom, settingsName);
+    PathdecompHomomorphismLoopTest(settings, logger, hom, settingsName);
+}
+
+void SanityTestFactory::PathDecompHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
+                                                              PathdecompotisionSettings set, const std::string& settingsName) {
+    BEGIN_TEST(settingsName + "Handcrafted", long)
+
+    TamakiRunner tam;
+    GraphGenerator gen;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<NicePathDecomposition> npd;
+    long result;
+
+    gen.Cycle(h, 4);
+    npd = NicePathDecomposition::FromTd(tam.decompose(h));
+    ASSERT_START(32);
+    result = PathdecompositionCounter(h, h, npd, set).compute();
+    ASSERT_END("SquareToSquare", result)
+
+    gen.Cycle(h, 4);
+    h->addEdge(0, 2);
+    npd = NicePathDecomposition::FromTd(tam.decompose(h));
+    ASSERT_START(16);
+    result = PathdecompositionCounter(h, h, npd, set).compute();
+    ASSERT_END("SquareWithDiagonalToSelf", result)
+
+    END_TEST
+}
+
+void SanityTestFactory::PathdecompHomomorphismLoopTest(TestSettings& settings, TestLogger& logger,
+                                                       PathdecompotisionSettings set, const std::string& settingsName) {
+    BEGIN_LOOP_TEST(settingsName + "Loop", long)
+
+    TamakiRunner tam;
+    GraphGenerator gen;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<NicePathDecomposition> npd;
+    long result;
+
+    LOOP_START
+    for(size_t k = 3; k < 10; k += 2) {
+        gen.Cycle(h, k);
+        npd = NicePathDecomposition::FromTd(tam.decompose(h));
+        for(size_t r = 2; r < 10; r += 2) {
+            for(size_t c = 2; c < 5; c++) {
+                GraphGenerator::CompleteGrid(g, r, c);
+                LOOP_ASSERT_START(0)
+                result = PathdecompositionCounter(h, g, npd, set).compute();
+                std::stringstream str;
+                str << "OddCycleInGridK" << k << "R" << r << "C" << c;
+                LOOP_ASSERT_END(str.str(), result)
+            }
+        }
+    }
+    LOOP_END("NoOddCycleInGrid");
+
+    LOOP_START
+    gen.Path(h, 4);
+    npd = NicePathDecomposition::FromTd(tam.decompose(h));
+    for(size_t n = 2; n < 10; n++) {
+        gen.Clique(g, n);
+        LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
+        result = PathdecompositionCounter(h, g, npd, set).compute();
         std::stringstream str;
         str << "PathInCompleteGraphN" << n;
         LOOP_ASSERT_END(str.str(), result)
