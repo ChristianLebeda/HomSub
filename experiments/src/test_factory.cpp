@@ -12,9 +12,7 @@
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/main.h"
-#include "homomorphism/forget_handler_any.h"
-#include "homomorphism/forget_handler_first.h"
-#include "homomorphism/forget_handler_last.h"
+#include "homomorphism/forget_handler_combined.h"
 #include "experiments/graph_generator.h"
 #include "experiments/test_settings.h"
 #include <memory>
@@ -88,6 +86,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             ForgetLeastSignificant,
             ForgetMostSignificant,
             ForgetAny,
+            ForgetCombined,
             IntroduceIterator,
             IntroduceCompute,
             joinHandler,
@@ -239,18 +238,18 @@ void TestFactory::RandomPatternsInRandomGraph(TestSettings &settings, TestLogger
 void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("ForgetLeastSignificant")
 
-    ForgetHandlerLast handler;
-
     std::vector<size_t> vec1, vec2;
 
     STEPLOOP_START
+
+        ForgetHandlerLast handler(n, k);
 
         vec1.resize(size);
         fillVector(vec1);
         vec2.resize(size / n);
         fillVector(vec2);
         REPEATED_CLOCK_START;
-        handler.forget(vec1, vec2, n);
+        handler.forget(vec1, vec2, k, k - 1);
         REPEATED_CLOCK_END;
         for(int d : durations) {
             logger.Log("",n, k, d);
@@ -264,18 +263,18 @@ void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &log
 void TestFactory::ForgetMostSignificant(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("ForgetMostSignificant")
 
-    ForgetHandlerFirst handler;
-
     std::vector<size_t> vec1, vec2;
 
     STEPLOOP_START
+
+            ForgetHandlerFirst handler(n, k);
 
             vec1.resize(size);
             fillVector(vec1);
             vec2.resize(size / n);
             fillVector(vec2);
             REPEATED_CLOCK_START;
-                handler.forget(vec1, vec2, n);
+                handler.forget(vec1, vec2, k, 0);
             REPEATED_CLOCK_END;
             for(int d : durations) {
                 logger.Log("",n, k, d);
@@ -289,20 +288,46 @@ void TestFactory::ForgetMostSignificant(TestSettings &settings, TestLogger &logg
 void TestFactory::ForgetAny(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("ForgetAny")
 
-    ForgetHandlerAny handler;
-
     std::vector<size_t> vec1, vec2;
 
     STEPLOOP_START
+
+            ForgetHandlerAny handler(n, k);
 
             vec1.resize(size);
             fillVector(vec1);
             vec2.resize(size / n);
             fillVector(vec2);
             for(size_t idx = 0; idx < k; idx++) {
-                handler.SetSizesAndIndex(n, k, idx);
                 REPEATED_CLOCK_START;
-                    handler.forget(vec1, vec2, n);
+                    handler.forget(vec1, vec2, k, idx);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("",n, k, idx, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::ForgetCombined(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("ForgetCombined")
+
+    std::vector<size_t> vec1, vec2;
+
+    STEPLOOP_START
+
+            ForgetHandlerCombined handler(n, k);
+
+            vec1.resize(size);
+            fillVector(vec1);
+            vec2.resize(size / n);
+            fillVector(vec2);
+            for(size_t idx = 0; idx < k; idx++) {
+                REPEATED_CLOCK_START;
+                    handler.forget(vec1, vec2, k, idx);
                 REPEATED_CLOCK_END;
                 for(int d : durations) {
                     logger.Log("",n, k, idx, d);
@@ -613,7 +638,7 @@ void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &lo
             std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
             std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
             
-            HomomorphismSettings setting = ConfigurationFactory::defaultSettings();
+            HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, k);
 
             REPEATED_CLOCK_START
             HomomorphismCounter(adjH, adjG, ntd, setting).compute();
@@ -658,7 +683,7 @@ void TestFactory::StarsIsMaxDegreeKRandom(TestSettings &settings, TestLogger &lo
             std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
             std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
             
-            HomomorphismSettings setting = ConfigurationFactory::defaultSettings();
+            HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, k);
 
             REPEATED_CLOCK_START
             HomomorphismCounter(adjH, adjG, ntd, setting).compute();

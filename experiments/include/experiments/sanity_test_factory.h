@@ -47,22 +47,22 @@ private:
     static void defaultHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void iteratorHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismTest(TestSettings& settings, TestLogger& logger,
-                    HomomorphismSettings hom, const std::string& settingsName);
+                    HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName);
     static void defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
     static void defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
     static void iteratorHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger);
     static void iteratorHomomorphismLoopTest(TestSettings& settings, TestLogger& logger);
     static void homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
-                    HomomorphismSettings hom, const std::string& settingsName);
+                    HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName);
     static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
-                    HomomorphismSettings hom, const std::string& settingsName);
+                    HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName);
     static void DefaultPathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void PathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger,
-                                           PathdecompotisionSettings hom, const std::string& settingsName);
+                    PathdecompotisionSettings (*hom)(size_t, size_t), const std::string& settingsName);
     static void PathDecompHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
-                            PathdecompotisionSettings set, const std::string& settingsName);
+                    PathdecompotisionSettings (*set)(size_t, size_t), const std::string& settingsName);
     static void PathdecompHomomorphismLoopTest(TestSettings& settings, TestLogger& logger,
-                                               PathdecompotisionSettings set, const std::string& settingsName);
+                    PathdecompotisionSettings (*hom)(size_t, size_t), const std::string& settingsName);
 
     static void maxDegreeTest(TestSettings& settings, TestLogger& logger);
 };
