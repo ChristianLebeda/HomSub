@@ -100,7 +100,8 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             MaxDegreeHomomorphismCount,
             CyclesInMaxDegreeRandom,
             StarsIsMaxDegreeKRandom,
-            MemoryTest1
+            MemoryTest1,
+            MemoryTest2
         };
     return tests;
 }
@@ -924,10 +925,14 @@ void TestFactory::MemoryTest1(TestSettings &settings, TestLogger &logger) {
     GraphGenerator::EdgeProbabilityGraph(g, 128, 0.02);
 
     Main::subgraphsGraph(h, g);
+}
+
+void TestFactory::MemoryTest2(TestSettings &settings, TestLogger &logger) {
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g  = AdjacencyMatrixGraph::testGraph();
     
-    
-    GraphGenerator::Clique(h, 4);
-    GraphGenerator::EdgeProbabilityGraph(g, 128, 0.02);
+    GraphGenerator::Cycle(h, 6);
+    GraphGenerator::CompleteGrid(g, 20, 20);
 
     Main::subgraphsGraph(h, g);
 }

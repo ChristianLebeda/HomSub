@@ -55,6 +55,7 @@ private:
     static void InsertClosedVariants(TestSettings& settings, TestLogger& logger);
     static void ExtractClosedVariants(TestSettings& settings, TestLogger& logger);
     static void MemoryTest1(TestSettings& settings, TestLogger& logger);
+    static void MemoryTest2(TestSettings& settings, TestLogger& logger);
 };
 
 #endif /* test_factory_h */
