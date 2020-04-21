@@ -17,3 +17,9 @@ HomomorphismSettings ConfigurationFactory::iteratorRemapper() {
             std::make_shared<IntroduceHandlerCompute>(), std::make_shared<JoinHandler>(),
             std::make_shared<VectorAllocator>()};
 }
+
+PathdecompotisionSettings ConfigurationFactory::DefaultPathSettings() {
+    return {std::make_shared<ForgetHandlerAny>(),
+            std::make_shared<IntroduceHandlerCompute>(),
+            std::make_shared<VectorAllocator>()};
+}
