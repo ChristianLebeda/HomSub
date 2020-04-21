@@ -1,0 +1,5 @@
+echo "Started Logging"
+rm -f ${2:-memory.log}
+top | grep experiments | grep running >> ${2:-memory.log} &
+./experiments $1 &
+wait $!

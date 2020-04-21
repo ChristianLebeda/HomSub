@@ -99,7 +99,8 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             ExtractClosedVariants,
             MaxDegreeHomomorphismCount,
             CyclesInMaxDegreeRandom,
-            StarsIsMaxDegreeKRandom
+            StarsIsMaxDegreeKRandom,
+            MemoryTest1
         };
     return tests;
 }
@@ -117,7 +118,7 @@ void TestFactory::SquaresInGrid(TestSettings& settings, TestLogger& logger)
     
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    for(int n = 1; n < 17; n = n * 2) {
+    for(int n = 1; n < 33; n = n * 2) {
         GraphGenerator::CompleteGrid(g, n, n);
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
@@ -913,4 +914,20 @@ void TestFactory::ExtractClosedVariants(TestSettings &settings, TestLogger &logg
     STEPLOOP_END
 
     END_TEST
+}
+
+void TestFactory::MemoryTest1(TestSettings &settings, TestLogger &logger) {
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g  = AdjacencyMatrixGraph::testGraph();
+    
+    GraphGenerator::Clique(h, 4);
+    GraphGenerator::EdgeProbabilityGraph(g, 128, 0.02);
+
+    Main::subgraphsGraph(h, g);
+    
+    
+    GraphGenerator::Clique(h, 4);
+    GraphGenerator::EdgeProbabilityGraph(g, 128, 0.02);
+
+    Main::subgraphsGraph(h, g);
 }
