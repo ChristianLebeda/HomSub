@@ -12,7 +12,7 @@ struct State {
 };
 
 struct PathdecompotisionSettings {
-    std::shared_ptr<ForgetHandlerAny> forget;
+    std::shared_ptr<ForgetHandler> forget;
     std::shared_ptr<IntroduceHandler> introduce;
     std::shared_ptr<VectorAllocator> alloc;
 };
@@ -30,7 +30,7 @@ private:
     std::shared_ptr<Graph> h_, g_;
     std::shared_ptr<NicePathDecomposition> pdc_;
     size_t n_;
-    std::shared_ptr<ForgetHandlerAny> forgetter_;
+    std::shared_ptr<ForgetHandler> forgetter_;
     std::shared_ptr<IntroduceHandler> introducer_;
     std::shared_ptr<VectorAllocator> allocator_;
 

@@ -43,8 +43,7 @@ State PathdecompositionCounter::Forget(State &state, size_t v) {
     auto pos = std::find(bag.begin(), bag.end(), v) - bag.begin();
 
     std::vector<size_t> mapping = allocator_->get(bag.size() - 1);
-    forgetter_->SetSizesAndIndex(n_, bag.size(), pos);
-    forgetter_->forget(state.mappings, mapping, n_);
+    forgetter_->forget(state.mappings, mapping, bag.size(), pos);
     allocator_->free(state.mappings, bag.size());
 
     bag.erase(bag.begin() + pos);

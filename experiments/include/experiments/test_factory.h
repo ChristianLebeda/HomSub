@@ -33,6 +33,7 @@ private:
     static void ForgetLeastSignificant(TestSettings& settings, TestLogger& logger);
     static void ForgetMostSignificant(TestSettings& settings, TestLogger& logger);
     static void ForgetAny(TestSettings& settings, TestLogger& logger);
+    static void ForgetCombined(TestSettings& settings, TestLogger& logger);
     static void IntroduceIterator(TestSettings& settings, TestLogger& logger);
     static void IntroduceCompute(TestSettings& settings, TestLogger& logger);
     static void IntroduceComplete(TestSettings& settings, TestLogger& logger,

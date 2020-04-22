@@ -156,15 +156,14 @@ void SanityTestFactory::forgetLastTest(TestSettings &settings, TestLogger &logge
 
     std::vector<size_t> input, expected, result;
 
-    ForgetHandlerLast handler;
-
     LOOP_START
 
     for(size_t n = 1; n < 10; n++) {
+        ForgetHandlerLast handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
             prepareForgetTest(input, expected, result, n, b, true);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, n);
+            result = handler.forget(input, result, b, b - 1);
             std::stringstream str;
             str << "ForgetHandlerN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -182,15 +181,14 @@ void SanityTestFactory::forgetFirstTest(TestSettings &settings, TestLogger &logg
 
     std::vector<size_t> input, expected, result;
 
-    ForgetHandlerFirst handler;
-
     LOOP_START
 
     for(size_t n = 1; n < 10; n++) {
+        ForgetHandlerFirst handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
             prepareForgetTest(input, expected, result, n, b, false);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, n);
+            result = handler.forget(input, result, b, 0);
             std::stringstream str;
             str << "ForgetHandlerFirstN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -207,16 +205,14 @@ void SanityTestFactory::forgetAnyTest(TestSettings &settings, TestLogger &logger
 
     std::vector<size_t> input, expected, result;
 
-    ForgetHandlerAny handler;
-
     LOOP_START
 
     for(size_t n = 1; n < 10; n++) {
+        ForgetHandlerAny handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
-            handler.SetSizesAndIndex(n, b, 0);
             prepareForgetTest(input, expected, result, n, b, false);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, n);
+            result = handler.forget(input, result, b, 0);
             std::stringstream str;
             str << "ForgetHandlerFirstN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -228,11 +224,11 @@ void SanityTestFactory::forgetAnyTest(TestSettings &settings, TestLogger &logger
     LOOP_START
 
     for(size_t n = 1; n < 10; n++) {
+        ForgetHandlerAny handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
-            handler.SetSizesAndIndex(n, b, b - 1);
             prepareForgetTest(input, expected, result, n, b, true);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, n);
+            result = handler.forget(input, result, b, b - 1);
             std::stringstream str;
             str << "ForgetHandlerFirstN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -412,85 +408,89 @@ void SanityTestFactory::prepareIntroduceCompleteTest(std::vector<size_t>& input,
 
 void SanityTestFactory::defaultHomomorphismTest(TestSettings& settings, TestLogger& logger) {
     logger.NotifyTestStart("Default homomorphism configuration");
-    homomorphismTest(settings, logger, ConfigurationFactory::defaultSettings(), "DefaultHomomorphism");
+    homomorphismTest(settings, logger, ConfigurationFactory::defaultSettings, "DefaultHomomorphism");
 }
 
 void SanityTestFactory::iteratorHomomorphismTest(TestSettings& settings, TestLogger& logger) {
     logger.NotifyTestStart("Iterator homomorphism configuration");
-    homomorphismTest(settings, logger, ConfigurationFactory::iteratorRemapper(), "IteratorHomomorphism");
+    homomorphismTest(settings, logger, ConfigurationFactory::iteratorRemapper, "IteratorHomomorphism");
 }
 
 void SanityTestFactory::homomorphismTest(TestSettings& settings, TestLogger& logger,
-        HomomorphismSettings hom, const std::string& settingsName) {
+        HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName) {
     homomorphismHandcraftedTest(settings, logger, hom, settingsName);
     homomorphismLoopTest(settings, logger, hom, settingsName);
 }
 
 void SanityTestFactory::defaultHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger) {
     homomorphismHandcraftedTest(settings, logger,
-            ConfigurationFactory::defaultSettings(), "DefaultHomomorphism");
+            ConfigurationFactory::defaultSettings, "DefaultHomomorphism");
 }
 
 void SanityTestFactory::defaultHomomorphismLoopTest(TestSettings& settings, TestLogger& logger) {
     homomorphismLoopTest(settings, logger,
-            ConfigurationFactory::defaultSettings(), "DefaultHomomorphism");
+            ConfigurationFactory::defaultSettings, "DefaultHomomorphism");
 }
 
 void SanityTestFactory::iteratorHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger) {
     homomorphismHandcraftedTest(settings, logger,
-            ConfigurationFactory::iteratorRemapper(), "IteratorRemappingHomomorphism");
+            ConfigurationFactory::iteratorRemapper, "IteratorRemappingHomomorphism");
 }
 
 void SanityTestFactory::iteratorHomomorphismLoopTest(TestSettings& settings, TestLogger& logger) {
     homomorphismLoopTest(settings, logger,
-            ConfigurationFactory::iteratorRemapper(), "IteratorRemappingHomomorphism");
+            ConfigurationFactory::iteratorRemapper, "IteratorRemappingHomomorphism");
 }
 
 void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
-            HomomorphismSettings hom, const std::string& settingsName) {
+        HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName) {
     BEGIN_TEST(settingsName + "Handcrafted", long)
 
     TamakiRunner tam;
     GraphGenerator gen;
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<NiceTreeDecomposition> ntd;
+    HomomorphismSettings homSet;
     long result;
 
     gen.Cycle(h, 4);
     ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    homSet = hom(h->vertCount(), ntd->getWidth());
     ASSERT_START(32);
-    result = HomomorphismCounter(h, h, ntd, hom).compute();
+    result = HomomorphismCounter(h, h, ntd, homSet).compute();
     ASSERT_END("SquareToSquare", result)
 
     gen.Cycle(h, 4);
     h->addEdge(0, 2);
     ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    homSet = hom(h->vertCount(), ntd->getWidth());
     ASSERT_START(16);
-    result = HomomorphismCounter(h, h, ntd, hom).compute();
+    result = HomomorphismCounter(h, h, ntd, homSet).compute();
     ASSERT_END("SquareWithDiagonalToSelf", result)
 
     END_TEST
 }
 
 void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
-            HomomorphismSettings hom, const std::string& settingsName) {
+        HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName) {
     BEGIN_LOOP_TEST(settingsName + "Loop", long)
 
     TamakiRunner tam;
-    GraphGenerator gen;
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<NiceTreeDecomposition> ntd;
+    HomomorphismSettings homSet;
     long result;
 
     LOOP_START
     for(size_t k = 3; k < 10; k += 2) {
-        gen.Cycle(h, k);
+        GraphGenerator::Cycle(h, k);
         ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
         for(size_t r = 2; r < 10; r += 2) {
             for(size_t c = 2; c < 5; c++) {
                 GraphGenerator::CompleteGrid(g, r, c);
+                homSet = hom(g->vertCount(), ntd->getWidth());
                 LOOP_ASSERT_START(0)
-                result = HomomorphismCounter(h, g, ntd, hom).compute();
+                result = HomomorphismCounter(h, g, ntd, homSet).compute();
                 std::stringstream str;
                 str << "OddCycleInGridK" << k << "R" << r << "C" << c;
                 LOOP_ASSERT_END(str.str(), result)
@@ -500,12 +500,13 @@ void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger&
     LOOP_END("NoOddCycleInGrid");
 
     LOOP_START
-    gen.Path(h, 4);
+    GraphGenerator::Path(h, 4);
     ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
     for(size_t n = 2; n < 10; n++) {
-        gen.Clique(g, n);
+        GraphGenerator::Clique(g, n);
+        homSet = hom(g->vertCount(), ntd->getWidth());
         LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
-        result = HomomorphismCounter(h, g, ntd, hom).compute();
+        result = HomomorphismCounter(h, g, ntd, homSet).compute();
         std::stringstream str;
         str << "PathInCompleteGraphN" << n;
         LOOP_ASSERT_END(str.str(), result)
@@ -517,49 +518,53 @@ void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger&
 
 void SanityTestFactory::DefaultPathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger) {
     logger.NotifyTestStart("Default path decomposition homomorphism configuration");
-    PathdecompHomomorphismTest(settings, logger, ConfigurationFactory::DefaultPathSettings(), "DefaultPathDecomp");
+    PathdecompHomomorphismTest(settings, logger, ConfigurationFactory::DefaultPathSettings, "DefaultPathDecomp");
 }
 
 void SanityTestFactory::PathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger,
-                                                   PathdecompotisionSettings hom, const std::string& settingsName) {
+                PathdecompotisionSettings (*hom)(size_t, size_t), const std::string& settingsName) {
     PathDecompHomomorphismHandcraftedTest(settings, logger, hom, settingsName);
     PathdecompHomomorphismLoopTest(settings, logger, hom, settingsName);
 }
 
 void SanityTestFactory::PathDecompHomomorphismHandcraftedTest(TestSettings& settings, TestLogger& logger,
-                                                              PathdecompotisionSettings set, const std::string& settingsName) {
+                PathdecompotisionSettings (*hom)(size_t, size_t), const std::string& settingsName) {
     BEGIN_TEST(settingsName + "Handcrafted", long)
 
     TamakiRunner tam;
     GraphGenerator gen;
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<NicePathDecomposition> npd;
+    PathdecompotisionSettings homSet;
     long result;
 
     gen.Cycle(h, 4);
     npd = NicePathDecomposition::FromTd(tam.decompose(h));
+    homSet = hom(h->vertCount(), npd->getWidth());
     ASSERT_START(32);
-    result = PathdecompositionCounter(h, h, npd, set).compute();
+    result = PathdecompositionCounter(h, h, npd, homSet).compute();
     ASSERT_END("SquareToSquare", result)
 
     gen.Cycle(h, 4);
     h->addEdge(0, 2);
     npd = NicePathDecomposition::FromTd(tam.decompose(h));
+    homSet = hom(h->vertCount(), npd->getWidth());
     ASSERT_START(16);
-    result = PathdecompositionCounter(h, h, npd, set).compute();
+    result = PathdecompositionCounter(h, h, npd, homSet).compute();
     ASSERT_END("SquareWithDiagonalToSelf", result)
 
     END_TEST
 }
 
 void SanityTestFactory::PathdecompHomomorphismLoopTest(TestSettings& settings, TestLogger& logger,
-                                                       PathdecompotisionSettings set, const std::string& settingsName) {
+                PathdecompotisionSettings (*hom)(size_t, size_t), const std::string& settingsName) {
     BEGIN_LOOP_TEST(settingsName + "Loop", long)
 
     TamakiRunner tam;
     GraphGenerator gen;
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<NicePathDecomposition> npd;
+    PathdecompotisionSettings homSet;
     long result;
 
     LOOP_START
@@ -569,8 +574,9 @@ void SanityTestFactory::PathdecompHomomorphismLoopTest(TestSettings& settings, T
         for(size_t r = 2; r < 10; r += 2) {
             for(size_t c = 2; c < 5; c++) {
                 GraphGenerator::CompleteGrid(g, r, c);
+                homSet = hom(g->vertCount(), npd->getWidth());
                 LOOP_ASSERT_START(0)
-                result = PathdecompositionCounter(h, g, npd, set).compute();
+                result = PathdecompositionCounter(h, g, npd, homSet).compute();
                 std::stringstream str;
                 str << "OddCycleInGridK" << k << "R" << r << "C" << c;
                 LOOP_ASSERT_END(str.str(), result)
@@ -584,8 +590,9 @@ void SanityTestFactory::PathdecompHomomorphismLoopTest(TestSettings& settings, T
     npd = NicePathDecomposition::FromTd(tam.decompose(h));
     for(size_t n = 2; n < 10; n++) {
         gen.Clique(g, n);
+        homSet = hom(g->vertCount(), npd->getWidth());
         LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
-        result = PathdecompositionCounter(h, g, npd, set).compute();
+        result = PathdecompositionCounter(h, g, npd, homSet).compute();
         std::stringstream str;
         str << "PathInCompleteGraphN" << n;
         LOOP_ASSERT_END(str.str(), result)
