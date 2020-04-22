@@ -41,6 +41,8 @@ private:
     static void introduceLastIteratorTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastEdgeConsistencyTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
     static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
+    static void introduceLastEdgeConsistencyPrecomputedTest(TestSettings& settings, TestLogger& logger);
+    static void introduceLastCompletePrecomputedTest(TestSettings& settings, TestLogger& logger);
     static void prepareIntroduceCompleteTest(std::vector<size_t>& input, std::vector<size_t>& expected,
                                              std::vector<size_t>& result, std::vector<size_t>& bag,
                                              size_t n, size_t b);
