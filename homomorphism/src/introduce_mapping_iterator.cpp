@@ -7,8 +7,8 @@ IntroduceMappingIterator IntroduceMappingIterator::Initialize(size_t n, size_t k
 
     for (int i = k - 1; i >= 0; --i) {
         if(edges[i]) {
-            offsets[i] = offset;
             offset *= n;
+            offsets[i] = offset;
         }
     }
 
