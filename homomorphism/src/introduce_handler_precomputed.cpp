@@ -2,7 +2,7 @@
 
 #include "homomorphism/introduce_mapping_iterator.h"
 
-std::vector<size_t> & IntroduceHandlerPrecomputed::introduceLast(std::vector<size_t> &input, std::vector<size_t> &output,
+std::vector<size_t>& IntroduceHandlerPrecomputed::introduceLast(std::vector<size_t> &input, std::vector<size_t> &output,
         std::vector<size_t> &bag, std::shared_ptr<Graph> h, std::shared_ptr<Graph> g, size_t n, size_t x) {
     if(input.size() == 1) {
         for(unsigned long & i : output) {
@@ -40,5 +40,7 @@ std::vector<size_t> & IntroduceHandlerPrecomputed::introduceLast(std::vector<siz
 
         mapping.NextChanged();
     }
+
+    return output;
 }
 
