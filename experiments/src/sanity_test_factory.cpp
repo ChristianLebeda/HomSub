@@ -5,6 +5,7 @@
 #include "homomorphism/forget_handler_first.h"
 #include "homomorphism/forget_handler_any.h"
 #include "homomorphism/introduce_handler_compute.h"
+#include "homomorphism/introduce_handler_precomputed.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/adjacency_matrix_graph.h"
@@ -369,6 +370,116 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
         for(size_t i = 0; i < n; i++) {
             g->addEdge(i, i);
         }
+        for(size_t b = 0; b < 5; b++) {
+            prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
+            LOOP_ASSERT_START(expected)
+            result = ih.introduceLast(input, result, bag, h, g, n, x);
+            std::stringstream str;
+            str << "IntroduceHandlerCycleN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+    LOOP_END("IntroduceHandlerCyclePattern");
+
+    END_TEST;
+}
+
+void SanityTestFactory::introduceLastEdgeConsistencyPrecomputedTest(TestSettings &settings, TestLogger &logger) {
+    // Some small handcrafted examples for introduce with 3 vertices
+    BEGIN_TEST("IntroduceHandlerPrecomputedEdgeConsistencySanity", std::vector<size_t>)
+
+    std::vector<size_t> input(9), expected(27), result(27), bag {0, 1};
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    // G has no edge 0-2
+    g->clear(3);
+    g->addEdge(0, 1);
+    g->addEdge(1, 2);
+
+    for (size_t i = 0; i < input.size(); ++i) {
+        input[i] = i + 1;
+    }
+
+    auto pre = EdgeConsistencyPrecomputation::Initialize(g, 2);
+    IntroduceHandlerPrecomputed ih(pre);
+
+    h->clear(3);
+    expected = std::vector<size_t> {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceNonEdgesH", result)
+
+    h->addEdge(0, 2);
+    expected = std::vector<size_t> {0, 1, 0, 0, 2, 0, 0, 3, 0, 4, 0, 4, 5, 0, 5, 6, 0, 6, 0, 7, 0, 0, 8, 0, 0, 9, 0};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceEdgeAndNonEdgeH", result)
+
+    h->addEdge(1, 2);
+    expected = std::vector<size_t> {0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 5, 0, 5, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 9, 0};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceBothEdgesH", result)
+
+    END_TEST
+}
+
+void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &settings, TestLogger &logger) {
+    BEGIN_LOOP_TEST("IntroduceHandlerPrecomputedCompleteGraphSanity", std::vector<size_t>)
+
+    std::vector<size_t> input, expected, result, bag;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    size_t x = 0;
+    GraphGenerator gen;
+
+    LOOP_START
+    bag.clear();
+    gen.Path(h, 3);
+    for(size_t n = 1; n < 10; n++) {
+        input = std::vector<size_t>(1, 42);
+        expected = std::vector<size_t>(n, 42);
+        result.resize(n);
+        gen.Clique(g, n);
+        auto pre = EdgeConsistencyPrecomputation::Initialize(g, 0);
+        IntroduceHandlerPrecomputed ih(pre);
+        LOOP_ASSERT_START(expected)
+        result = ih.introduceLast(input, result, bag, h, g, n, x);
+        LOOP_ASSERT_END("IntroduceHandlerEmpty", result)
+    }
+    LOOP_END("IntroduceHandlerEmpty");
+
+
+    LOOP_START
+    gen.Clique(h, 5);
+    for(size_t n = 1; n < 10; n++) {
+        gen.Clique(g, n);
+        for(size_t i = 0; i < n; i++) {
+            g->addEdge(i, i);
+        }
+        auto pre = EdgeConsistencyPrecomputation::Initialize(g, 4);
+        IntroduceHandlerPrecomputed ih(pre);
+
+        for(size_t b = 0; b < 5; b++) {
+            prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
+            LOOP_ASSERT_START(expected)
+            result = ih.introduceLast(input, result, bag, h, g, n, x);
+            std::stringstream str;
+            str << "IntroduceHandlerCompleteN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+    LOOP_END("IntroduceHandlerCliquePattern");
+
+    LOOP_START
+    gen.Cycle(h, 5);
+    for(size_t n = 1; n < 10; n++) {
+        gen.Clique(g, n);
+        for(size_t i = 0; i < n; i++) {
+            g->addEdge(i, i);
+        }
+        auto pre = EdgeConsistencyPrecomputation::Initialize(g, 4);
+        IntroduceHandlerPrecomputed ih(pre);
+
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
             LOOP_ASSERT_START(expected)

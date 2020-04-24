@@ -25,6 +25,7 @@
 #include "homomorphism/traversal_homomorphism_counter.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/introduce_handler_compute.h"
+#include "homomorphism/introduce_handler_precomputed.h"
 #include "homomorphism/tamaki_runner.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);std::vector<int> durations(settings.GetRepetitions(),0);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
@@ -89,6 +90,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             ForgetCombined,
             IntroduceIterator,
             IntroduceCompute,
+            IntroducePrecomputed,
             joinHandler,
             InsertClosedForm,
             ExtractClosedForm,
@@ -354,6 +356,12 @@ void TestFactory::IntroduceCompute(TestSettings &settings, TestLogger &logger) {
     IntroduceConsistency(settings, logger, ih, "Compute");
 }
 
+void TestFactory::IntroducePrecomputed(TestSettings &settings, TestLogger &logger) {
+    IntroduceCompletePrecomputed(settings, logger);
+    IntroduceOneEdgePrecomputed(settings, logger);
+    IntroduceConsistencyPrecomputed(settings, logger);
+}
+
 void TestFactory::IntroduceComplete(TestSettings &settings, TestLogger &logger,
         IntroduceHandler& ih, const std::string& handlername) {
     BEGIN_TEST("IntroduceComplete" + handlername)
@@ -436,6 +444,109 @@ void TestFactory::IntroduceConsistency(TestSettings &settings, TestLogger &logge
             vec2.resize(size);
             GraphGenerator::Clique(h, k);
             GraphGenerator::EdgeProbabilityGraph(g, n, 0.5);
+            REPEATED_CLOCK_START;
+                ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceCompletePrecomputed(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceCompletePrecomputed")
+
+    std::vector<size_t> vec1, vec2, bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            bag.resize(k - 1);
+            for(int i = 0; i < bag.size(); i++) {
+                bag[i] = i + 1;
+            }
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(h, k);
+            GraphGenerator::Clique(g, n);
+
+            auto pre = EdgeConsistencyPrecomputation::Initialize(g, k - 1);
+            IntroduceHandlerPrecomputed ih(pre);
+
+            REPEATED_CLOCK_START;
+                ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceOneEdgePrecomputed(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceOneEdgePrecomputed")
+
+    std::vector<size_t> vec1, vec2, bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            bag.resize(k - 1);
+            for(int i = 0; i < bag.size(); i++) {
+                bag[i] = i + 1;
+            }
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            h->clear(k);
+            h->addEdge(0, 1);
+            GraphGenerator::Clique(g, n);
+
+            auto pre = EdgeConsistencyPrecomputation::Initialize(g, 1);
+            IntroduceHandlerPrecomputed ih(pre);
+
+            REPEATED_CLOCK_START;
+                ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceConsistencyPrecomputed(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceConsistencyPrecomputed")
+
+    std::vector<size_t> vec1, vec2, bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            bag.resize(k - 1);
+            for(int i = 0; i < bag.size(); i++) {
+                bag[i] = i + 1;
+            }
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(h, k);
+            GraphGenerator::EdgeProbabilityGraph(g, n, 0.5);
+
+            auto pre = EdgeConsistencyPrecomputation::Initialize(g, k - 1);
+            IntroduceHandlerPrecomputed ih(pre);
+
             REPEATED_CLOCK_START;
                 ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
             REPEATED_CLOCK_END;

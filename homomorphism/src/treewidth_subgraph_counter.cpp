@@ -13,10 +13,11 @@ std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(s
 long TreewidthSubgraphCounter::compute() {
 	long count = 0;
 
-    HomomorphismSettings settings = ConfigurationFactory::defaultSettings(g_->vertCount(), spdc_->width());
-    PathdecompotisionSettings set = ConfigurationFactory::DefaultPathSettings(g_->vertCount(), spdc_->width());
+    auto pre = EdgeConsistencyPrecomputation::Initialize(g_, spdc_->width());
+    HomomorphismSettings settings = ConfigurationFactory::PrecomputedSettings(g_->vertCount(), spdc_->width(), pre);
+    PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre);
 
-	for (size_t i = 0; i < spdc_->size(); i++)
+    for (size_t i = 0; i < spdc_->size(); i++)
 	{
 		auto next = (*spdc_)[i];
 		if(next.decomposition->IsPathDecomposition()) {
