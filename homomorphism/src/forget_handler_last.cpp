@@ -4,7 +4,7 @@
 
 std::vector<size_t>& ForgetHandlerLast::forget(std::vector<size_t>& input, std::vector<size_t>& output,
                                                size_t b, size_t idx) {
-    if(idx != b - 1) {
+    if(idx != 0) {
         std::cerr << "ERROR: ForgetHandlerLast called with index " << idx << " and bag size " << b << std::endl;
         throw;
     }

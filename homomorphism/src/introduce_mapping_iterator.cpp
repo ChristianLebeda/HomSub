@@ -5,7 +5,7 @@ IntroduceMappingIterator IntroduceMappingIterator::Initialize(size_t n, size_t k
 
     size_t offset = 1;
 
-    for (int i = k - 1; i >= 0; --i) {
+    for (int i = 0; i < k; ++i) {
         if(edges[i]) {
             offset *= n;
             offsets[i] = offset;
@@ -22,13 +22,13 @@ size_t IntroduceMappingIterator::CurrentOffset() {
 bool IntroduceMappingIterator::NextChanged() {
     size_t prev = current_;
 
-    for (int i = mapping_.size() - 1; i >= 0; --i)
+    for (int i = 0; i < mapping_.size(); ++i)
     {
         if (mapping_[i] < n_ - 1)
         {
             mapping_[i]++;
             current_ += offsets_[i];
-            return prev != current_;
+            break;
         } else {
             mapping_[i] = 0;
             current_ -= offsets_[i] * (n_ - 1);

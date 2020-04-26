@@ -26,10 +26,10 @@ std::vector<size_t>& IntroduceHandlerCompute::introduceLast(std::vector <size_t>
     // Compute offsets values to compute the new index
     std::vector<size_t> offsets(bag.size());
 
-    offsets[offsets.size() - 1] = 1;
+    offsets[0] = 1;
 
     for (int i = 1; i < offsets.size(); ++i) {
-        offsets[offsets.size() - i - 1] = offsets[offsets.size() - i] * n;
+        offsets[i] = offsets[i - 1] * n;
     }
 
     for(size_t idx = 0; idx < input.size(); idx++) {

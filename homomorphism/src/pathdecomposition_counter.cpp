@@ -32,7 +32,7 @@ State PathdecompositionCounter::Introduce(State &state, size_t v) {
     introducer_->introduceLast(state.mappings, mapping, bag, h_, g_, n_, v);
     allocator_->free(state.mappings, bag.size());
 
-    bag.push_back(v);
+    bag.insert(bag.begin(), v);
 
     return {bag, mapping};
 }

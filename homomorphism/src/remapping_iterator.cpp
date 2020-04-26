@@ -3,11 +3,11 @@
 #include <utility>
 
 RemappingIterator RemappingIterator::ExtractIterator(size_t n, size_t k, size_t pos) {
-    std::vector<size_t> offsets(k);
+    std::vector<size_t> offsets(k, 1);
 
     size_t offset = 1;
 
-    for (int i = k - 1; i >= 0; --i) {
+    for (int i = 0; i < k; ++i) {
         if(i == pos) {
             offsets[i] = 1;
         } else {
@@ -22,13 +22,13 @@ RemappingIterator RemappingIterator::ExtractIterator(size_t n, size_t k, size_t 
 RemappingIterator RemappingIterator::InsertIterator(size_t n, size_t k, size_t pos) {
     std::vector<size_t> offsets(k, 1);
 
-    size_t offset = 1;
+    size_t offset = pos == 0 ? n : 1;
 
-    for (int i = k - 2; i >= 0; --i) {
+    for (int i = 1; i < k; ++i) {
         offsets[i] = offset;
         offset *= n;
         if(i == pos) {
-            offsets[k - 1] = offset;
+            offsets[0] = offset;
             offset *= n;
         }
     }
@@ -43,7 +43,7 @@ RemappingIterator RemappingIterator::CustomIterator(size_t n, size_t k, std::vec
 size_t RemappingIterator::next() {
     size_t next = current_;
 
-    for (int i = mapping_.size() - 1; i >= 0; --i)
+    for (int i = 0; i < mapping_.size(); ++i)
     {
         if (mapping_[i] < n_ - 1)
         {
