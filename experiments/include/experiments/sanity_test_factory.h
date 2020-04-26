@@ -12,7 +12,7 @@
 #define TESTCASES \
     SQUARE_PATTERN, REMAPPER_CALCULATION, REMAPPER_ITERATOR, \
     FORGET_HANDLER_LAST, FORGET_HANDLER_FIRST, FORGET_HANDLER_ANY, INTRODUCE_HANDLER_COMPUTE, INTRODUCE_HANDLER_ITERATOR, \
-    HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
+    INTRODUCE_HANDLER_PRECOMPUTED, HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
     HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR, MAX_DEGREE_TEST, \
     PATHDECOMPCOUNTER_DEFAULT
 
@@ -41,6 +41,7 @@ private:
     static void introduceLastIteratorTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastEdgeConsistencyTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
     static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
+    static void introduceLastPrecomputedTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastEdgeConsistencyPrecomputedTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastCompletePrecomputedTest(TestSettings& settings, TestLogger& logger);
     static void prepareIntroduceCompleteTest(std::vector<size_t>& input, std::vector<size_t>& expected,

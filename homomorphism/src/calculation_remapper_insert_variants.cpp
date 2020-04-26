@@ -1,7 +1,6 @@
 #include "homomorphism/calculation_remapper_insert_variants.h"
 
 #define VARIABLES \
-    pos = b_ - pos - 1; \
     size_t xMax = powers_[pos]; \
     size_t yMax = powers_[b_ - pos - 1]; \
     size_t zMax = n_; \

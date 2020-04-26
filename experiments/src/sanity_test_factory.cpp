@@ -52,6 +52,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return introduceLastComputeTest;
         case INTRODUCE_HANDLER_ITERATOR:
             return introduceLastIteratorTest;
+        case INTRODUCE_HANDLER_PRECOMPUTED:
+            return introduceLastPrecomputedTest;
         case HOMOMORPHISM_HANDCRAFTED_DEFAULT:
             return defaultHomomorphismHandcraftedTest;
         case HOMOMORPHISM_LOOP_DEFAULT:
@@ -136,7 +138,7 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
 
     expected = std::vector<size_t> {0, 4, 1, 5, 2, 6, 3, 7};
     ASSERT_START(expected);
-    mapper.Extract(input, result, 0);
+    mapper.Extract(input, result, 2);
     ASSERT_END("ExtractFirst", result)
 
     expected = std::vector<size_t> {0, 2, 1, 3, 4, 6, 5, 7};
@@ -146,7 +148,7 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
 
     expected = std::vector<size_t> {0, 2, 4, 6, 1, 3, 5, 7};
     ASSERT_START(expected);
-    mapper.Insert(input, result, 0);
+    mapper.Insert(input, result, 2);
     ASSERT_END("insertFirst", result)
 
     END_TEST;
@@ -164,7 +166,7 @@ void SanityTestFactory::forgetLastTest(TestSettings &settings, TestLogger &logge
         for(size_t b = 1; b < 5; b++) {
             prepareForgetTest(input, expected, result, n, b, true);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, b, b - 1);
+            result = handler.forget(input, result, b, 0);
             std::stringstream str;
             str << "ForgetHandlerN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -189,7 +191,7 @@ void SanityTestFactory::forgetFirstTest(TestSettings &settings, TestLogger &logg
         for(size_t b = 1; b < 5; b++) {
             prepareForgetTest(input, expected, result, n, b, false);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, b, 0);
+            result = handler.forget(input, result, b, b - 1);
             std::stringstream str;
             str << "ForgetHandlerFirstN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -211,7 +213,7 @@ void SanityTestFactory::forgetAnyTest(TestSettings &settings, TestLogger &logger
     for(size_t n = 1; n < 10; n++) {
         ForgetHandlerAny handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
-            prepareForgetTest(input, expected, result, n, b, false);
+            prepareForgetTest(input, expected, result, n, b, true);
             LOOP_ASSERT_START(expected)
             result = handler.forget(input, result, b, 0);
             std::stringstream str;
@@ -227,7 +229,7 @@ void SanityTestFactory::forgetAnyTest(TestSettings &settings, TestLogger &logger
     for(size_t n = 1; n < 10; n++) {
         ForgetHandlerAny handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
-            prepareForgetTest(input, expected, result, n, b, true);
+            prepareForgetTest(input, expected, result, n, b, false);
             LOOP_ASSERT_START(expected)
             result = handler.forget(input, result, b, b - 1);
             std::stringstream str;
@@ -289,7 +291,7 @@ void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings,
     // Some small handcrafted examples for introduce with 3 vertices
     BEGIN_TEST("IntroduceHandlerEdgeConsistencySanity", std::vector<size_t>)
 
-    std::vector<size_t> input(9), expected(27), result(27), bag {0, 1};
+    std::vector<size_t> input(9), expected(27), result(27), bag {1, 0};
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
 
     // G has no edge 0-2
@@ -384,11 +386,17 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
     END_TEST;
 }
 
+void SanityTestFactory::introduceLastPrecomputedTest(TestSettings &settings, TestLogger &logger) {
+    logger.NotifyTestStart("IntroduceHandlerPrecomputedSanity");
+    introduceLastEdgeConsistencyPrecomputedTest(settings, logger);
+    introduceLastCompletePrecomputedTest(settings, logger);
+}
+
 void SanityTestFactory::introduceLastEdgeConsistencyPrecomputedTest(TestSettings &settings, TestLogger &logger) {
     // Some small handcrafted examples for introduce with 3 vertices
     BEGIN_TEST("IntroduceHandlerPrecomputedEdgeConsistencySanity", std::vector<size_t>)
 
-    std::vector<size_t> input(9), expected(27), result(27), bag {0, 1};
+    std::vector<size_t> input(9), expected(27), result(27), bag {1, 0};
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
 
     // G has no edge 0-2
