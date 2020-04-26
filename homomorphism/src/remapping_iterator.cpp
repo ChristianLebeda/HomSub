@@ -3,7 +3,7 @@
 #include <utility>
 
 RemappingIterator RemappingIterator::ExtractIterator(size_t n, size_t k, size_t pos) {
-    std::vector<size_t> offsets(k);
+    std::vector<size_t> offsets(k, 1);
 
     size_t offset = 1;
 
@@ -22,7 +22,7 @@ RemappingIterator RemappingIterator::ExtractIterator(size_t n, size_t k, size_t 
 RemappingIterator RemappingIterator::InsertIterator(size_t n, size_t k, size_t pos) {
     std::vector<size_t> offsets(k, 1);
 
-    size_t offset = 1;
+    size_t offset = pos == 0 ? n : 1;
 
     for (int i = 1; i < k; ++i) {
         offsets[i] = offset;

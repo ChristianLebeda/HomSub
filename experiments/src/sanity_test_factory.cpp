@@ -131,6 +131,11 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
 
     mapper.SetSizes(2, 3);
 
+    expected = std::vector<size_t> {0, 1, 2, 3, 4, 5, 6, 7};
+    ASSERT_START(expected);
+    mapper.Extract(input, result, 0);
+    ASSERT_END("ExtractLeast", result)
+
     expected = std::vector<size_t> {0, 2, 1, 3, 4, 6, 5, 7};
     ASSERT_START(expected);
     mapper.Extract(input, result, 1);
@@ -139,7 +144,12 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
     expected = std::vector<size_t> {0, 4, 1, 5, 2, 6, 3, 7};
     ASSERT_START(expected);
     mapper.Extract(input, result, 2);
-    ASSERT_END("ExtractFirst", result)
+    ASSERT_END("ExtractMost", result)
+
+    expected = std::vector<size_t> {0, 1, 2, 3, 4, 5, 6, 7};
+    ASSERT_START(expected);
+    mapper.Insert(input, result, 0);
+    ASSERT_END("InsertLeast", result)
 
     expected = std::vector<size_t> {0, 2, 1, 3, 4, 6, 5, 7};
     ASSERT_START(expected);
@@ -149,7 +159,7 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
     expected = std::vector<size_t> {0, 2, 4, 6, 1, 3, 5, 7};
     ASSERT_START(expected);
     mapper.Insert(input, result, 2);
-    ASSERT_END("insertFirst", result)
+    ASSERT_END("insertMost", result)
 
     END_TEST;
 }
