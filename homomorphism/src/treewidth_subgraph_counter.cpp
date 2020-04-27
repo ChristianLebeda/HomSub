@@ -35,10 +35,6 @@ long TreewidthSubgraphCounter::compute() {
 }
 
 long TreewidthSubgraphCounter::computeParallel() {
-    long count = 0;
-    
-    
-    
     int threadCount = 2;
     
     //std::vector<long> counts(threadCount, 0);
@@ -78,7 +74,7 @@ long TreewidthSubgraphCounter::computeParallel() {
     
     //Start each thread
     for(int i = 0; i < threadCount; i++) {
-        auto t = [jobs, i](std::atomic<long> count) { //What does the capture mean for speed? Maybe things lock up
+        auto t = [jobs, i](std::atomic<long>& count) { //What does the capture mean for speed? Maybe things lock up
             long localCount = 0;
             for(int j = 0; j < jobs[i].size(); j++) {
                 localCount += jobs[i][j]();
@@ -92,13 +88,6 @@ long TreewidthSubgraphCounter::computeParallel() {
     for(int i = 0; i < threadCount; i++) {
         threads[i].join();
     }
-    /*
-    //Gather the results
-    long result = 0;
-    for(int i = 0 ; i < threadCount; i++) {
-        //result += counts[i];
-    }
-    */
 
     return atomicCount;
 }
