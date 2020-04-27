@@ -15,7 +15,7 @@ std::vector<size_t>& ForgetHandlerFirst::forget(std::vector<size_t>& input, std:
 
     size_t offset = output.size();
 
-    for(int i = 1; i < n_; i++) {
+    for(int i = 1; i < size_.n; i++) {
         for (size_t idx = 0; idx < output.size(); idx++) {
             output[idx] += input[offset + idx];
         }

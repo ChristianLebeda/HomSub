@@ -14,12 +14,12 @@ std::vector<size_t>& ForgetHandlerLast::forget(std::vector<size_t>& input, std::
     for(size_t & i : output) {
         size_t result = 0;
 
-        for(size_t j = 0; j < n_; j++) {
+        for(size_t j = 0; j < size_.n; j++) {
             result += input[offset + j];
         }
 
         i = result;
-        offset += n_;
+        offset += size_.n;
     }
 
     return output;

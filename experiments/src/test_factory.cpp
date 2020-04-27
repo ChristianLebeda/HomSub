@@ -26,6 +26,7 @@
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/introduce_handler_compute.h"
 #include "homomorphism/introduce_handler_precomputed.h"
+#include "homomorphism/introduce_precomputed_nonedge_least.h"
 #include "homomorphism/tamaki_runner.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);std::vector<int> durations(settings.GetRepetitions(),0);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
@@ -91,6 +92,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             IntroduceIterator,
             IntroduceCompute,
             IntroducePrecomputed,
+            IntroducePrecomputedNonedge,
             joinHandler,
             InsertClosedForm,
             ExtractClosedForm,
@@ -362,8 +364,14 @@ void TestFactory::IntroducePrecomputed(TestSettings &settings, TestLogger &logge
     IntroduceConsistencyPrecomputed(settings, logger);
 }
 
+void TestFactory::IntroducePrecomputedNonedge(TestSettings &settings, TestLogger &logger) {
+    //IntroduceCompletePrecomputedNonedge(settings, logger);
+    IntroduceOneEdgePrecomputedNonedge(settings, logger);
+    //IntroduceConsistencyPrecomputedNonedge(settings, logger);
+}
+
 void TestFactory::IntroduceComplete(TestSettings &settings, TestLogger &logger,
-        IntroduceHandler& ih, const std::string& handlername) {
+        IntroduceHandlerLeast& ih, const std::string& handlername) {
     BEGIN_TEST("IntroduceComplete" + handlername)
 
     std::vector<size_t> vec1, vec2, bag;
@@ -394,7 +402,7 @@ void TestFactory::IntroduceComplete(TestSettings &settings, TestLogger &logger,
 }
 
 void TestFactory::IntroduceOneEdge(TestSettings &settings, TestLogger &logger,
-        IntroduceHandler& ih, const std::string& handlername) {
+        IntroduceHandlerLeast& ih, const std::string& handlername) {
     BEGIN_TEST("IntroduceOneEdge" + handlername)
 
     std::vector<size_t> vec1, vec2, bag;
@@ -426,7 +434,7 @@ void TestFactory::IntroduceOneEdge(TestSettings &settings, TestLogger &logger,
 }
 
 void TestFactory::IntroduceConsistency(TestSettings &settings, TestLogger &logger,
-                                    IntroduceHandler& ih, const std::string& handlername) {
+                                    IntroduceHandlerLeast& ih, const std::string& handlername) {
     BEGIN_TEST("IntroduceConsistency" + handlername)
 
     std::vector<size_t> vec1, vec2, bag;
@@ -552,6 +560,43 @@ void TestFactory::IntroduceConsistencyPrecomputed(TestSettings &settings, TestLo
             REPEATED_CLOCK_END;
             for(int d : durations) {
                 logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceOneEdgePrecomputedNonedge(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceOneEdgePrecomputedNonedgeLeast")
+
+    std::vector<size_t> vec1, vec2;
+    std::vector<unsigned char> bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            if(k == 2) continue;
+
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(g, n);
+
+            auto pre = EdgeConsistencyPrecomputation::Initialize(g, 1);
+            IntroducePrecomputedNonedgeLeast ih(n, k, pre);
+
+            bag.resize(k - 1, false);
+            bag[1] = true;
+
+            for(size_t idx = 1; idx < k; idx++) {
+                REPEATED_CLOCK_START;
+                    ih.Introduce(vec1, vec2, bag, 0, idx);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("", n, k, idx, d);
+                }
             }
 
     STEPLOOP_END

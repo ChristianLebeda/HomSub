@@ -1,9 +1,9 @@
 #ifndef HOMOMORPHISM_ITERATOR_INTRODUCE_HANDLER_H
 #define HOMOMORPHISM_ITERATOR_INTRODUCE_HANDLER_H
 
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/introduce_handler_least.h"
 
-class IteratorIntroduceHandler : public IntroduceHandler {
+class IteratorIntroduceHandler : public IntroduceHandlerLeast {
 public:
     std::vector<size_t>& introduceLast(std::vector <size_t> &input, std::vector <size_t> &output,
                                                std::vector <size_t>& bag, std::shared_ptr<Graph> h,

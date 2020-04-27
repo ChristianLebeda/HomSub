@@ -297,7 +297,7 @@ void SanityTestFactory::introduceLastIteratorTest(TestSettings &settings, TestLo
     introduceLastEdgeConsistencyTest(settings, logger, ih);
 }
 
-void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings, TestLogger &logger, IntroduceHandler &ih) {
+void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings, TestLogger &logger, IntroduceHandlerLeast &ih) {
     // Some small handcrafted examples for introduce with 3 vertices
     BEGIN_TEST("IntroduceHandlerEdgeConsistencySanity", std::vector<size_t>)
 
@@ -334,7 +334,7 @@ void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings,
     END_TEST
 }
 
-void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLogger &logger, IntroduceHandler &ih) {
+void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLogger &logger, IntroduceHandlerLeast &ih) {
     BEGIN_LOOP_TEST("IntroduceHandlerCompleteGraphSanity", std::vector<size_t>)
 
     std::vector<size_t> input, expected, result, bag;

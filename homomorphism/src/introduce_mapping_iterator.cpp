@@ -1,6 +1,6 @@
 #include "homomorphism/introduce_mapping_iterator.h"
 
-IntroduceMappingIterator IntroduceMappingIterator::Initialize(size_t n, size_t k, std::vector<bool> edges) {
+IntroduceMappingIterator IntroduceMappingIterator::Initialize(size_t n, size_t k, std::vector<unsigned char> edges) {
     std::vector<size_t> offsets(k, 0);
 
     size_t offset = 1;

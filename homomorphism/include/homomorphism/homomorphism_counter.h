@@ -7,7 +7,7 @@
 #include "homomorphism/vector_allocator.h"
 #include "homomorphism/join_handler.h"
 #include "homomorphism/forget_handler.h"
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/introduce_handler_least.h"
 #include "homomorphism/remapper.h"
 
 struct DPState {
@@ -18,7 +18,7 @@ struct DPState {
 struct HomomorphismSettings {
     std::shared_ptr<Remapper> mapper;
     std::shared_ptr<ForgetHandler> forget;
-    std::shared_ptr<IntroduceHandler> introduce;
+    std::shared_ptr<IntroduceHandlerLeast> introduce;
     std::shared_ptr<JoinHandler> join;
     std::shared_ptr<VectorAllocator> alloc;
 };
@@ -40,7 +40,7 @@ private:
     size_t n_;
     std::shared_ptr<Remapper> mapper_;
     std::shared_ptr<ForgetHandler> forgetter_;
-    std::shared_ptr<IntroduceHandler> introducer_;
+    std::shared_ptr<IntroduceHandlerLeast> introducer_;
     std::shared_ptr<JoinHandler> joiner_;
     std::shared_ptr<VectorAllocator> allocator_;
 

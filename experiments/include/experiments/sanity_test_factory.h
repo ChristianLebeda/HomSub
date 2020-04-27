@@ -39,8 +39,8 @@ private:
                     std::vector<size_t>& result, size_t n, size_t b, bool last);
     static void introduceLastComputeTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastIteratorTest(TestSettings& settings, TestLogger& logger);
-    static void introduceLastEdgeConsistencyTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
-    static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger, IntroduceHandler &ih);
+    static void introduceLastEdgeConsistencyTest(TestSettings& settings, TestLogger& logger, IntroduceHandlerLeast &ih);
+    static void introduceLastCompleteTest(TestSettings& settings, TestLogger& logger, IntroduceHandlerLeast &ih);
     static void introduceLastPrecomputedTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastEdgeConsistencyPrecomputedTest(TestSettings& settings, TestLogger& logger);
     static void introduceLastCompletePrecomputedTest(TestSettings& settings, TestLogger& logger);

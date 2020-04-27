@@ -12,7 +12,7 @@ std::vector<size_t>& IntroduceHandlerPrecomputed::introduceLast(std::vector<size
     }
 
     // Figure out which vertices in H are connected to the introduced vertex
-    std::vector<bool> connected(bag.size(), false);
+    std::vector<unsigned char> connected(bag.size(), false);
     size_t edges = 0;
     for (int i = 0; i < bag.size(); i++)
     {

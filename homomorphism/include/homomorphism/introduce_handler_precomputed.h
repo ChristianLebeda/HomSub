@@ -3,11 +3,11 @@
 
 #include <utility>
 
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/introduce_handler_least.h"
 
 #include "homomorphism/edge_consistency_precomputation.h"
 
-class IntroduceHandlerPrecomputed : public IntroduceHandler {
+class IntroduceHandlerPrecomputed : public IntroduceHandlerLeast {
 public:
     IntroduceHandlerPrecomputed(std::shared_ptr<EdgeConsistencyPrecomputation> precomputed):
                                     precomputed_(std::move(precomputed)) {};
