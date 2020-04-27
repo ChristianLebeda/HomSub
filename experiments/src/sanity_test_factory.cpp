@@ -5,7 +5,7 @@
 #include "homomorphism/forget_handler_first.h"
 #include "homomorphism/forget_handler_any.h"
 #include "homomorphism/introduce_handler_compute.h"
-#include "homomorphism/introduce_handler_precomputed.h"
+#include "homomorphism/introduce_handler_least_precomputed.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/adjacency_matrix_graph.h"
@@ -419,7 +419,7 @@ void SanityTestFactory::introduceLastEdgeConsistencyPrecomputedTest(TestSettings
     }
 
     auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 2);
-    IntroduceHandlerPrecomputed ih(pre);
+    IntroduceHandlerLeastPrecomputed ih(pre);
 
     h->clear(3);
     expected = std::vector<size_t> {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9};
@@ -459,7 +459,7 @@ void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &setti
         result.resize(n);
         gen.Clique(g, n);
         auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 0);
-        IntroduceHandlerPrecomputed ih(pre);
+        IntroduceHandlerLeastPrecomputed ih(pre);
         LOOP_ASSERT_START(expected)
         result = ih.introduceLast(input, result, bag, h, g, n, x);
         LOOP_ASSERT_END("IntroduceHandlerEmpty", result)
@@ -475,7 +475,7 @@ void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &setti
             g->addEdge(i, i);
         }
         auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 4);
-        IntroduceHandlerPrecomputed ih(pre);
+        IntroduceHandlerLeastPrecomputed ih(pre);
 
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
@@ -496,7 +496,7 @@ void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &setti
             g->addEdge(i, i);
         }
         auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 4);
-        IntroduceHandlerPrecomputed ih(pre);
+        IntroduceHandlerLeastPrecomputed ih(pre);
 
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);

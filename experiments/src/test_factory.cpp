@@ -25,7 +25,7 @@
 #include "homomorphism/traversal_homomorphism_counter.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/introduce_handler_compute.h"
-#include "homomorphism/introduce_handler_precomputed.h"
+#include "homomorphism/introduce_handler_least_precomputed.h"
 #include "homomorphism/introduce_precomputed_nonedge_least.h"
 #include "homomorphism/introduce_precomputed_edge_least.h"
 #include "homomorphism/tamaki_runner.h"
@@ -492,7 +492,7 @@ void TestFactory::IntroduceCompletePrecomputed(TestSettings &settings, TestLogge
             GraphGenerator::Clique(g, n);
 
             auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
-            IntroduceHandlerPrecomputed ih(pre);
+            IntroduceHandlerLeastPrecomputed ih(pre);
 
             REPEATED_CLOCK_START;
                 ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
@@ -527,7 +527,7 @@ void TestFactory::IntroduceOneEdgePrecomputed(TestSettings &settings, TestLogger
             GraphGenerator::Clique(g, n);
 
             auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 1);
-            IntroduceHandlerPrecomputed ih(pre);
+            IntroduceHandlerLeastPrecomputed ih(pre);
 
             REPEATED_CLOCK_START;
                 ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
@@ -561,7 +561,7 @@ void TestFactory::IntroduceConsistencyPrecomputed(TestSettings &settings, TestLo
             GraphGenerator::EdgeProbabilityGraph(g, n, 0.5);
 
             auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
-            IntroduceHandlerPrecomputed ih(pre);
+            IntroduceHandlerLeastPrecomputed ih(pre);
 
             REPEATED_CLOCK_START;
                 ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
