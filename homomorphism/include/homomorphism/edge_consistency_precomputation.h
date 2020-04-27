@@ -11,7 +11,8 @@ class EdgeConsistencyPrecomputation {
 public:
     explicit EdgeConsistencyPrecomputation(std::vector<std::vector<unsigned char>> storage) : storage_(std::move(storage)) {}
 
-    static std::shared_ptr<EdgeConsistencyPrecomputation> Initialize(std::shared_ptr<Graph> g, int maxEdges);
+    static std::shared_ptr<EdgeConsistencyPrecomputation> InitializeLeast(std::shared_ptr<Graph> g, int maxEdges);
+    static std::shared_ptr<EdgeConsistencyPrecomputation> InitializeSecond(std::shared_ptr<Graph> g, int maxEdges);
 
     std::vector<unsigned char>::iterator GetIterator(size_t edges);
 private:

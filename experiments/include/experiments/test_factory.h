@@ -38,6 +38,7 @@ private:
     static void IntroduceCompute(TestSettings& settings, TestLogger& logger);
     static void IntroducePrecomputed(TestSettings& settings, TestLogger& logger);
     static void IntroducePrecomputedNonedge(TestSettings& settings, TestLogger& logger);
+    static void IntroducePrecomputedEdge(TestSettings& settings, TestLogger& logger);
     static void IntroduceComplete(TestSettings& settings, TestLogger& logger,
                     IntroduceHandlerLeast& ih, const std::string& handlername);
     static void IntroduceOneEdge(TestSettings& settings, TestLogger& logger,
@@ -48,6 +49,9 @@ private:
     static void IntroduceOneEdgePrecomputed(TestSettings& settings, TestLogger& logger);
     static void IntroduceConsistencyPrecomputed(TestSettings& settings, TestLogger& logger);
     static void IntroduceOneEdgePrecomputedNonedge(TestSettings& settings, TestLogger& logger);
+    static void IntroduceCompletePrecomputedEdge(TestSettings& settings, TestLogger& logger);
+    static void IntroduceOneEdgePrecomputedEdge(TestSettings& settings, TestLogger& logger);
+    static void IntroduceConsistencyPrecomputedEdge(TestSettings& settings, TestLogger& logger);
     static void joinHandler(TestSettings& settings, TestLogger& logger);
     static void InsertClosedForm(TestSettings& settings, TestLogger& logger);
     static void ExtractClosedForm(TestSettings& settings, TestLogger& logger);

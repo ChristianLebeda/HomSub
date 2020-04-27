@@ -1,11 +1,11 @@
-#include "homomorphism/introduce_precomputed_nonedge_least.h"
+#include "homomorphism/introduce_precomputed_edge_least.h"
 
 #include <iostream>
 
 #include "homomorphism/introduce_mapping_iterator.h"
 
-std::vector<size_t>& IntroducePrecomputedNonedgeLeast::Introduce(std::vector<size_t> &input, std::vector<size_t> &output,
-        std::vector<unsigned char> &bag, size_t x, size_t ii) {
+std::vector<size_t>& IntroducePrecomputedEdgeLeast::Introduce(std::vector<size_t> &input, std::vector<size_t> &output,
+                                                                 std::vector<unsigned char> &bag, size_t x, size_t ii) {
     if(input.size() == 1) {
         for(unsigned long & i : output) {
             i = input[0];
@@ -13,13 +13,13 @@ std::vector<size_t>& IntroducePrecomputedNonedgeLeast::Introduce(std::vector<siz
         return output;
     }
 
-    if(bag[0]) {
-        std::cerr << "ERROR: IntroducePrecomputedNonedgeLeast called with edge to least significant" << std::endl;
+    if(!bag[0]) {
+        std::cerr << "ERROR: IntroducePrecomputedEdgeLeast called with no edge to least significant" << std::endl;
         throw;
     }
 
     if(ii == 0) {
-        std::cerr << "ERROR: IntroducePrecomputedNonedgeLeast called with index zero" << std::endl;
+        std::cerr << "ERROR: IntroducePrecomputedEdgeLeast called with index zero" << std::endl;
         throw;
     }
 
@@ -30,7 +30,7 @@ std::vector<size_t>& IntroducePrecomputedNonedgeLeast::Introduce(std::vector<siz
         }
     }
 
-    IntroduceMappingIterator mapping = IntroduceMappingIterator::InitializeLeast(size_.n, bag.size(), bag);
+    IntroduceMappingIterator mapping = IntroduceMappingIterator::InitializeSecond(size_.n, bag.size(), bag);
     auto precomputedStart = precomputed_->GetIterator(edges);
 
     for(size_t idx = 0; idx < input.size(); idx += size_.n) {
@@ -44,16 +44,15 @@ std::vector<size_t>& IntroducePrecomputedNonedgeLeast::Introduce(std::vector<siz
             newidx += mapping.mapping_[i] * size_.sizes[i + 1];
         }
 
-        auto it = precomputedStart + mapping.CurrentOffset();
-
         // Add all valid assignments of vertex x
         for (size_t i = 0; i < size_.n; i++)
         {
+            auto it = precomputedStart + mapping.CurrentOffset();
             size_t rangestart = newidx + i * size_.sizes[ii];
-            if(*(it++)) {
-                std::copy(input.begin() + idx, input.begin() + idx + size_.n, output.begin() + rangestart);
-            } else {
-                std::fill(output.begin() + rangestart, output.begin() + rangestart + size_.n, 0);
+            // Add range of value for least significant
+            for (size_t j = 0; j < size_.n; j++)
+            {
+                output[rangestart + j] = *(it++) * input[idx + j];
             }
         }
 

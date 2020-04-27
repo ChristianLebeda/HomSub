@@ -22,7 +22,7 @@ std::vector<size_t>& IntroduceHandlerPrecomputed::introduceLast(std::vector<size
         }
     }
 
-    IntroduceMappingIterator mapping = IntroduceMappingIterator::Initialize(n, bag.size(), connected);
+    IntroduceMappingIterator mapping = IntroduceMappingIterator::InitializeLeast(n, bag.size(), connected);
     auto precomputedStart = precomputed_->GetIterator(edges);
 
     for(size_t idx = 0; idx < input.size(); idx++) {

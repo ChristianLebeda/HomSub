@@ -418,7 +418,7 @@ void SanityTestFactory::introduceLastEdgeConsistencyPrecomputedTest(TestSettings
         input[i] = i + 1;
     }
 
-    auto pre = EdgeConsistencyPrecomputation::Initialize(g, 2);
+    auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 2);
     IntroduceHandlerPrecomputed ih(pre);
 
     h->clear(3);
@@ -458,7 +458,7 @@ void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &setti
         expected = std::vector<size_t>(n, 42);
         result.resize(n);
         gen.Clique(g, n);
-        auto pre = EdgeConsistencyPrecomputation::Initialize(g, 0);
+        auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 0);
         IntroduceHandlerPrecomputed ih(pre);
         LOOP_ASSERT_START(expected)
         result = ih.introduceLast(input, result, bag, h, g, n, x);
@@ -474,7 +474,7 @@ void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &setti
         for(size_t i = 0; i < n; i++) {
             g->addEdge(i, i);
         }
-        auto pre = EdgeConsistencyPrecomputation::Initialize(g, 4);
+        auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 4);
         IntroduceHandlerPrecomputed ih(pre);
 
         for(size_t b = 0; b < 5; b++) {
@@ -495,7 +495,7 @@ void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &setti
         for(size_t i = 0; i < n; i++) {
             g->addEdge(i, i);
         }
-        auto pre = EdgeConsistencyPrecomputation::Initialize(g, 4);
+        auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 4);
         IntroduceHandlerPrecomputed ih(pre);
 
         for(size_t b = 0; b < 5; b++) {
