@@ -48,7 +48,7 @@ long TreewidthSubgraphCounter::computeParallel() {
 
     
     std::vector<std::vector<long>> coeffs(threadCount);
-    std::vector<std::vector<std::shared_ptr<HomomorphismCounterInterface>>> hcs(threadCount);
+    std::vector<std::vector<PathdecompositionCounter>> hcs(threadCount);
 
     //Setup all calls
     for (size_t i = 0; i < spdc_->size(); i++)
@@ -57,7 +57,7 @@ long TreewidthSubgraphCounter::computeParallel() {
         if(next.decomposition->IsPathDecomposition()) {
             
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
-            auto hc = std::make_shared<PathdecompositionCounter>(next.graph, g_, npd, set);
+            auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
             
             coeffs[i%threadCount].push_back(next.coefficient);
             hcs[i%threadCount].push_back(hc);
@@ -66,30 +66,26 @@ long TreewidthSubgraphCounter::computeParallel() {
             auto hc = std::make_shared<HomomorphismCounter>(next.graph, g_, ntd, settings);
             
             coeffs[i%threadCount].push_back(next.coefficient);
-            hcs[i%threadCount].push_back(hc);
-            
-            /*
-            jobs[i%threadCount].push_back([&] {
-                return hc.compute() * coefficient;;
-            });
-             */
+            //hcs[i%threadCount].push_back(hc);
+
         }
     }
     
     
     std::atomic<int> counter(0);
     
+    auto t = [](std::vector<long> coeffs, std::vector<PathdecompositionCounter> counters, std::atomic<int> &counter) {
+        long localCount = 0;
+        for(int i = 0; i < coeffs.size(); i++) {
+            localCount += counters[i].compute() * coeffs[i];
+        }
+        
+        counter += localCount;
+        return;
+    };
+    
     //Start each thread
     for(int i = 0; i < threadCount; i++) {
-        auto t = [](std::vector<long> coeffs, std::vector<std::shared_ptr<HomomorphismCounterInterface>> counters, std::atomic<int> &counter) {
-            long localCount = 0;
-            for(int i = 0; i < coeffs.size(); i++) {
-                localCount += counters[i]->compute() * coeffs[i];
-            }
-            
-            counter += localCount;
-            return;
-        };
         threads[i] = std::thread(t, coeffs[i], hcs[i], std::ref(counter));
     }
     
