@@ -5,6 +5,7 @@
 #include "homomorphism/introduce_handler.h"
 #include "homomorphism/nice_path_decomposition.h"
 #include "homomorphism/vector_allocator.h"
+#include "homomorphism_counter_interface.h"
 
 struct State {
     std::vector<size_t> bag;
@@ -17,7 +18,7 @@ struct PathdecompotisionSettings {
     std::shared_ptr<VectorAllocator> alloc;
 };
 
-class PathdecompositionCounter
+class PathdecompositionCounter : public HomomorphismCounterInterface
 {
 public:
     PathdecompositionCounter(std::shared_ptr<Graph>& h, std::shared_ptr<Graph>& g,
@@ -25,7 +26,7 @@ public:
             h_(h), g_(g), pdc_(path), n_(g->vertCount()),
             forgetter_(settings.forget), introducer_(settings.introduce), allocator_(settings.alloc) {};
 
-    long compute();
+    long compute() override;
 private:
     std::shared_ptr<Graph> h_, g_;
     std::shared_ptr<NicePathDecomposition> pdc_;

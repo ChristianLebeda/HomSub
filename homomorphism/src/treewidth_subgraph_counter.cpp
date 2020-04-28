@@ -5,6 +5,7 @@
 #include "homomorphism/homomorphism_counter.h"
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/configuration_factory.h"
+#include "homomorphism/homomorphism_counter_interface.h"
 #include <thread>
 
 std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g) {
@@ -16,7 +17,7 @@ long TreewidthSubgraphCounter::compute() {
 
     HomomorphismSettings settings = ConfigurationFactory::defaultSettings(g_->vertCount(), spdc_->width());
     PathdecompotisionSettings set = ConfigurationFactory::DefaultPathSettings(g_->vertCount(), spdc_->width());
-
+    int homCalls = 0;
 	for (size_t i = 0; i < spdc_->size(); i++)
 	{
 		auto next = (*spdc_)[i];
@@ -24,70 +25,89 @@ long TreewidthSubgraphCounter::compute() {
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
             auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
             count += hc.compute() * next.coefficient;
+            homCalls++;
 		} else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
             auto hc = HomomorphismCounter(next.graph, g_, ntd, settings);
             count += hc.compute() * next.coefficient;
+            homCalls++;
 		}
 	}
-
+    
+    std::cout << count << std::endl;
 	return count;
 }
 
 long TreewidthSubgraphCounter::computeParallel() {
-    int threadCount = 2;
     
-    //std::vector<long> counts(threadCount, 0);
-
+    int threadCount = 2;
+    std::thread threads[threadCount];
+    
     HomomorphismSettings settings = ConfigurationFactory::defaultSettings(g_->vertCount(), spdc_->width());
     PathdecompotisionSettings set = ConfigurationFactory::DefaultPathSettings(g_->vertCount(), spdc_->width());
 
-    //Array containing each call to hc.compute grouped by thread
-    std::vector<std::vector<std::function<long()>>> jobs(threadCount);
     
+    std::vector<std::vector<long>> coeffs(threadCount);
+    std::vector<std::vector<std::shared_ptr<HomomorphismCounterInterface>>> hcs(threadCount);
+
     //Setup all calls
     for (size_t i = 0; i < spdc_->size(); i++)
     {
         auto next = (*spdc_)[i];
         if(next.decomposition->IsPathDecomposition()) {
-            auto npd = NicePathDecomposition::FromTd(next.decomposition);
-            auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
             
-            long coefficient = next.coefficient;
-            jobs[i%threadCount].push_back([&] {
-                return hc.compute() * coefficient;;
-            });
+            auto npd = NicePathDecomposition::FromTd(next.decomposition);
+            auto hc = std::make_shared<PathdecompositionCounter>(next.graph, g_, npd, set);
+            
+            coeffs[i%threadCount].push_back(next.coefficient);
+            hcs[i%threadCount].push_back(hc);
         } else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-            auto hc = HomomorphismCounter(next.graph, g_, ntd, settings);
+            auto hc = std::make_shared<HomomorphismCounter>(next.graph, g_, ntd, settings);
             
-            long coefficient = next.coefficient;
+            coeffs[i%threadCount].push_back(next.coefficient);
+            hcs[i%threadCount].push_back(hc);
+            
+            /*
             jobs[i%threadCount].push_back([&] {
                 return hc.compute() * coefficient;;
             });
+             */
         }
     }
     
-    std::vector<std::thread> threads(threadCount);
     
-    std::atomic<long> atomicCount(0);
+    std::atomic<int> counter(0);
     
     //Start each thread
     for(int i = 0; i < threadCount; i++) {
-        auto t = [jobs, i](std::atomic<long>& count) { //What does the capture mean for speed? Maybe things lock up
+        auto t = [](std::vector<long> coeffs, std::vector<std::shared_ptr<HomomorphismCounterInterface>> counters, std::atomic<int> &counter) {
             long localCount = 0;
-            for(int j = 0; j < jobs[i].size(); j++) {
-                localCount += jobs[i][j]();
+            for(int i = 0; i < coeffs.size(); i++) {
+                localCount += counters[i]->compute() * coeffs[i];
             }
-            count += localCount;
+            
+            counter += localCount;
+            return;
         };
-        threads.push_back(std::thread(t, std::ref(atomicCount)));
+        threads[i] = std::thread(t, coeffs[i], hcs[i], std::ref(counter));
     }
     
-    //Wait for each thread
     for(int i = 0; i < threadCount; i++) {
         threads[i].join();
     }
+     
+    
+    /*
+    long sequentialCounter = 0;
+    for(int i = 0; i < threadCount; i++) {
+        for(int j = 0; j < coeffs[i].size(); j++) {
+            sequentialCounter+= hcs[i][j]->compute() * coeffs[i][j];
+        }
+    }
+    */
 
-    return atomicCount;
+    std::cout << counter << std::endl;
+    
+    return 5;
 }
