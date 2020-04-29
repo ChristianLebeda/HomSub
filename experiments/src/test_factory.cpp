@@ -25,7 +25,9 @@
 #include "homomorphism/traversal_homomorphism_counter.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/introduce_handler_compute.h"
-#include "homomorphism/introduce_handler_precomputed.h"
+#include "homomorphism/introduce_handler_least_precomputed.h"
+#include "homomorphism/introduce_precomputed_nonedge_least.h"
+#include "homomorphism/introduce_precomputed_edge_least.h"
 #include "homomorphism/tamaki_runner.h"
 
 #define BEGIN_TEST(name) logger.NotifyTestStart(name);std::vector<int> durations(settings.GetRepetitions(),0);int duration = 0;auto start = std::chrono::steady_clock::now();auto stop = start;SubStep step;long exp = 0;int n = 1;
@@ -83,7 +85,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             CliquesInClique,
             EdgesInPath,
             PathInRandomGraph,
-            RandomPatternsInRandomGraph,
+            RandomPatternsInRandomGraph/*,
             ForgetLeastSignificant,
             ForgetMostSignificant,
             ForgetAny,
@@ -91,6 +93,8 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             IntroduceIterator,
             IntroduceCompute,
             IntroducePrecomputed,
+            IntroducePrecomputedNonedge,
+            IntroducePrecomputedEdge,
             joinHandler,
             InsertClosedForm,
             ExtractClosedForm,
@@ -102,7 +106,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             CyclesInMaxDegreeRandom,
             StarsIsMaxDegreeKRandom,
             MemoryTest1,
-            MemoryTest2
+            MemoryTest2*/
         };
     return tests;
 }
@@ -120,7 +124,7 @@ void TestFactory::SquaresInGrid(TestSettings& settings, TestLogger& logger)
     
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    for(int n = 1; n < 33; n = n * 2) {
+    for(int n = 1; n < 17; n = n * 2) {
         GraphGenerator::CompleteGrid(g, n, n);
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);
@@ -362,8 +366,20 @@ void TestFactory::IntroducePrecomputed(TestSettings &settings, TestLogger &logge
     IntroduceConsistencyPrecomputed(settings, logger);
 }
 
+void TestFactory::IntroducePrecomputedNonedge(TestSettings &settings, TestLogger &logger) {
+    //IntroduceCompletePrecomputedNonedge(settings, logger);
+    IntroduceOneEdgePrecomputedNonedge(settings, logger);
+    //IntroduceConsistencyPrecomputedNonedge(settings, logger);
+}
+
+void TestFactory::IntroducePrecomputedEdge(TestSettings &settings, TestLogger &logger) {
+    IntroduceCompletePrecomputedEdge(settings, logger);
+    IntroduceOneEdgePrecomputedEdge(settings, logger);
+    IntroduceConsistencyPrecomputedEdge(settings, logger);
+}
+
 void TestFactory::IntroduceComplete(TestSettings &settings, TestLogger &logger,
-        IntroduceHandler& ih, const std::string& handlername) {
+        IntroduceHandlerLeast& ih, const std::string& handlername) {
     BEGIN_TEST("IntroduceComplete" + handlername)
 
     std::vector<size_t> vec1, vec2, bag;
@@ -394,7 +410,7 @@ void TestFactory::IntroduceComplete(TestSettings &settings, TestLogger &logger,
 }
 
 void TestFactory::IntroduceOneEdge(TestSettings &settings, TestLogger &logger,
-        IntroduceHandler& ih, const std::string& handlername) {
+        IntroduceHandlerLeast& ih, const std::string& handlername) {
     BEGIN_TEST("IntroduceOneEdge" + handlername)
 
     std::vector<size_t> vec1, vec2, bag;
@@ -426,7 +442,7 @@ void TestFactory::IntroduceOneEdge(TestSettings &settings, TestLogger &logger,
 }
 
 void TestFactory::IntroduceConsistency(TestSettings &settings, TestLogger &logger,
-                                    IntroduceHandler& ih, const std::string& handlername) {
+                                    IntroduceHandlerLeast& ih, const std::string& handlername) {
     BEGIN_TEST("IntroduceConsistency" + handlername)
 
     std::vector<size_t> vec1, vec2, bag;
@@ -475,8 +491,8 @@ void TestFactory::IntroduceCompletePrecomputed(TestSettings &settings, TestLogge
             GraphGenerator::Clique(h, k);
             GraphGenerator::Clique(g, n);
 
-            auto pre = EdgeConsistencyPrecomputation::Initialize(g, k - 1);
-            IntroduceHandlerPrecomputed ih(pre);
+            auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+            IntroduceHandlerLeastPrecomputed ih(pre);
 
             REPEATED_CLOCK_START;
                 ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
@@ -510,8 +526,8 @@ void TestFactory::IntroduceOneEdgePrecomputed(TestSettings &settings, TestLogger
             h->addEdge(0, 1);
             GraphGenerator::Clique(g, n);
 
-            auto pre = EdgeConsistencyPrecomputation::Initialize(g, 1);
-            IntroduceHandlerPrecomputed ih(pre);
+            auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 1);
+            IntroduceHandlerLeastPrecomputed ih(pre);
 
             REPEATED_CLOCK_START;
                 ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
@@ -544,14 +560,162 @@ void TestFactory::IntroduceConsistencyPrecomputed(TestSettings &settings, TestLo
             GraphGenerator::Clique(h, k);
             GraphGenerator::EdgeProbabilityGraph(g, n, 0.5);
 
-            auto pre = EdgeConsistencyPrecomputation::Initialize(g, k - 1);
-            IntroduceHandlerPrecomputed ih(pre);
+            auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+            IntroduceHandlerLeastPrecomputed ih(pre);
 
             REPEATED_CLOCK_START;
                 ih.introduceLast(vec1, vec2, bag, h, g, n, 0);
             REPEATED_CLOCK_END;
             for(int d : durations) {
                 logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceOneEdgePrecomputedNonedge(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceOneEdgePrecomputedNonedgeLeast")
+
+    std::vector<size_t> vec1, vec2;
+    std::vector<unsigned char> bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            if(k == 2) continue;
+
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(g, n);
+
+            auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 1);
+            IntroducePrecomputedNonedgeLeast ih(n, k, pre);
+
+            bag.resize(k - 1, false);
+            bag[1] = true;
+
+            for(size_t idx = 1; idx < k; idx++) {
+                REPEATED_CLOCK_START;
+                    ih.Introduce(vec1, vec2, bag, 0, idx);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("", n, k, idx, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceCompletePrecomputedEdge(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceCompletePrecomputedEdge")
+
+    std::vector<size_t> vec1, vec2;
+    std::vector<unsigned char> bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(h, k);
+            GraphGenerator::Clique(g, n);
+            bag.resize(k - 1);
+            for(unsigned char & i : bag) {
+                i = true;
+            }
+
+            auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+            IntroducePrecomputedEdgeLeast ih(n, k, pre);
+
+            for(size_t idx = 1; idx < k; idx++) {
+                REPEATED_CLOCK_START;
+                    ih.Introduce(vec1, vec2, bag, 0, idx);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("", n, k, idx, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceOneEdgePrecomputedEdge(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceOneEdgePrecomputedEdge")
+
+    std::vector<size_t> vec1, vec2;
+    std::vector<unsigned char> bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            h->clear(k);
+            h->addEdge(0, 1);
+            GraphGenerator::Clique(g, n);
+            bag.resize(k - 1);
+            bag[0] = true;
+
+            auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 1);
+            IntroducePrecomputedEdgeLeast ih(n, k, pre);
+
+            for(size_t idx = 1; idx < k; idx++) {
+                REPEATED_CLOCK_START;
+                    ih.Introduce(vec1, vec2, bag, 0, idx);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("", n, k, idx, d);
+                }
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::IntroduceConsistencyPrecomputedEdge(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("IntroduceConsistencyPrecomputedEdge")
+
+    std::vector<size_t> vec1, vec2;
+    std::vector<unsigned char> bag;
+
+    auto h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            vec1.resize(size / n);
+            fillVector(vec1);
+            vec2.resize(size);
+            GraphGenerator::Clique(h, k);
+            GraphGenerator::EdgeProbabilityGraph(g, n, 0.5);
+            bag.resize(k - 1);
+            for(unsigned char & i : bag) {
+                i = true;
+            }
+
+            auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+            IntroducePrecomputedEdgeLeast ih(n, k, pre);
+
+            for(size_t idx = 1; idx < k; idx++) {
+                REPEATED_CLOCK_START;
+                    ih.Introduce(vec1, vec2, bag, 0, idx);
+                REPEATED_CLOCK_END;
+                for(int d : durations) {
+                    logger.Log("", n, k, idx, d);
+                }
             }
 
     STEPLOOP_END

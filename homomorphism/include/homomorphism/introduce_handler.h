@@ -4,13 +4,15 @@
 #include <vector>
 
 #include "homomorphism/graph.h"
+#include "homomorphism/bag_sizes.h"
 
 class IntroduceHandler {
 public:
-    // TODO: Could store variables to simplify function
-    virtual std::vector<size_t>& introduceLast(std::vector <size_t> &input, std::vector <size_t> &output,
-                                                   std::vector <size_t>& bag, std::shared_ptr<Graph> h,
-                                                   std::shared_ptr<Graph> g, size_t n, size_t x) = 0;
+    IntroduceHandler(size_t n, size_t k) : size_(BagSizes(n, k)) { }
+    virtual std::vector<size_t>& Introduce(std::vector<size_t> &input, std::vector<size_t> &output,
+                                                   std::vector<unsigned char>& bag, size_t x, size_t idx) = 0;
+protected:
+    BagSizes size_;
 };
 
 #endif
