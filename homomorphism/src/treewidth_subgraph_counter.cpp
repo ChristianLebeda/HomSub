@@ -15,22 +15,22 @@ std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(s
 long TreewidthSubgraphCounter::compute() {
 	long count = 0;
 
-    HomomorphismSettings settings = ConfigurationFactory::defaultSettings(g_->vertCount(), spdc_->width());
-    PathdecompotisionSettings set = ConfigurationFactory::DefaultPathSettings(g_->vertCount(), spdc_->width());
-    int homCalls = 0;
-	for (size_t i = 0; i < spdc_->size(); i++)
+    auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
+    auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
+    DynamicProgrammingSettings settings = ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
+    PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1);
+
+    for (size_t i = 0; i < spdc_->size(); i++)
 	{
 		auto next = (*spdc_)[i];
 		if(next.decomposition->IsPathDecomposition()) {
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
             auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
             count += hc.compute() * next.coefficient;
-            homCalls++;
 		} else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-            auto hc = HomomorphismCounter(next.graph, g_, ntd, settings);
+            auto hc = DynamicProgrammingCounter(next.graph, g_, ntd, settings);
             count += hc.compute() * next.coefficient;
-            homCalls++;
 		}
 	}
     

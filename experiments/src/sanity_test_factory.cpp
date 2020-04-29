@@ -5,6 +5,7 @@
 #include "homomorphism/forget_handler_first.h"
 #include "homomorphism/forget_handler_any.h"
 #include "homomorphism/introduce_handler_compute.h"
+#include "homomorphism/introduce_handler_least_precomputed.h"
 #include "homomorphism/iterator_introduce_handler.h"
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/adjacency_matrix_graph.h"
@@ -51,6 +52,8 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return introduceLastComputeTest;
         case INTRODUCE_HANDLER_ITERATOR:
             return introduceLastIteratorTest;
+        case INTRODUCE_HANDLER_PRECOMPUTED:
+            return introduceLastPrecomputedTest;
         case HOMOMORPHISM_HANDCRAFTED_DEFAULT:
             return defaultHomomorphismHandcraftedTest;
         case HOMOMORPHISM_LOOP_DEFAULT:
@@ -59,6 +62,10 @@ std::function<void(TestSettings&, TestLogger&)> SanityTestFactory::getTest(TestC
             return iteratorHomomorphismHandcraftedTest;
         case HOMOMORPHISM_LOOP_ITERATOR:
             return iteratorHomomorphismLoopTest;
+        case HOMOMORPHISM_HANDCRAFTED_PRECOMPUTED:
+            return HomomorphismPrecomputedHandcraftedTest;
+        case HOMOMORPHISM_LOOP_PRECOMPUTED:
+            return HomomorphismPrecomputedLoopTest;
         case HOMOMORPHISM_COUNTER_DEFAULT:
             return defaultHomomorphismTest;
         case HOMOMORPHISM_COUNTER_ITERATOR:
@@ -128,6 +135,11 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
 
     mapper.SetSizes(2, 3);
 
+    expected = std::vector<size_t> {0, 1, 2, 3, 4, 5, 6, 7};
+    ASSERT_START(expected);
+    mapper.Extract(input, result, 0);
+    ASSERT_END("ExtractLeast", result)
+
     expected = std::vector<size_t> {0, 2, 1, 3, 4, 6, 5, 7};
     ASSERT_START(expected);
     mapper.Extract(input, result, 1);
@@ -135,8 +147,13 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
 
     expected = std::vector<size_t> {0, 4, 1, 5, 2, 6, 3, 7};
     ASSERT_START(expected);
-    mapper.Extract(input, result, 0);
-    ASSERT_END("ExtractFirst", result)
+    mapper.Extract(input, result, 2);
+    ASSERT_END("ExtractMost", result)
+
+    expected = std::vector<size_t> {0, 1, 2, 3, 4, 5, 6, 7};
+    ASSERT_START(expected);
+    mapper.Insert(input, result, 0);
+    ASSERT_END("InsertLeast", result)
 
     expected = std::vector<size_t> {0, 2, 1, 3, 4, 6, 5, 7};
     ASSERT_START(expected);
@@ -145,8 +162,8 @@ void SanityTestFactory::remapperTest(TestSettings& settings, TestLogger& logger,
 
     expected = std::vector<size_t> {0, 2, 4, 6, 1, 3, 5, 7};
     ASSERT_START(expected);
-    mapper.Insert(input, result, 0);
-    ASSERT_END("insertFirst", result)
+    mapper.Insert(input, result, 2);
+    ASSERT_END("insertMost", result)
 
     END_TEST;
 }
@@ -163,7 +180,7 @@ void SanityTestFactory::forgetLastTest(TestSettings &settings, TestLogger &logge
         for(size_t b = 1; b < 5; b++) {
             prepareForgetTest(input, expected, result, n, b, true);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, b, b - 1);
+            result = handler.forget(input, result, b, 0);
             std::stringstream str;
             str << "ForgetHandlerN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -188,7 +205,7 @@ void SanityTestFactory::forgetFirstTest(TestSettings &settings, TestLogger &logg
         for(size_t b = 1; b < 5; b++) {
             prepareForgetTest(input, expected, result, n, b, false);
             LOOP_ASSERT_START(expected)
-            result = handler.forget(input, result, b, 0);
+            result = handler.forget(input, result, b, b - 1);
             std::stringstream str;
             str << "ForgetHandlerFirstN" << n << "B" << b;
             LOOP_ASSERT_END(str.str(), result)
@@ -210,7 +227,7 @@ void SanityTestFactory::forgetAnyTest(TestSettings &settings, TestLogger &logger
     for(size_t n = 1; n < 10; n++) {
         ForgetHandlerAny handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
-            prepareForgetTest(input, expected, result, n, b, false);
+            prepareForgetTest(input, expected, result, n, b, true);
             LOOP_ASSERT_START(expected)
             result = handler.forget(input, result, b, 0);
             std::stringstream str;
@@ -226,7 +243,7 @@ void SanityTestFactory::forgetAnyTest(TestSettings &settings, TestLogger &logger
     for(size_t n = 1; n < 10; n++) {
         ForgetHandlerAny handler(n, 5);
         for(size_t b = 1; b < 5; b++) {
-            prepareForgetTest(input, expected, result, n, b, true);
+            prepareForgetTest(input, expected, result, n, b, false);
             LOOP_ASSERT_START(expected)
             result = handler.forget(input, result, b, b - 1);
             std::stringstream str;
@@ -284,11 +301,11 @@ void SanityTestFactory::introduceLastIteratorTest(TestSettings &settings, TestLo
     introduceLastEdgeConsistencyTest(settings, logger, ih);
 }
 
-void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings, TestLogger &logger, IntroduceHandler &ih) {
+void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings, TestLogger &logger, IntroduceHandlerLeast &ih) {
     // Some small handcrafted examples for introduce with 3 vertices
     BEGIN_TEST("IntroduceHandlerEdgeConsistencySanity", std::vector<size_t>)
 
-    std::vector<size_t> input(9), expected(27), result(27), bag {0, 1};
+    std::vector<size_t> input(9), expected(27), result(27), bag {1, 0};
     std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
 
     // G has no edge 0-2
@@ -321,7 +338,7 @@ void SanityTestFactory::introduceLastEdgeConsistencyTest(TestSettings &settings,
     END_TEST
 }
 
-void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLogger &logger, IntroduceHandler &ih) {
+void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLogger &logger, IntroduceHandlerLeast &ih) {
     BEGIN_LOOP_TEST("IntroduceHandlerCompleteGraphSanity", std::vector<size_t>)
 
     std::vector<size_t> input, expected, result, bag;
@@ -369,6 +386,122 @@ void SanityTestFactory::introduceLastCompleteTest(TestSettings &settings, TestLo
         for(size_t i = 0; i < n; i++) {
             g->addEdge(i, i);
         }
+        for(size_t b = 0; b < 5; b++) {
+            prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
+            LOOP_ASSERT_START(expected)
+            result = ih.introduceLast(input, result, bag, h, g, n, x);
+            std::stringstream str;
+            str << "IntroduceHandlerCycleN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+    LOOP_END("IntroduceHandlerCyclePattern");
+
+    END_TEST;
+}
+
+void SanityTestFactory::introduceLastPrecomputedTest(TestSettings &settings, TestLogger &logger) {
+    logger.NotifyTestStart("IntroduceHandlerPrecomputedSanity");
+    introduceLastEdgeConsistencyPrecomputedTest(settings, logger);
+    introduceLastCompletePrecomputedTest(settings, logger);
+}
+
+void SanityTestFactory::introduceLastEdgeConsistencyPrecomputedTest(TestSettings &settings, TestLogger &logger) {
+    // Some small handcrafted examples for introduce with 3 vertices
+    BEGIN_TEST("IntroduceHandlerPrecomputedEdgeConsistencySanity", std::vector<size_t>)
+
+    std::vector<size_t> input(9), expected(27), result(27), bag {1, 0};
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+
+    // G has no edge 0-2
+    g->clear(3);
+    g->addEdge(0, 1);
+    g->addEdge(1, 2);
+
+    for (size_t i = 0; i < input.size(); ++i) {
+        input[i] = i + 1;
+    }
+
+    auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 2);
+    IntroduceHandlerLeastPrecomputed ih(pre);
+
+    h->clear(3);
+    expected = std::vector<size_t> {1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceNonEdgesH", result)
+
+    h->addEdge(0, 2);
+    expected = std::vector<size_t> {0, 1, 0, 0, 2, 0, 0, 3, 0, 4, 0, 4, 5, 0, 5, 6, 0, 6, 0, 7, 0, 0, 8, 0, 0, 9, 0};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceEdgeAndNonEdgeH", result)
+
+    h->addEdge(1, 2);
+    expected = std::vector<size_t> {0, 1, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 5, 0, 5, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 9, 0};
+    ASSERT_START(expected);
+    result = ih.introduceLast(input, result, bag, h, g, 3, 2);
+    ASSERT_END("IntroduceBothEdgesH", result)
+
+    END_TEST
+}
+
+void SanityTestFactory::introduceLastCompletePrecomputedTest(TestSettings &settings, TestLogger &logger) {
+    BEGIN_LOOP_TEST("IntroduceHandlerPrecomputedCompleteGraphSanity", std::vector<size_t>)
+
+    std::vector<size_t> input, expected, result, bag;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    size_t x = 0;
+    GraphGenerator gen;
+
+    LOOP_START
+    bag.clear();
+    gen.Path(h, 3);
+    for(size_t n = 1; n < 10; n++) {
+        input = std::vector<size_t>(1, 42);
+        expected = std::vector<size_t>(n, 42);
+        result.resize(n);
+        gen.Clique(g, n);
+        auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 0);
+        IntroduceHandlerLeastPrecomputed ih(pre);
+        LOOP_ASSERT_START(expected)
+        result = ih.introduceLast(input, result, bag, h, g, n, x);
+        LOOP_ASSERT_END("IntroduceHandlerEmpty", result)
+    }
+    LOOP_END("IntroduceHandlerEmpty");
+
+
+    LOOP_START
+    gen.Clique(h, 5);
+    for(size_t n = 1; n < 10; n++) {
+        gen.Clique(g, n);
+        for(size_t i = 0; i < n; i++) {
+            g->addEdge(i, i);
+        }
+        auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 4);
+        IntroduceHandlerLeastPrecomputed ih(pre);
+
+        for(size_t b = 0; b < 5; b++) {
+            prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
+            LOOP_ASSERT_START(expected)
+            result = ih.introduceLast(input, result, bag, h, g, n, x);
+            std::stringstream str;
+            str << "IntroduceHandlerCompleteN" << n << "B" << b;
+            LOOP_ASSERT_END(str.str(), result)
+        }
+    }
+    LOOP_END("IntroduceHandlerCliquePattern");
+
+    LOOP_START
+    gen.Cycle(h, 5);
+    for(size_t n = 1; n < 10; n++) {
+        gen.Clique(g, n);
+        for(size_t i = 0; i < n; i++) {
+            g->addEdge(i, i);
+        }
+        auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g, 4);
+        IntroduceHandlerLeastPrecomputed ih(pre);
+
         for(size_t b = 0; b < 5; b++) {
             prepareIntroduceCompleteTest(input, expected, result, bag, n, b);
             LOOP_ASSERT_START(expected)
@@ -507,6 +640,86 @@ void SanityTestFactory::homomorphismLoopTest(TestSettings& settings, TestLogger&
         homSet = hom(g->vertCount(), ntd->getWidth());
         LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
         result = HomomorphismCounter(h, g, ntd, homSet).compute();
+        std::stringstream str;
+        str << "PathInCompleteGraphN" << n;
+        LOOP_ASSERT_END(str.str(), result)
+    }
+    LOOP_END("PathInCompleteGraph");
+
+    END_TEST
+}
+
+void SanityTestFactory::HomomorphismPrecomputedHandcraftedTest(TestSettings& settings, TestLogger& logger) {
+    BEGIN_TEST("HomomorphismPrecomputedHandcrafted", long)
+
+    TamakiRunner tam;
+    GraphGenerator gen;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<NiceTreeDecomposition> ntd;
+    DynamicProgrammingSettings homSet;
+    long result;
+
+    gen.Cycle(h, 4);
+    ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(h, ntd->getWidth());
+    auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(h, ntd->getWidth());
+    homSet = ConfigurationFactory::DefaultDynamicSettings(h->vertCount(), h->vertCount(), pre1, pre2);
+    ASSERT_START(32);
+    result = DynamicProgrammingCounter(h, h, ntd, homSet).compute();
+    ASSERT_END("SquareToSquare", result)
+
+    gen.Cycle(h, 4);
+    h->addEdge(0, 2);
+    ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    pre1 = EdgeConsistencyPrecomputation::InitializeLeast(h, ntd->getWidth());
+    pre2 = EdgeConsistencyPrecomputation::InitializeSecond(h, ntd->getWidth());
+    homSet = ConfigurationFactory::DefaultDynamicSettings(h->vertCount(), h->vertCount(), pre1, pre2);
+    ASSERT_START(16);
+    result = DynamicProgrammingCounter(h, h, ntd, homSet).compute();
+    ASSERT_END("SquareWithDiagonalToSelf", result)
+
+    END_TEST
+}
+
+void SanityTestFactory::HomomorphismPrecomputedLoopTest(TestSettings& settings, TestLogger& logger) {
+    BEGIN_LOOP_TEST("HomomorphismPrecomputedLoop", long)
+
+    TamakiRunner tam;
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<NiceTreeDecomposition> ntd;
+    DynamicProgrammingSettings homSet;
+    long result;
+
+    LOOP_START
+    for(size_t k = 3; k < 10; k += 2) {
+        GraphGenerator::Cycle(h, k);
+        ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+        for(size_t r = 2; r < 10; r += 2) {
+            for(size_t c = 2; c < 5; c++) {
+                GraphGenerator::CompleteGrid(g, r, c);
+                auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g, ntd->getWidth());
+                auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g, ntd->getWidth());
+                homSet = ConfigurationFactory::DefaultDynamicSettings(g->vertCount(), ntd->getWidth(), pre1, pre2);
+                LOOP_ASSERT_START(0)
+                result = DynamicProgrammingCounter(h, g, ntd, homSet).compute();
+                std::stringstream str;
+                str << "OddCycleInGridK" << k << "R" << r << "C" << c;
+                LOOP_ASSERT_END(str.str(), result)
+            }
+        }
+    }
+    LOOP_END("NoOddCycleInGrid");
+
+    LOOP_START
+    GraphGenerator::Path(h, 4);
+    ntd = NiceTreeDecomposition::FromTd(tam.decompose(h));
+    for(size_t n = 2; n < 10; n++) {
+        GraphGenerator::Clique(g, n);
+        auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g, ntd->getWidth());
+        auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g, ntd->getWidth());
+        homSet = ConfigurationFactory::DefaultDynamicSettings(g->vertCount(), ntd->getWidth(), pre1, pre2);
+        LOOP_ASSERT_START(n * (n - 1) * (n - 1) * (n - 1))
+        result = DynamicProgrammingCounter(h, g, ntd, homSet).compute();
         std::stringstream str;
         str << "PathInCompleteGraphN" << n;
         LOOP_ASSERT_END(str.str(), result)

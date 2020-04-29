@@ -3,12 +3,12 @@
 void MappingIterator::Increment() {
     idx++;
 
-    for (int i = mapping.size() - 1; i >= 0; --i)
+    for (int i = 0; i < mapping.size(); ++i)
     {
         if (mapping[i] < n_ - 1)
         {
             mapping[i]++;
-            for (int j = mapping.size() - 1; j > i; --j)
+            for (int j = 0; j < i; ++j)
             {
                 mapping[j] = 0;
             }

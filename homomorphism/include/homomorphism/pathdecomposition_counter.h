@@ -2,7 +2,7 @@
 #define HOMOMORPHISM_PATHDECOMPOSITION_COUNTER_H
 
 #include "homomorphism/forget_handler_any.h"
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/introduce_handler_least.h"
 #include "homomorphism/nice_path_decomposition.h"
 #include "homomorphism/vector_allocator.h"
 #include "homomorphism_counter_interface.h"
@@ -14,7 +14,7 @@ struct State {
 
 struct PathdecompotisionSettings {
     std::shared_ptr<ForgetHandler> forget;
-    std::shared_ptr<IntroduceHandler> introduce;
+    std::shared_ptr<IntroduceHandlerLeast> introduce;
     std::shared_ptr<VectorAllocator> alloc;
 };
 
@@ -32,7 +32,7 @@ private:
     std::shared_ptr<NicePathDecomposition> pdc_;
     size_t n_;
     std::shared_ptr<ForgetHandler> forgetter_;
-    std::shared_ptr<IntroduceHandler> introducer_;
+    std::shared_ptr<IntroduceHandlerLeast> introducer_;
     std::shared_ptr<VectorAllocator> allocator_;
 
     State Introduce(State& state, size_t v);

@@ -3,14 +3,14 @@
 std::vector<size_t>& ForgetHandlerAny::forget(std::vector<size_t> &input, std::vector<size_t> &output,
         size_t b, size_t idx) {
     // Since index and exponents are inverted. If this is changed this line should be removed.
-    size_t pos = b - idx - 1;
-    size_t xMax = powers_[pos];
-    size_t yMax = powers_[b - pos - 1];
-    size_t zMax = n_;
+    size_t pos = idx;
+    size_t xMax = size_.sizes[pos];
+    size_t yMax = size_.sizes[b - pos - 1];
+    size_t zMax = size_.n;
 
-    size_t xOff = n_;
-    size_t yOff = powers_[pos + 1];
-    size_t zOff = powers_[pos];
+    size_t xOff = size_.n;
+    size_t yOff = size_.sizes[pos + 1];
+    size_t zOff = size_.sizes[pos];
 
     for(size_t & entry : output) {
         entry = 0;

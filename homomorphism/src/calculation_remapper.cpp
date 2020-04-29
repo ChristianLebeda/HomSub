@@ -1,8 +1,6 @@
 #include "homomorphism/calculation_remapper.h"
 
 void CalculationRemapper::Extract(std::vector <size_t>& in, std::vector <size_t>& out, size_t pos) {
-    // Since index and exponents are inverted. If this is changed this line should be removed.
-    pos = b_ - pos - 1;
     size_t xMax = powers_[pos];
     size_t yMax = powers_[b_ - pos - 1];
     size_t zMax = n_;
@@ -23,7 +21,6 @@ void CalculationRemapper::Extract(std::vector <size_t>& in, std::vector <size_t>
 }
 
 void CalculationRemapper::Insert(std::vector<size_t>& in, std::vector <size_t>& out, size_t pos) {
-    pos = b_ - pos - 1;
     size_t xMax = powers_[pos];
     size_t yMax = powers_[b_ - pos - 1];
     size_t zMax = n_;

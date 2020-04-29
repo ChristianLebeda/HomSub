@@ -4,7 +4,7 @@
 
 std::vector<size_t>& ForgetHandlerFirst::forget(std::vector<size_t>& input, std::vector<size_t>& output,
                                                     size_t b, size_t idx) {
-    if(idx != 0) {
+    if(idx !=  b - 1) {
         std::cerr << "ERROR: ForgetHandlerFirst called with index " << idx << std::endl;
         throw;
     }
@@ -15,7 +15,7 @@ std::vector<size_t>& ForgetHandlerFirst::forget(std::vector<size_t>& input, std:
 
     size_t offset = output.size();
 
-    for(int i = 1; i < n_; i++) {
+    for(int i = 1; i < size_.n; i++) {
         for (size_t idx = 0; idx < output.size(); idx++) {
             output[idx] += input[offset + idx];
         }

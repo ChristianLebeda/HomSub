@@ -15,7 +15,7 @@
 #include <functional>
 #include <memory>
 
-#include "homomorphism/introduce_handler.h"
+#include "homomorphism/introduce_handler_least.h"
 
 class TestFactory
 {
@@ -36,12 +36,22 @@ private:
     static void ForgetCombined(TestSettings& settings, TestLogger& logger);
     static void IntroduceIterator(TestSettings& settings, TestLogger& logger);
     static void IntroduceCompute(TestSettings& settings, TestLogger& logger);
+    static void IntroducePrecomputed(TestSettings& settings, TestLogger& logger);
+    static void IntroducePrecomputedNonedge(TestSettings& settings, TestLogger& logger);
+    static void IntroducePrecomputedEdge(TestSettings& settings, TestLogger& logger);
     static void IntroduceComplete(TestSettings& settings, TestLogger& logger,
-                    IntroduceHandler& ih, const std::string& handlername);
+                    IntroduceHandlerLeast& ih, const std::string& handlername);
     static void IntroduceOneEdge(TestSettings& settings, TestLogger& logger,
-                    IntroduceHandler& ih, const std::string& handlername);
+                    IntroduceHandlerLeast& ih, const std::string& handlername);
     static void IntroduceConsistency(TestSettings& settings, TestLogger& logger,
-                                 IntroduceHandler& ih, const std::string& handlername);
+                                 IntroduceHandlerLeast& ih, const std::string& handlername);
+    static void IntroduceCompletePrecomputed(TestSettings& settings, TestLogger& logger);
+    static void IntroduceOneEdgePrecomputed(TestSettings& settings, TestLogger& logger);
+    static void IntroduceConsistencyPrecomputed(TestSettings& settings, TestLogger& logger);
+    static void IntroduceOneEdgePrecomputedNonedge(TestSettings& settings, TestLogger& logger);
+    static void IntroduceCompletePrecomputedEdge(TestSettings& settings, TestLogger& logger);
+    static void IntroduceOneEdgePrecomputedEdge(TestSettings& settings, TestLogger& logger);
+    static void IntroduceConsistencyPrecomputedEdge(TestSettings& settings, TestLogger& logger);
     static void joinHandler(TestSettings& settings, TestLogger& logger);
     static void InsertClosedForm(TestSettings& settings, TestLogger& logger);
     static void ExtractClosedForm(TestSettings& settings, TestLogger& logger);
