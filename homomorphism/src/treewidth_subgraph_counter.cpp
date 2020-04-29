@@ -40,16 +40,22 @@ long TreewidthSubgraphCounter::compute() {
 
 long TreewidthSubgraphCounter::computeParallel() {
     
-    int threadCount = 1;
+    int threadCount = 4;
     
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
-    DynamicProgrammingSettings settings = ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
+    //DynamicProgrammingSettings settings = ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
     PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1);
 
     
     std::vector<std::vector<long>> coeffs(threadCount);
     std::vector<std::vector<PathdecompositionCounter>> hcs(threadCount);
+    
+    std::vector<PathdecompotisionSettings> settings;
+    
+    for(int i = 0; i < threadCount; i++) {
+        settings.push_back(ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1));
+    }
 
     //Setup all calls
     for (size_t i = 0; i < spdc_->size(); i++)
@@ -58,7 +64,7 @@ long TreewidthSubgraphCounter::computeParallel() {
         if(next.decomposition->IsPathDecomposition()) {
             
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
-            auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
+            auto hc = PathdecompositionCounter(next.graph, g_, npd, settings[i%threadCount]);
             
             coeffs[i%threadCount].push_back(next.coefficient);
             hcs[i%threadCount].push_back(hc);
