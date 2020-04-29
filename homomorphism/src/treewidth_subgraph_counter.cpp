@@ -39,7 +39,7 @@ long TreewidthSubgraphCounter::compute() {
 
 long TreewidthSubgraphCounter::computeParallel() {
     
-    int threadCount = 1;
+    int threadCount = 4;
     
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());

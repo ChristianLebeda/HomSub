@@ -58,9 +58,9 @@ long long Main::subgraphsSpasmDecompositionGraph(std::shared_ptr<SpasmDecomposit
 	
 	std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, G);
 	
-    long autoMorph = autoCounter->compute();
+    long autoMorph = autoCounter->computeParallel();
     
-	return autoMorph > 0 ? embCounter->compute() / autoCounter->compute() : 0;
+	return autoMorph > 0 ? embCounter->computeParallel() / autoMorph : 0;
 }
 
 
