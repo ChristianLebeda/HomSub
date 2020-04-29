@@ -40,14 +40,14 @@ std::vector<size_t>& IntroducePrecomputedEdgeLeast::Introduce(std::vector<size_t
         for(int i = 0; i < ii; i++) {
             newidx += mapping.mapping_[i] * size_.sizes[i];
         }
-        for(int i = ii + 1; i < bag.size(); i++) {
+        for(int i = ii; i < bag.size(); i++) {
             newidx += mapping.mapping_[i] * size_.sizes[i + 1];
         }
 
         // Add all valid assignments of vertex x
         for (size_t i = 0; i < size_.n; i++)
         {
-            auto it = precomputedStart + mapping.CurrentOffset();
+            auto it = precomputedStart + mapping.CurrentOffset() + i * size_.n;
             size_t rangestart = newidx + i * size_.sizes[ii];
             // Add range of value for least significant
             for (size_t j = 0; j < size_.n; j++)

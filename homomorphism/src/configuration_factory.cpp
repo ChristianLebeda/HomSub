@@ -5,6 +5,7 @@
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/forget_handler_combined.h"
 #include "homomorphism/iterator_remapper.h"
+#include "homomorphism/introduce_handler_precomputed.h"
 
 
 HomomorphismSettings ConfigurationFactory::defaultSettings(size_t n, size_t maxWidth) {
@@ -37,4 +38,12 @@ PathdecompotisionSettings ConfigurationFactory::PrecomputedPathSettings(size_t n
     return {std::make_shared<ForgetHandlerCombined>(n, maxWidth),
             std::make_shared<IntroduceHandlerLeastPrecomputed>(precomputation),
             std::make_shared<VectorAllocator>()};
+}
+
+DynamicProgrammingSettings ConfigurationFactory::DefaultDynamicSettings(size_t n, size_t maxWidth,
+        std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast,
+        std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond) {
+    return {std::make_shared<ForgetHandlerCombined>(n, maxWidth),
+            std::make_shared<IntroduceHandlerPrecomputed>(n, maxWidth, precomputationLeast, precomputationSecond),
+            std::make_shared<JoinHandler>(), std::make_shared<VectorAllocator>()};
 }

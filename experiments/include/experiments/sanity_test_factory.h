@@ -14,7 +14,7 @@
     FORGET_HANDLER_LAST, FORGET_HANDLER_FIRST, FORGET_HANDLER_ANY, INTRODUCE_HANDLER_COMPUTE, INTRODUCE_HANDLER_ITERATOR, \
     INTRODUCE_HANDLER_PRECOMPUTED, HOMOMORPHISM_LOOP_DEFAULT, HOMOMORPHISM_HANDCRAFTED_DEFAULT, \
     HOMOMORPHISM_LOOP_ITERATOR, HOMOMORPHISM_HANDCRAFTED_ITERATOR, MAX_DEGREE_TEST, \
-    PATHDECOMPCOUNTER_DEFAULT
+    PATHDECOMPCOUNTER_DEFAULT, HOMOMORPHISM_LOOP_PRECOMPUTED, HOMOMORPHISM_HANDCRAFTED_PRECOMPUTED
 
 #define COMPOSITETESTCASES \
     HOMOMORPHISM_COUNTER_DEFAULT, HOMOMORPHISM_COUNTER_ITERATOR, \
@@ -59,6 +59,8 @@ private:
                     HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName);
     static void homomorphismLoopTest(TestSettings& settings, TestLogger& logger,
                     HomomorphismSettings (*hom)(size_t, size_t), const std::string& settingsName);
+    static void HomomorphismPrecomputedHandcraftedTest(TestSettings& settings, TestLogger& logger);
+    static void HomomorphismPrecomputedLoopTest(TestSettings& settings, TestLogger& logger);
     static void DefaultPathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger);
     static void PathdecompHomomorphismTest(TestSettings& settings, TestLogger& logger,
                     PathdecompotisionSettings (*hom)(size_t, size_t), const std::string& settingsName);

@@ -85,7 +85,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             CliquesInClique,
             EdgesInPath,
             PathInRandomGraph,
-            RandomPatternsInRandomGraph,
+            RandomPatternsInRandomGraph/*,
             ForgetLeastSignificant,
             ForgetMostSignificant,
             ForgetAny,
@@ -106,7 +106,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             CyclesInMaxDegreeRandom,
             StarsIsMaxDegreeKRandom,
             MemoryTest1,
-            MemoryTest2
+            MemoryTest2*/
         };
     return tests;
 }
@@ -124,7 +124,7 @@ void TestFactory::SquaresInGrid(TestSettings& settings, TestLogger& logger)
     
     std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
     
-    for(int n = 1; n < 33; n = n * 2) {
+    for(int n = 1; n < 17; n = n * 2) {
         GraphGenerator::CompleteGrid(g, n, n);
         REPEATED_CLOCK_START;
         Main::subgraphsGraph(h, g);

@@ -13,9 +13,10 @@ std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(s
 long TreewidthSubgraphCounter::compute() {
 	long count = 0;
 
-    auto pre = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
-    HomomorphismSettings settings = ConfigurationFactory::PrecomputedSettings(g_->vertCount(), spdc_->width(), pre);
-    PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre);
+    auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
+    auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
+    DynamicProgrammingSettings settings = ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
+    PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1);
 
     for (size_t i = 0; i < spdc_->size(); i++)
 	{
@@ -26,7 +27,7 @@ long TreewidthSubgraphCounter::compute() {
             count += hc.compute() * next.coefficient;
 		} else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-            auto hc = HomomorphismCounter(next.graph, g_, ntd, settings);
+            auto hc = DynamicProgrammingCounter(next.graph, g_, ntd, settings);
             count += hc.compute() * next.coefficient;
 		}
 	}

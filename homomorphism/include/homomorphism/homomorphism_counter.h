@@ -10,7 +10,7 @@
 #include "homomorphism/introduce_handler_least.h"
 #include "homomorphism/remapper.h"
 
-struct DPState {
+struct HomDPState {
     std::vector<size_t> bag;
     std::vector<size_t> mappings;
 };
@@ -44,10 +44,10 @@ private:
     std::shared_ptr<JoinHandler> joiner_;
     std::shared_ptr<VectorAllocator> allocator_;
 
-    DPState computeRec(const std::shared_ptr<NTDNode>& node);
-    DPState computeIntroduceRec(const std::shared_ptr<NTDNode>& child, size_t x);
-    DPState computeForgetRec(const std::shared_ptr<NTDNode>& child, size_t x);
-    DPState computeJoinRec(const std::shared_ptr<NTDNode>& child1, const std::shared_ptr<NTDNode>& child2);
+    HomDPState computeRec(const std::shared_ptr<NTDNode>& node);
+    HomDPState computeIntroduceRec(const std::shared_ptr<NTDNode>& child, size_t x);
+    HomDPState computeForgetRec(const std::shared_ptr<NTDNode>& child, size_t x);
+    HomDPState computeJoinRec(const std::shared_ptr<NTDNode>& child1, const std::shared_ptr<NTDNode>& child2);
 };
 
 #endif
