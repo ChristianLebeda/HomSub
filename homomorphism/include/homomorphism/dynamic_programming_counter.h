@@ -8,6 +8,7 @@
 #include "homomorphism/join_handler.h"
 #include "homomorphism/forget_handler.h"
 #include "homomorphism/introduce_handler.h"
+#include "homomorphism/homomorphism_counter_interface.h"
 
 struct DPState {
     std::vector<size_t> bag;
@@ -21,7 +22,7 @@ struct DynamicProgrammingSettings {
     std::shared_ptr<VectorAllocator> alloc;
 };
 
-class DynamicProgrammingCounter
+class DynamicProgrammingCounter : public HomomorphismCounterInterface
 {
 public:
     DynamicProgrammingCounter(std::shared_ptr<Graph>& h, std::shared_ptr<Graph>& g,
@@ -30,7 +31,7 @@ public:
             forgetter_(settings.forget), introducer_(settings.introduce),
             joiner_(settings.join), allocator_(settings.alloc) {};
 
-    long compute();
+    long compute() override;
 private:
     std::shared_ptr<Graph> h_, g_;
     std::shared_ptr<NiceTreeDecomposition> tdc_;

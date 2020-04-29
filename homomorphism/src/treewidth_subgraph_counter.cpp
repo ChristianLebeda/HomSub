@@ -13,7 +13,7 @@ std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(s
 }
 
 long TreewidthSubgraphCounter::compute() {
-	long count = 0;
+    long count = 0;
 
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
@@ -21,40 +21,39 @@ long TreewidthSubgraphCounter::compute() {
     PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1);
 
     for (size_t i = 0; i < spdc_->size(); i++)
-	{
-		auto next = (*spdc_)[i];
-		if(next.decomposition->IsPathDecomposition()) {
+    {
+        auto next = (*spdc_)[i];
+        if(next.decomposition->IsPathDecomposition()) {
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
             auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
             count += hc.compute() * next.coefficient;
-		} else {
+        } else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
             auto hc = DynamicProgrammingCounter(next.graph, g_, ntd, settings);
             count += hc.compute() * next.coefficient;
-		}
-	}
-    
-    std::cout << count << std::endl;
-	return count;
+        }
+    }
+
+    return count;
 }
 
 long TreewidthSubgraphCounter::computeParallel() {
     
-    int threadCount = 4;
+    int threadCount = 1;
     
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
-    //DynamicProgrammingSettings settings = ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
-    PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1);
-
     
     std::vector<std::vector<long>> coeffs(threadCount);
-    std::vector<std::vector<PathdecompositionCounter>> hcs(threadCount);
+    std::vector<std::vector<std::shared_ptr<HomomorphismCounterInterface>>> hcs(threadCount);
     
-    std::vector<PathdecompotisionSettings> settings;
+    std::vector<PathdecompotisionSettings> pdSettings;
+    std::vector<DynamicProgrammingSettings> dpSettings;
     
+    //Create settings objects
     for(int i = 0; i < threadCount; i++) {
-        settings.push_back(ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1));
+        pdSettings.push_back(ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1));
+        dpSettings.push_back(ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2));
     }
 
     //Setup all calls
@@ -64,16 +63,15 @@ long TreewidthSubgraphCounter::computeParallel() {
         if(next.decomposition->IsPathDecomposition()) {
             
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
-            auto hc = PathdecompositionCounter(next.graph, g_, npd, settings[i%threadCount]);
+            auto hc = std::make_shared<PathdecompositionCounter>(next.graph, g_, npd, pdSettings[i%threadCount]);
             
             coeffs[i%threadCount].push_back(next.coefficient);
             hcs[i%threadCount].push_back(hc);
         } else {
-            //auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-            //auto hc = std::make_shared<PathdecompositionCounter>(next.graph, g_, ntd, settings);
-            
-            //coeffs[i%threadCount].push_back(next.coefficient);
-            //hcs[i%threadCount].push_back(hc);
+            auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
+            auto hc = std::make_shared<DynamicProgrammingCounter>(next.graph, g_, ntd, dpSettings[i%threadCount]);
+            coeffs[i%threadCount].push_back(next.coefficient);
+            hcs[i%threadCount].push_back(hc);
 
         }
         
@@ -82,13 +80,13 @@ long TreewidthSubgraphCounter::computeParallel() {
     
     std::atomic<int> counter(0);
     
-    auto t = [](std::vector<long> coeffs, std::vector<PathdecompositionCounter> counters, std::atomic<int> &counter) {
-        long localCount = 0;
+    auto t = [](std::vector<long> coeffs, std::vector<std::shared_ptr<HomomorphismCounterInterface>> counters, std::atomic<int> &counter) {
+        long threadCount = 0;
         for(int i = 0; i < coeffs.size(); i++) {
-            localCount += counters[i].compute() * coeffs[i];
+            threadCount += counters[i]->compute() * coeffs[i];
         }
         
-        counter += localCount;
+        counter += threadCount;
         return;
     };
     
@@ -102,18 +100,6 @@ long TreewidthSubgraphCounter::computeParallel() {
     for(int i = 0; i < threadCount; i++) {
         threads[i].join();
     }
-     
-    
-    
-    long sequentialCounter = 0;
-    for(int i = 0; i < threadCount; i++) {
-        for(int j = 0; j < coeffs[i].size(); j++) {
-            sequentialCounter+= hcs[i][j].compute() * coeffs[i][j];
-        }
-    }
-    
-
-    std::cout << sequentialCounter << std::endl;
     
     return 5;
 }
