@@ -40,10 +40,12 @@ long TreewidthSubgraphCounter::compute() {
 
 long TreewidthSubgraphCounter::computeParallel() {
     
-    int threadCount = 3;
+    int threadCount = 1;
     
-    HomomorphismSettings settings = ConfigurationFactory::defaultSettings(g_->vertCount(), spdc_->width());
-    PathdecompotisionSettings set = ConfigurationFactory::DefaultPathSettings(g_->vertCount(), spdc_->width());
+    auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
+    auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
+    DynamicProgrammingSettings settings = ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
+    PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1);
 
     
     std::vector<std::vector<long>> coeffs(threadCount);
@@ -62,12 +64,13 @@ long TreewidthSubgraphCounter::computeParallel() {
             hcs[i%threadCount].push_back(hc);
         } else {
             //auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-            //auto hc = std::make_shared<HomomorphismCounter>(next.graph, g_, ntd, settings);
+            //auto hc = std::make_shared<PathdecompositionCounter>(next.graph, g_, ntd, settings);
             
             //coeffs[i%threadCount].push_back(next.coefficient);
             //hcs[i%threadCount].push_back(hc);
 
         }
+        
     }
     
     
@@ -95,16 +98,16 @@ long TreewidthSubgraphCounter::computeParallel() {
     }
      
     
-    /*
+    
     long sequentialCounter = 0;
     for(int i = 0; i < threadCount; i++) {
         for(int j = 0; j < coeffs[i].size(); j++) {
-            sequentialCounter+= hcs[i][j]->compute() * coeffs[i][j];
+            sequentialCounter+= hcs[i][j].compute() * coeffs[i][j];
         }
     }
-    */
+    
 
-    std::cout << counter << std::endl;
+    std::cout << sequentialCounter << std::endl;
     
     return 5;
 }
