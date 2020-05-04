@@ -21,8 +21,6 @@ std::shared_ptr<NicePathDecomposition> NicePathDecomposition::FromTd(std::shared
     int prev = -1;
     std::unordered_set<size_t> prevBag(0), nextBag;
 
-    auto ss = td->getGraph()->vertCount();
-
     for(int i = 0; i < td->getGraph()->vertCount(); i++) {
         nextBag = td->getBag(next);
 
@@ -38,10 +36,10 @@ std::shared_ptr<NicePathDecomposition> NicePathDecomposition::FromTd(std::shared
             }
         }
 
+        nbs[next].erase(prev);
         prev = next;
         prevBag = nextBag;
 
-        nbs[next].erase(prev);
         next = nbs[next].empty() ? -1 : (int) *nbs[next].begin();
     }
 
