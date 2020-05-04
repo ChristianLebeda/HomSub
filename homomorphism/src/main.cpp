@@ -5,6 +5,7 @@
 #include "homomorphism/nauty.h"
 #include "homomorphism/tamaki_runner.h"
 #include "homomorphism/treewidth_subgraph_counter.h"
+#include "homomorphism/traversal_subgraph_counter.h"
 
 std::shared_ptr<Spasm> Main::spasmFromGraph(std::shared_ptr<Graph> h) {
     Nauty n;

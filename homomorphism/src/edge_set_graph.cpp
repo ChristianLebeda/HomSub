@@ -51,3 +51,14 @@ std::vector<std::unordered_set<size_t>> EdgeSetGraph::getNeighbourList()
 {
     return neighbours_;
 }
+
+std::shared_ptr<EdgeSetGraph> EdgeSetGraph::FromGraph(std::shared_ptr<Graph> g) {
+    std::shared_ptr<EdgeSetGraph> result = std::make_shared<EdgeSetGraph>(g->vertCount());
+    
+    for(int u = 0; u < g->vertCount(); u++) {
+        for(int v : g->getNeighbourhood(u)) {
+            result->addEdge(v, v);
+        }
+    }
+    return result;
+}
