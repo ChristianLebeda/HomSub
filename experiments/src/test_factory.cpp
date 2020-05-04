@@ -108,8 +108,10 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             MemoryTest1,
             MemoryTest2*/
             PrecomputedTableFirstCycle,
+            PrecomputedTableFirstGrid,
             PrecomputedTableFirstClique,
             PrecomputedTableSecondCycle,
+            PrecomputedTableSecondGrid,
             PrecomputedTableSecondClique
         };
     return tests;
@@ -999,6 +1001,27 @@ void TestFactory::PrecomputedTableFirstCycle(TestSettings &settings, TestLogger 
     END_TEST
 }
 
+void TestFactory::PrecomputedTableFirstGrid(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableFirstGrid")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            GraphGenerator::CompleteGrid(g, 4, n >> 2);
+
+            REPEATED_CLOCK_START;
+                EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
 void TestFactory::PrecomputedTableFirstClique(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("PrecomputedTableFirstClique")
 
@@ -1028,6 +1051,27 @@ void TestFactory::PrecomputedTableSecondCycle(TestSettings &settings, TestLogger
     STEPLOOP_START
 
             GraphGenerator::Cycle(g, n);
+
+            REPEATED_CLOCK_START;
+                EdgeConsistencyPrecomputation::InitializeSecond(g, k - 1);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::PrecomputedTableSecondGrid(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableSecondGrid")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            GraphGenerator::CompleteGrid(g, 4, n >> 2);
 
             REPEATED_CLOCK_START;
                 EdgeConsistencyPrecomputation::InitializeSecond(g, k - 1);
