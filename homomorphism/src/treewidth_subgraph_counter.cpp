@@ -101,5 +101,5 @@ long TreewidthSubgraphCounter::computeParallel() {
         threads[i].join();
     }
     
-    return 5;
+    return counter;
 }
