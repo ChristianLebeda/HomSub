@@ -9,6 +9,7 @@
 #include "homomorphism/forget_handler.h"
 #include "homomorphism/introduce_handler_least.h"
 #include "homomorphism/remapper.h"
+#include "homomorphism/homomorphism_counter_interface.h"
 
 struct HomDPState {
     std::vector<size_t> bag;
@@ -24,7 +25,7 @@ struct HomomorphismSettings {
 };
 
 // TODO: Extended tree decomposition could precompute some values. Such as index for forget and introduce nodes
-class HomomorphismCounter
+class HomomorphismCounter : public HomomorphismCounterInterface
 {
 public:
     HomomorphismCounter(std::shared_ptr<Graph>& h, std::shared_ptr<Graph>& g,
@@ -33,7 +34,7 @@ public:
                           mapper_(settings.mapper), forgetter_(settings.forget), introducer_(settings.introduce),
                           joiner_(settings.join), allocator_(settings.alloc) {};
 
-    long compute();
+    long compute() override;
 private:
     std::shared_ptr<Graph> h_, g_;
     std::shared_ptr<NiceTreeDecomposition> tdc_;
