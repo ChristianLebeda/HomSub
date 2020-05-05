@@ -80,12 +80,12 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
 std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
     std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
         {
-            SquaresInGrid,
+            /*SquaresInGrid,
             BinaryTreeInBinaryTree,
             CliquesInClique,
             EdgesInPath,
             PathInRandomGraph,
-            RandomPatternsInRandomGraph/*,
+            RandomPatternsInRandomGraph/*
             ForgetLeastSignificant,
             ForgetMostSignificant,
             ForgetAny,
@@ -107,6 +107,12 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             StarsIsMaxDegreeKRandom,
             MemoryTest1,
             MemoryTest2*/
+            PrecomputedTableFirstCycle,
+            PrecomputedTableFirstGrid,
+            PrecomputedTableFirstClique,
+            PrecomputedTableSecondCycle,
+            PrecomputedTableSecondGrid,
+            PrecomputedTableSecondClique
         };
     return tests;
 }
@@ -972,6 +978,132 @@ void TestFactory::StarsIsMaxDegreeKRandom(TestSettings &settings, TestLogger &lo
     }
     
     END_TEST;
+}
+
+void TestFactory::PrecomputedTableFirstCycle(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableFirstCycle")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+        GraphGenerator::Cycle(g, n);
+
+        REPEATED_CLOCK_START;
+            EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("", n, k, d);
+        }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::PrecomputedTableFirstGrid(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableFirstGrid")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            GraphGenerator::CompleteGrid(g, 4, n >> 2);
+
+            REPEATED_CLOCK_START;
+                EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::PrecomputedTableFirstClique(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableFirstClique")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            GraphGenerator::Clique(g, n);
+
+            REPEATED_CLOCK_START;
+                EdgeConsistencyPrecomputation::InitializeLeast(g, k - 1);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::PrecomputedTableSecondCycle(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableSecondCycle")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            GraphGenerator::Cycle(g, n);
+
+            REPEATED_CLOCK_START;
+                EdgeConsistencyPrecomputation::InitializeSecond(g, k - 1);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::PrecomputedTableSecondGrid(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableSecondGrid")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            GraphGenerator::CompleteGrid(g, 4, n >> 2);
+
+            REPEATED_CLOCK_START;
+                EdgeConsistencyPrecomputation::InitializeSecond(g, k - 1);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
+}
+
+void TestFactory::PrecomputedTableSecondClique(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("PrecomputedTableSecondClique")
+
+    auto g = AdjacencyMatrixGraph::testGraph();
+
+    STEPLOOP_START
+
+            GraphGenerator::Clique(g, n);
+
+            REPEATED_CLOCK_START;
+                EdgeConsistencyPrecomputation::InitializeSecond(g, k - 1);
+            REPEATED_CLOCK_END;
+            for(int d : durations) {
+                logger.Log("", n, k, d);
+            }
+
+    STEPLOOP_END
+
+    END_TEST
 }
 
 int TestFactory::milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop) {

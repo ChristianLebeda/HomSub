@@ -22,6 +22,7 @@ public:
     static std::shared_ptr<AdjacencyMatrixGraph> fromFile(std::string path);
     static std::shared_ptr<AdjacencyMatrixGraph> testGraph();
     static std::shared_ptr<AdjacencyMatrixGraph> parseNautyFormat(const std::string& nauty, size_t n);
+    static std::shared_ptr<AdjacencyMatrixGraph> FromGraph(std::shared_ptr<Graph> gr);
     
     void clear(size_t v) override;
     size_t vertCount() override;
@@ -31,6 +32,7 @@ public:
     std::unordered_set<size_t> getNeighbourhood(size_t v) override;
     bool isIsomorphic(std::shared_ptr<Graph> g) override;
     std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size) override;
+    std::vector<unsigned char>::iterator GetRowIterator(size_t row);
 
 private:
     size_t vertices_;
