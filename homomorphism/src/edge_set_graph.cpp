@@ -23,8 +23,13 @@ size_t EdgeSetGraph::edgeCount()
 
 void EdgeSetGraph::addEdge(size_t u, size_t v)
 {
+    int oldSize = neighbours_[u].size();
     neighbours_[u].insert(v);
     neighbours_[v].insert(u);
+    int newSize = neighbours_[u].size();
+    if(oldSize != newSize) {
+        edges_++;
+    }
 }
 
 bool EdgeSetGraph::edgeExist(size_t u, size_t v)
@@ -50,4 +55,15 @@ std::unordered_set<size_t> EdgeSetGraph::getNeighbourhood(size_t v)
 std::vector<std::unordered_set<size_t>> EdgeSetGraph::getNeighbourList()
 {
     return neighbours_;
+}
+
+std::shared_ptr<EdgeSetGraph> EdgeSetGraph::FromGraph(std::shared_ptr<Graph> g) {
+    std::shared_ptr<EdgeSetGraph> result = std::make_shared<EdgeSetGraph>(g->vertCount());
+    
+    for(int u = 0; u < g->vertCount(); u++) {
+        for(int v : g->getNeighbourhood(u)) {
+            result->addEdge(u, v);
+        }
+    }
+    return result;
 }

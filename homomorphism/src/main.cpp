@@ -5,6 +5,7 @@
 #include "homomorphism/nauty.h"
 #include "homomorphism/tamaki_runner.h"
 #include "homomorphism/treewidth_subgraph_counter.h"
+#include "homomorphism/traversal_subgraph_counter.h"
 
 std::shared_ptr<Spasm> Main::spasmFromGraph(std::shared_ptr<Graph> h) {
     Nauty n;
@@ -42,6 +43,16 @@ long long Main::subgraphsGraph(std::string filenameH, std::string filenameG) {
 	return subgraphsSpasmDecompositionGraph(decomposedSpasmFromGraph(filenameH), AdjacencyMatrixGraph::fromFile(filenameG));
 }
 
+long long Main::subgraphsGraphMaxDegree(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
+    std::shared_ptr<Spasm> spasm = spasmFromGraph(H);
+    
+    TraversalSubgraphCounter autoCounter(spasm, H);
+    TraversalSubgraphCounter embCounter(spasm, G);
+    
+    long autoMorphisms = autoCounter.compute();
+    
+    return embCounter.compute() / autoMorphisms;
+}
 
 long long Main::subgraphsSpasmGraph(std::shared_ptr<Spasm> H, std::shared_ptr<Graph> G) {
 	return subgraphsSpasmDecompositionGraph(decomposedSpasmFromSpasm(H), G);
@@ -52,6 +63,14 @@ long long Main::subgraphsSpasmGraph(std::string filenameH, std::string filenameG
 	return subgraphsSpasmDecompositionGraph(decomposedSpasmFromSpasm(filenameH), AdjacencyMatrixGraph::fromFile(filenameG));
 }
 
+long long subgraphsSpasmGraphMaxDegree(std::shared_ptr<Spasm> H, std::shared_ptr<Graph> G) {
+    TraversalSubgraphCounter autoCounter(H, G);
+    TraversalSubgraphCounter embCounter(H, H->graph());
+    
+    long autoMorphisms = autoCounter.compute();
+    
+    return embCounter.compute() / autoMorphisms;
+}
 
 long long Main::subgraphsSpasmDecompositionGraph(std::shared_ptr<SpasmDecomposition> SpasmDecompH, std::shared_ptr<Graph> G) {
 	std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, SpasmDecompH->graph());
@@ -62,6 +81,7 @@ long long Main::subgraphsSpasmDecompositionGraph(std::shared_ptr<SpasmDecomposit
     
 	return autoMorph > 0 ? embCounter->compute() / autoMorph : 0;
 }
+
 
 
 long long Main::subgraphsSpasmDecompositionGraph(std::string filenameSpasmDecompH, std::string filenameG) {

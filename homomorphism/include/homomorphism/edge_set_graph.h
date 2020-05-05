@@ -13,6 +13,7 @@ public:
         neighbours_.resize(verts);
     };
     EdgeSetGraph(size_t verts, size_t edges, std::vector<std::unordered_set<size_t>> neighbours) : verts_(verts), edges_(edges), neighbours_(neighbours) {};
+    static std::shared_ptr<EdgeSetGraph> FromGraph(std::shared_ptr<Graph> g);
     void clear(size_t v) override;
     size_t vertCount() override;
     size_t edgeCount() override;

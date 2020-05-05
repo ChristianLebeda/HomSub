@@ -28,7 +28,9 @@ bool TraversalHomomorphismCounter::CheckHomomorphism(std::shared_ptr<EdgeSetGrap
 }
 
 long TraversalHomomorphismCounter::Count(std::shared_ptr<EdgeSetGraph> h, std::shared_ptr<EdgeSetGraph> g) {
-    return TestKTraversals(h, g, GetFirstTraversal(h), std::vector<size_t>());
+    long result = TestKTraversals(h, g, GetFirstTraversal(h), std::vector<size_t>());
+    
+    return result;
 }
 
 long TraversalHomomorphismCounter::TestKTraversals(std::shared_ptr<EdgeSetGraph> h, std::shared_ptr<EdgeSetGraph> g, std::vector<size_t> hTraversal, std::vector<size_t> gTraversal)
