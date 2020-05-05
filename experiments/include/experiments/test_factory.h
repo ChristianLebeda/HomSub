@@ -60,6 +60,12 @@ private:
     static void MaxDegreeHomomorphismCount(TestSettings& settings, TestLogger& logger);
     static void CyclesInMaxDegreeRandom(TestSettings& settings, TestLogger& logger);
     static void StarsIsMaxDegreeKRandom(TestSettings& settings, TestLogger& logger);
+    static void PrecomputedTableFirstCycle(TestSettings& settings, TestLogger& logger);
+    static void PrecomputedTableFirstGrid(TestSettings& settings, TestLogger& logger);
+    static void PrecomputedTableFirstClique(TestSettings& settings, TestLogger& logger);
+    static void PrecomputedTableSecondCycle(TestSettings& settings, TestLogger& logger);
+    static void PrecomputedTableSecondGrid(TestSettings& settings, TestLogger& logger);
+    static void PrecomputedTableSecondClique(TestSettings& settings, TestLogger& logger);
     static int milliSecondDifferene(std::chrono::time_point<std::chrono::steady_clock> start, std::chrono::time_point<std::chrono::steady_clock> stop);
     static float averageDuration(std::vector<int> durations);
     static void fillVector(std::vector<size_t> data);

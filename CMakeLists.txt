@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.5)
 set (CMAKE_CXX_STANDARD 11)
 
+SET(CMAKE_CXX_FLAGS -pthread)
+
 project(subgraph_thesis)
 
 set (THIRD_PARTY_PATH \"${PROJECT_SOURCE_DIR}/third-party/\")
