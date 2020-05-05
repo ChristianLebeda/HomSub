@@ -80,7 +80,7 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
 std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
     std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
         {
-            /*SquaresInGrid,
+            SquaresInGrid,
             BinaryTreeInBinaryTree,
             CliquesInClique,
             EdgesInPath,
@@ -106,13 +106,13 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             CyclesInMaxDegreeRandom,
             StarsIsMaxDegreeKRandom,
             MemoryTest1,
-            MemoryTest2*/
+            MemoryTest2
             PrecomputedTableFirstCycle,
             PrecomputedTableFirstGrid,
             PrecomputedTableFirstClique,
             PrecomputedTableSecondCycle,
             PrecomputedTableSecondGrid,
-            PrecomputedTableSecondClique
+            PrecomputedTableSecondClique*/
         };
     return tests;
 }
@@ -263,7 +263,7 @@ void TestFactory::ForgetLeastSignificant(TestSettings &settings, TestLogger &log
         vec2.resize(size / n);
         fillVector(vec2);
         REPEATED_CLOCK_START;
-        handler.forget(vec1, vec2, k, k - 1);
+        handler.forget(vec1, vec2, k, 0);
         REPEATED_CLOCK_END;
         for(int d : durations) {
             logger.Log("",n, k, d);
@@ -288,7 +288,7 @@ void TestFactory::ForgetMostSignificant(TestSettings &settings, TestLogger &logg
             vec2.resize(size / n);
             fillVector(vec2);
             REPEATED_CLOCK_START;
-                handler.forget(vec1, vec2, k, 0);
+                handler.forget(vec1, vec2, k, k - 1);
             REPEATED_CLOCK_END;
             for(int d : durations) {
                 logger.Log("",n, k, d);

@@ -1,5 +1,6 @@
 #include "homomorphism/treewidth_subgraph_counter.h"
 
+#include <atomic>
 #include <tuple>
 
 #include "homomorphism/homomorphism_counter.h"
