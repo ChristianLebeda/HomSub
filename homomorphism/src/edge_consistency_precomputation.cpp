@@ -1,8 +1,16 @@
 #include "homomorphism/edge_consistency_precomputation.h"
 
-std::shared_ptr<EdgeConsistencyPrecomputation> EdgeConsistencyPrecomputation::InitializeLeast(std::shared_ptr<Graph> g, int maxEdges) {
+#include "homomorphism/adjacency_matrix_graph.h"
+
+std::shared_ptr<EdgeConsistencyPrecomputation> EdgeConsistencyPrecomputation::InitializeLeast(std::shared_ptr<Graph> gr, int maxEdges) {
     std::vector<std::vector<unsigned char>> storage;
-    size_t n = g->vertCount();
+    size_t n = gr->vertCount();
+
+    // AdjacencyMatrixGraph is preferred to simplify inner loop
+    auto g = std::dynamic_pointer_cast<AdjacencyMatrixGraph>(gr);
+    if(g == nullptr) {
+        g = AdjacencyMatrixGraph::FromGraph(gr);
+    }
 
     storage.emplace_back(n, 1);
 
@@ -16,9 +24,9 @@ std::shared_ptr<EdgeConsistencyPrecomputation> EdgeConsistencyPrecomputation::In
         for(int idx = 0; idx < n; idx++) {
             auto prevIt = prev->begin();
             while(prevIt != prev->end()) {
+                auto row = g->GetRowIterator(idx);
                 for (int i = 0; i < n; ++i) {
-                    //TODO: Can increase performance by using iterator for g
-                    *(nextIt++) = *(prevIt++) * g->edgeExist(idx, i);
+                    *(nextIt++) = *(prevIt++) * *(row++);
                 }
             }
         }

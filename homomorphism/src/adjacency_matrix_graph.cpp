@@ -135,6 +135,20 @@ std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::parseNautyFormat(con
     return g;
 }
 
+std::shared_ptr<AdjacencyMatrixGraph> AdjacencyMatrixGraph::FromGraph(std::shared_ptr<Graph> input) {
+    auto g = std::make_shared<AdjacencyMatrixGraph>(input->vertCount());
+
+    for (int u = 1; u < input->vertCount(); ++u) {
+        for (int v = 0; v < u; ++v) {
+            if(input->edgeExist(u, v)) {
+                g->addEdge(u, v);
+            }
+        }
+    }
+
+    return g;
+}
+
 bool AdjacencyMatrixGraph::edgeExist(size_t u, size_t v)
 {
     return matrix_[u * vertices_ + v];
@@ -230,10 +244,14 @@ std::unordered_set<size_t> AdjacencyMatrixGraph::getNeighbourhood(size_t v)
     
     for(int i = 0; i < vertCount(); i++)
     {
-        if(matrix_[v * i] && v != i) {
+        if(matrix_[v * vertices_ + i] && v != i) {
             neighbourhood.insert(i);
         }
     }
  
     return neighbourhood;
+}
+
+std::vector<unsigned char>::iterator AdjacencyMatrixGraph::GetRowIterator(size_t row) {
+    return matrix_.begin() + (row * vertices_);
 }
