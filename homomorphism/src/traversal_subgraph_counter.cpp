@@ -7,11 +7,9 @@ long TraversalSubgraphCounter::compute() {
     long count = 0;
     std::shared_ptr<EdgeSetGraph> edgeSetG = EdgeSetGraph::FromGraph(_g);
     for(int i = 0; i < _spasm->size(); i++) {
-        
-        std::shared_ptr<EdgeSetGraph> spasmEntry = EdgeSetGraph::FromGraph(_spasm->operator[](i).graph);
-        
-        count += TraversalHomomorphismCounter::Count(edgeSetG, edgeSetG);
+        SpasmEntry spasmEntry = _spasm->operator[](i);
+        std::shared_ptr<EdgeSetGraph> graph  = EdgeSetGraph::FromGraph(spasmEntry.graph);
+        count += TraversalHomomorphismCounter::Count(graph, edgeSetG) * spasmEntry.coefficient;
     }
-    
     return count;
 }

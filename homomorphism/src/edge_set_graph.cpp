@@ -25,6 +25,7 @@ void EdgeSetGraph::addEdge(size_t u, size_t v)
 {
     neighbours_[u].insert(v);
     neighbours_[v].insert(u);
+    edges_++;
 }
 
 bool EdgeSetGraph::edgeExist(size_t u, size_t v)

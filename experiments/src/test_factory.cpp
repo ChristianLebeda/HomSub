@@ -127,7 +127,8 @@ void TestFactory::SquaresInGrid(TestSettings& settings, TestLogger& logger)
     for(int n = 1; n < 17; n = n * 2) {
         GraphGenerator::CompleteGrid(g, n, n);
         REPEATED_CLOCK_START;
-        Main::subgraphsGraph(h, g);
+        //Main::subgraphsGraph(h, g);
+        std::cout << Main::subgraphsGraphMaxDegree(h, g) << std::endl;
         REPEATED_CLOCK_END;
         for(int d : durations) {
             logger.Log("", n, 4, d);

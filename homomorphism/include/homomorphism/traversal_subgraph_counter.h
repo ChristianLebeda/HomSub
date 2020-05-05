@@ -9,7 +9,7 @@
 
 class TraversalSubgraphCounter {
 public:
-    TraversalSubgraphCounter(std::shared_ptr<Graph> g, std::shared_ptr<Spasm> spasm) : _g(g), _spasm(spasm) {}
+    TraversalSubgraphCounter(std::shared_ptr<Spasm> H, std::shared_ptr<Graph> g) : _g(g), _spasm(H) {}
     
     long compute();
 private:
