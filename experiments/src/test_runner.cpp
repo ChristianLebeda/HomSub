@@ -6,9 +6,16 @@
 #include "experiments/graph_files_experiments.h"
 #include "experiments/sanity_test_factory.h"
 
+#include "homomorphism/main.h"
+
 
 void TestRunner::Run() {
     logger_.NotifyRunStart();
+    
+    if(settings_.GetRunCount()) {
+        std::cout << Main::subgraphsFiles(settings_.GetIn(), settings_.GetOut()) << std::endl;
+        return;
+    }
 
     if(settings_.GetRunCreateSpasm()) {
         GraphFilesExperiments::CreateAllSpasms(settings_, logger_);

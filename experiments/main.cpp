@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
     TestSettings settings;
 
     std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time",
-                                     "-spasms", "-convertgr", "-in", "-out", "-rep"};
-
+                                     "-spasms", "-convertgr", "-in", "-out", "-rep", "-count", "-h", "-g"};
+    
     for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
         if(arguments.find(arg) == arguments.end()) {
@@ -100,6 +100,8 @@ int main(int argc, char *argv[])
     settings.SetRunSpasmCreation(argMap.count("-spasms"));
 
     settings.SetRunConvertGr(argMap.count("-convertgr"));
+    
+    
 
     if(argMap.count("-in")) {
         settings.SetIn(argMap["-in"]);
@@ -107,6 +109,16 @@ int main(int argc, char *argv[])
 
     if(argMap.count("-out")) {
         settings.SetOut(argMap["-out"]);
+    }
+    
+    settings.SetRunCount(argMap.count("-count"));
+    
+    if(argMap.count("-h")) {
+        settings.SetIn(argMap["-h"]);
+    }
+    
+    if(argMap.count("-g")) {
+        settings.SetOut(argMap["-g"]);
     }
 
     if(argMap.count("-group")) {

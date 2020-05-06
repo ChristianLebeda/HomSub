@@ -43,6 +43,12 @@ public:
     void SetRunConvertGr(bool val) {
         runConvertGr_ = val;
     }
+    void SetRunCount(bool val) {
+        runCount_ = val;
+    }
+    bool GetRunCount() {
+        return runCount_;
+    }
     bool GetRunSanity() {
         return runSanity_;
     }
@@ -85,6 +91,7 @@ private:
     bool runPerformance_;
     bool runCreateSpasm_;
     bool runConvertGr_;
+    bool runCount_;
     std::string *in_ = nullptr, *out_ = nullptr;
     int prTestTime_;
     int repetitions_;
