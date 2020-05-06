@@ -146,11 +146,9 @@ int main(int argc, char *argv[])
     TestLogger *logger;
 
     if(argMap.count("-csv")) {
-        CSVLogger csvLogger(std::cout);
-        logger = &csvLogger;
+        logger = new CSVLogger(std::cout);
     } else {
-        ReadableLogger readLogger(std::cout);
-        logger = &readLogger;
+        logger = new ReadableLogger(std::cout);
     }
     
     TestRunner runner(settings, *logger);
