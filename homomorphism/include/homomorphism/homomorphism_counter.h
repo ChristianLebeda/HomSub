@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "homomorphism/dpstate.h"
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/vector_allocator.h"
 #include "homomorphism/join_handler.h"
@@ -10,11 +11,6 @@
 #include "homomorphism/introduce_handler_least.h"
 #include "homomorphism/remapper.h"
 #include "homomorphism/homomorphism_counter_interface.h"
-
-struct HomDPState {
-    std::vector<size_t> bag;
-    std::vector<size_t> mappings;
-};
 
 struct HomomorphismSettings {
     std::shared_ptr<Remapper> mapper;
@@ -45,10 +41,10 @@ private:
     std::shared_ptr<JoinHandler> joiner_;
     std::shared_ptr<VectorAllocator> allocator_;
 
-    HomDPState computeRec(const std::shared_ptr<NTDNode>& node);
-    HomDPState computeIntroduceRec(const std::shared_ptr<NTDNode>& child, size_t x);
-    HomDPState computeForgetRec(const std::shared_ptr<NTDNode>& child, size_t x);
-    HomDPState computeJoinRec(const std::shared_ptr<NTDNode>& child1, const std::shared_ptr<NTDNode>& child2);
+    DPState computeRec(const std::shared_ptr<NTDNode>& node);
+    DPState computeIntroduceRec(const std::shared_ptr<NTDNode>& child, size_t x);
+    DPState computeForgetRec(const std::shared_ptr<NTDNode>& child, size_t x);
+    DPState computeJoinRec(const std::shared_ptr<NTDNode>& child1, const std::shared_ptr<NTDNode>& child2);
 };
 
 #endif

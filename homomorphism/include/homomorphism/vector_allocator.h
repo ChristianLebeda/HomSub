@@ -3,14 +3,15 @@
 
 #include <vector>
 
-// Can be extended for caching
+#include "bag_sizes.h"
+
 class VectorAllocator {
 public:
-    void setSize(size_t n, size_t width);
-    std::vector<size_t> get(size_t b);
-    void free(std::vector<size_t>& vector, size_t b);
-private:
-    std::vector<size_t> sizes_;
+    VectorAllocator(BagSizes size) : size_(size) {};
+    virtual std::vector<size_t>* Allocate(size_t b) = 0;
+    virtual void Free(std::vector<size_t> *vector, size_t bagSize) = 0;
+protected:
+    BagSizes size_;
 };
 
 #endif

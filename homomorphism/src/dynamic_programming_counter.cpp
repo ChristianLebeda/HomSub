@@ -1,16 +1,16 @@
 #include "homomorphism/dynamic_programming_counter.h"
 
 long DynamicProgrammingCounter::compute() {
-    allocator_->setSize(n_, tdc_->getWidth());
-
     DPState res = computeRec(tdc_->getRoot());
 
     size_t count = 0;
 
-    for (size_t c : res.mappings)
+    for (size_t c : *res.mappings)
     {
         count += c;
     }
+
+    allocator_->Free(res.mappings, res.bag.size());
 
     return count;
 }
@@ -28,7 +28,7 @@ DPState DynamicProgrammingCounter::computeRec(const std::shared_ptr<NTDNode>& no
         case JOIN:
             return computeJoinRec(node->left, node->right);
         default:
-            return { std::vector<size_t>(0), std::vector<size_t> {1} };
+            return { std::vector<size_t>(0), new std::vector<size_t> {1} };
     }
 }
 
@@ -57,9 +57,9 @@ DPState DynamicProgrammingCounter::computeIntroduceRec(const std::shared_ptr<NTD
     }
 
     // Introduce the last vertex
-    std::vector<size_t> result = allocator_->get(bag.size() + 1);
-    introducer_->Introduce(c.mappings, result, connected, x, pos);
-    allocator_->free(c.mappings, bag.size());
+    std::vector<size_t>* result = allocator_->Allocate(bag.size() + 1);
+    introducer_->Introduce(*c.mappings, *result, connected, x, pos);
+    allocator_->Free(c.mappings, bag.size());
 
     bag.insert(bag.begin() + pos, x);
 
@@ -81,9 +81,9 @@ DPState DynamicProgrammingCounter::computeForgetRec(const std::shared_ptr<NTDNod
         }
     }
     // Forget the last vertex
-    std::vector<size_t> result = allocator_->get(bag.size() - 1);
-    forgetter_->forget(c.mappings, result, bag.size(), pos);
-    allocator_->free(c.mappings, bag.size());
+    std::vector<size_t>* result = allocator_->Allocate(bag.size() - 1);
+    forgetter_->forget(*c.mappings, *result, bag.size(), pos);
+    allocator_->Free(c.mappings, bag.size());
 
     bag.erase(bag.begin() + pos);
 
@@ -95,7 +95,8 @@ DPState DynamicProgrammingCounter::computeJoinRec(const std::shared_ptr<NTDNode>
     DPState c1 = computeRec(child1);
     DPState c2 = computeRec(child2);
 
-    std::vector<size_t> joined = joiner_->join(c1.mappings, c2.mappings);
+    joiner_->join(*c1.mappings, *c2.mappings);
+    allocator_->Free(c2.mappings, c2.bag.size());
 
-    return { c1.bag, joined };
+    return { c1.bag, c1.mappings };
 }

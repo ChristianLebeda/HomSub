@@ -5,7 +5,7 @@
 
 class BagSizes {
 public:
-    BagSizes(size_t n, size_t k) : n(n), k(k), sizes(std::vector<size_t>(k + 1)) {
+    BagSizes(size_t n, size_t k) : n(n), k(k), sizes(std::vector<size_t>(k + 2)) {
         sizes[0] = 1;
         for (size_t i = 1; i < sizes.size(); ++i) {
             sizes[i] = sizes[i - 1] * n;
