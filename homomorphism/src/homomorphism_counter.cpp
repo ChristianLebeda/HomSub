@@ -2,16 +2,16 @@
 #include "homomorphism/homomorphism_counter.h"
 
 long HomomorphismCounter::compute() {
-    allocator_->setSize(n_, tdc_->getWidth());
-
-    HomDPState res = computeRec(tdc_->getRoot());
+    DPState res = computeRec(tdc_->getRoot());
 
     size_t count = 0;
 
-    for (size_t c : res.mappings)
+    for (size_t c : *res.mappings)
     {
         count += c;
     }
+
+    allocator_->Free(res.mappings, res.bag.size());
 
     return count;
 }
@@ -19,7 +19,7 @@ long HomomorphismCounter::compute() {
 // The state at each step is a pair of vectors
 // The first vector contains the ordered bag of vertices for that node
 // The second vector contains the count of homomorphisms for all possible mappings of said bag
-HomDPState HomomorphismCounter::computeRec(const std::shared_ptr<NTDNode>& node) {
+DPState HomomorphismCounter::computeRec(const std::shared_ptr<NTDNode>& node) {
     switch (node->nodeType)
     {
         case INTRODUCE:
@@ -29,15 +29,15 @@ HomDPState HomomorphismCounter::computeRec(const std::shared_ptr<NTDNode>& node)
         case JOIN:
             return computeJoinRec(node->left, node->right);
         default:
-            return { std::vector<size_t>(0), std::vector<size_t> {1} };
+            return { std::vector<size_t>(0), new std::vector<size_t> {1} };
     }
 }
 
-HomDPState HomomorphismCounter::computeIntroduceRec(const std::shared_ptr<NTDNode>& child, size_t x) {
+DPState HomomorphismCounter::computeIntroduceRec(const std::shared_ptr<NTDNode>& child, size_t x) {
     // Currently indices are 1-indexes for the tree decomposition and 0-indexes for the algorithm
     x--;
 
-    HomDPState c = computeRec(child);
+    DPState c = computeRec(child);
 
     std::vector<size_t> bag = c.bag;
 
@@ -50,15 +50,15 @@ HomDPState HomomorphismCounter::computeIntroduceRec(const std::shared_ptr<NTDNod
     }
 
     // Introduce the last vertex
-    std::vector<size_t> mapping = allocator_->get(bag.size() + 1);
-    introducer_->introduceLast(c.mappings, mapping, c.bag, h_, g_, n_, x);
-    allocator_->free(c.mappings, bag.size());
+    std::vector<size_t>* mapping = allocator_->Allocate(bag.size() + 1);
+    introducer_->introduceLast(*c.mappings, *mapping, c.bag, h_, g_, n_, x);
+    allocator_->Free(c.mappings, bag.size());
 
     // Remap vertex to correct position
-    std::vector<size_t> result = allocator_->get(bag.size() + 1);
+    std::vector<size_t>* result = allocator_->Allocate(bag.size() + 1);
     mapper_->SetSizes(n_, bag.size() + 1);
-    mapper_->Insert(mapping, result, pos);
-    allocator_->free(mapping, bag.size() + 1);
+    mapper_->Insert(*mapping, *result, pos);
+    allocator_->Free(mapping, bag.size() + 1);
 
     bag.insert(bag.begin() + pos, x);
 
@@ -67,10 +67,10 @@ HomDPState HomomorphismCounter::computeIntroduceRec(const std::shared_ptr<NTDNod
 
 // TODO: Handle case of forgetting only vertex
 // Should also be handled properly for introduce nodes
-HomDPState HomomorphismCounter::computeForgetRec(const std::shared_ptr<NTDNode>& child, size_t x) {
+DPState HomomorphismCounter::computeForgetRec(const std::shared_ptr<NTDNode>& child, size_t x) {
     x--;
 
-    HomDPState c = computeRec(child);
+    DPState c = computeRec(child);
 
     std::vector<size_t> bag = c.bag;
 
@@ -83,27 +83,28 @@ HomDPState HomomorphismCounter::computeForgetRec(const std::shared_ptr<NTDNode>&
     }
 
     // Remap vertex to last position
-    std::vector<size_t> mapping = allocator_->get(bag.size());
+    std::vector<size_t>* mapping = allocator_->Allocate(bag.size());
     mapper_->SetSizes(n_, bag.size());
-    mapper_->Extract(c.mappings, mapping, pos);
-    allocator_->free(c.mappings, bag.size());
+    mapper_->Extract(*c.mappings, *mapping, pos);
+    allocator_->Free(c.mappings, bag.size());
 
     // Forget the last vertex
-    std::vector<size_t> result = allocator_->get(bag.size() - 1);
-    forgetter_->forget(mapping, result, bag.size(), 0);
-    allocator_->free(mapping, bag.size());
+    std::vector<size_t>* result = allocator_->Allocate(bag.size() - 1);
+    forgetter_->forget(*mapping, *result, bag.size(), 0);
+    allocator_->Free(mapping, bag.size());
 
     bag.erase(bag.begin() + pos);
 
     return { bag, result };
 }
 
-HomDPState HomomorphismCounter::computeJoinRec(const std::shared_ptr<NTDNode>& child1, const std::shared_ptr<NTDNode>& child2) {
+DPState HomomorphismCounter::computeJoinRec(const std::shared_ptr<NTDNode>& child1, const std::shared_ptr<NTDNode>& child2) {
     // The bag of the results should be identical
-    HomDPState c1 = computeRec(child1);
-    HomDPState c2 = computeRec(child2);
+    DPState c1 = computeRec(child1);
+    DPState c2 = computeRec(child2);
 
-    std::vector<size_t> joined = joiner_->join(c1.mappings, c2.mappings);
+    joiner_->join(*c1.mappings, *c2.mappings);
+    allocator_->Free(c2.mappings, c2.bag.size());
 
-    return { c1.bag, joined };
+    return { c1.bag, c1.mappings };
 }

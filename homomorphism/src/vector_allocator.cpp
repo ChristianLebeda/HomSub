@@ -1,17 +1,11 @@
 #include "homomorphism/vector_allocator.h"
 
-void VectorAllocator::setSize(size_t n, size_t width) {
-    sizes_ = std::vector<size_t>(width + 2);
+#include <iostream>
 
-    sizes_[0] = 1;
-
-    for (size_t i = 1; i < sizes_.size(); ++i) {
-        sizes_[i] = sizes_[i - 1] * n;
-    }
+std::vector<size_t>* VectorAllocator::Allocate(size_t b) {
+    return new std::vector<size_t>(size_.sizes[b]);
 }
 
-std::vector<size_t> VectorAllocator::get(size_t b) {
-    return std::vector<size_t>(sizes_[b]);
+void VectorAllocator::Free(std::vector<size_t>* vector, size_t bagsize) {
+    delete vector;
 }
-
-void VectorAllocator::free(std::vector<size_t> &vector, size_t b) {}

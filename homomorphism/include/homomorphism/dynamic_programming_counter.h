@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "homomorphism/dpstate.h"
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/vector_allocator.h"
 #include "homomorphism/join_handler.h"
@@ -10,10 +11,6 @@
 #include "homomorphism/introduce_handler.h"
 #include "homomorphism/homomorphism_counter_interface.h"
 
-struct DPState {
-    std::vector<size_t> bag;
-    std::vector<size_t> mappings;
-};
 
 struct DynamicProgrammingSettings {
     std::shared_ptr<ForgetHandler> forget;
