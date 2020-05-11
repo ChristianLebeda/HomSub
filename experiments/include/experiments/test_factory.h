@@ -73,6 +73,7 @@ private:
     static void ExtractClosedVariants(TestSettings& settings, TestLogger& logger);
     static void MemoryTest1(TestSettings& settings, TestLogger& logger);
     static void MemoryTest2(TestSettings& settings, TestLogger& logger);
+    static void Multithread(TestSettings& settings, TestLogger& logger);
 };
 
 #endif /* test_factory_h */

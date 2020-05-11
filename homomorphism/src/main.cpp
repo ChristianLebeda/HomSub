@@ -90,6 +90,17 @@ long long Main::subgraphsSpasmDecompositionGraph(std::string filenameSpasmDecomp
 	return 0;
 }
 
+long long Main::subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
+    std::shared_ptr<SpasmDecomposition> spd = decomposedSpasmFromGraph(H);
+    
+    std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(spd, H);
+    std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(spd, G);
+    
+    long autoMorph = autoCounter->computeParallel();
+    
+    return autoMorph > 0 ? embCounter->computeParallel() / autoMorph : 0;
+}
+
 
 long long Main::subgraphsFiles(std::string filenameH, std::string filenameG) {
 	std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromFile(filenameG);

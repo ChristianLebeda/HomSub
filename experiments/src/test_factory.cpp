@@ -80,6 +80,7 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
 std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
     std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
         {
+            Multithread,
             SquaresInGrid,
             BinaryTreeInBinaryTree,
             CliquesInClique,
@@ -1367,4 +1368,58 @@ void TestFactory::MemoryTest2(TestSettings &settings, TestLogger &logger) {
     GraphGenerator::CompleteGrid(g, 20, 20);
 
     Main::subgraphsGraph(h, g);
+}
+
+void TestFactory::Multithread(TestSettings& settings, TestLogger& logger) {
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+    
+    GraphGenerator::Cycle(h, 7);
+    /*
+    std::shared_ptr<SpasmDecomposition> spd =  Main::decomposedSpasmFromGraph(h);
+    for(int i = 0 ; i < spd->size(); i++) {
+        SpasmDecompositionEntry entry = spd->operator[](i);
+        std::cout << entry.decomposition->getWidth() << std::endl;
+    }
+    */
+    BEGIN_TEST("Multithreading");
+    
+    
+    for(int n = 50; n < 501; n = n+50) {
+        GraphGenerator::EdgeProbabilityGraph(g, n, 0.1);
+        REPEATED_CLOCK_START;
+        Main::subgraphsGraph(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("sequential", n, 7, d);
+        }
+        
+        REPEATED_CLOCK_START;
+        Main::subgraphsGraphParallel(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("parallel", n, 7, d);
+        }
+    }
+    
+    GraphGenerator::Cycle(h, 8);
+    
+    for(int n = 10; n < 121; n = n+10) {
+        GraphGenerator::EdgeProbabilityGraph(g, n, 0.1);
+        REPEATED_CLOCK_START;
+        Main::subgraphsGraph(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("sequential", n, 8, d);
+        }
+        
+        REPEATED_CLOCK_START;
+        Main::subgraphsGraphParallel(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("parallel", n, 8, d);
+        }
+    }
+    
+    END_TEST;
 }
