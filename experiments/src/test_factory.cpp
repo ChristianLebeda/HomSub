@@ -80,7 +80,7 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
 std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
     std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
         {
-            Multithread,
+            /*Multithread,
             SquaresInGrid,
             BinaryTreeInBinaryTree,
             CliquesInClique,
@@ -114,6 +114,7 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             PrecomputedTableSecondCycle,
             PrecomputedTableSecondGrid,
             PrecomputedTableSecondClique*/
+                ObjectPooling
         };
     return tests;
 }
@@ -1421,5 +1422,53 @@ void TestFactory::Multithread(TestSettings& settings, TestLogger& logger) {
         }
     }
     
+    END_TEST;
+}
+
+void TestFactory::ObjectPooling(TestSettings& settings, TestLogger& logger) {
+    std::shared_ptr<AdjacencyMatrixGraph> h = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<AdjacencyMatrixGraph> g = AdjacencyMatrixGraph::testGraph();
+
+    GraphGenerator::Cycle(h, 7);
+
+    BEGIN_TEST("ObjectPooling");
+
+
+    for(int n = 100; n < 501; n = n+50) {
+        GraphGenerator::EdgeProbabilityGraph(g, n, 0.1);
+        REPEATED_CLOCK_START;
+            Main::subgraphsGraph(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("pool", n, 7, d);
+        }
+
+        REPEATED_CLOCK_START;
+            Main::subgraphsGraphNonpooled(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("nopool", n, 7, d);
+        }
+    }
+
+    GraphGenerator::Cycle(h, 8);
+
+    for(int n = 10; n <= 170; n = n+10) {
+        GraphGenerator::EdgeProbabilityGraph(g, n, 0.1);
+        REPEATED_CLOCK_START;
+            Main::subgraphsGraph(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("pool", n, 8, d);
+        }
+
+        REPEATED_CLOCK_START;
+            Main::subgraphsGraphNonpooled(h, g);
+        REPEATED_CLOCK_END;
+        for(int d : durations) {
+            logger.Log("nopool", n, 8, d);
+        }
+    }
+
     END_TEST;
 }
