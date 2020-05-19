@@ -59,7 +59,8 @@ private:
     static void ExtractIterator(TestSettings& settings, TestLogger& logger);
     static void MaxDegreeHomomorphismCount(TestSettings& settings, TestLogger& logger);
     static void CyclesInMaxDegreeRandom(TestSettings& settings, TestLogger& logger);
-    static void StarsIsMaxDegreeKRandom(TestSettings& settings, TestLogger& logger);
+    static void StarsIsMaxDegree5Random(TestSettings& settings, TestLogger& logger);
+    static void SquareInInceasingEdgeProbability(TestSettings& settings, TestLogger& logger);
     static void PrecomputedTableFirstCycle(TestSettings& settings, TestLogger& logger);
     static void PrecomputedTableFirstGrid(TestSettings& settings, TestLogger& logger);
     static void PrecomputedTableFirstClique(TestSettings& settings, TestLogger& logger);
