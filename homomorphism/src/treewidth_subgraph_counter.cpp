@@ -67,9 +67,6 @@ long TreewidthSubgraphCounter::computeParallel() {
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
             auto hc = std::make_shared<PathdecompositionCounter>(next.graph, g_, npd, pdSettings[i%threadCount]);
             
-            //coeffs[i%threadCount].push_back(next.coefficient);
-            //hcs[i%threadCount].push_back(hc);
-            
             std::tuple<int, long, std::shared_ptr<HomomorphismCounterInterface>> computation;
             
             std::get<0>(computation) = npd->getWidth();
@@ -80,8 +77,6 @@ long TreewidthSubgraphCounter::computeParallel() {
         } else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
             auto hc = std::make_shared<DynamicProgrammingCounter>(next.graph, g_, ntd, dpSettings[i%threadCount]);
-            //coeffs[i%threadCount].push_back(next.coefficient);
-            //hcs[i%threadCount].push_back(hc);
 
             std::tuple<int, long, std::shared_ptr<HomomorphismCounterInterface>> computation;
             
