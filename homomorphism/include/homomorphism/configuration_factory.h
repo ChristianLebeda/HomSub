@@ -23,6 +23,14 @@ public:
     static DynamicProgrammingSettings DynamicSettingsNonpooled(size_t n, size_t maxWidth,
                                                              std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast,
                                                              std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond);
+    static std::pair<DynamicProgrammingSettings, PathdecompotisionSettings>
+                                DefaultPrecomputedSettings(size_t n, size_t maxWidth,
+                                                             std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast,
+                                                             std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond);
+    static std::pair<DynamicProgrammingSettings, PathdecompotisionSettings>
+                                NonpoolingPrecomputedSettings(size_t n, size_t maxWidth,
+                                                           std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast,
+                                                           std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond);
 };
 
 #endif

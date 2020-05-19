@@ -18,31 +18,23 @@ long TreewidthSubgraphCounter::compute() {
 
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
-    DynamicProgrammingSettings settings = pool_ ?
-            ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2) :
-            ConfigurationFactory::DynamicSettingsNonpooled(g_->vertCount(), spdc_->width(), pre1, pre2);
-    PathdecompotisionSettings set = pool_ ?
-            ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1) :
-            ConfigurationFactory::PrecomputedPathSettingsNonpooled(g_->vertCount(), spdc_->width(), pre1);
+    auto settings = pool_ ?
+            ConfigurationFactory::DefaultPrecomputedSettings(g_->vertCount(), spdc_->width(), pre1, pre2) :
+            ConfigurationFactory::NonpoolingPrecomputedSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
 
     for (size_t i = 0; i < spdc_->size(); i++)
     {
         auto next = (*spdc_)[i];
-        if(next.decomposition->getWidth() == 3) {
-            auto aa = 5;
-        }
         if(next.decomposition->IsPathDecomposition()) {
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
-            auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
+            auto hc = PathdecompositionCounter(next.graph, g_, npd, settings.second);
             count += hc.compute() * next.coefficient;
         } else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-            auto hc = DynamicProgrammingCounter(next.graph, g_, ntd, settings);
+            auto hc = DynamicProgrammingCounter(next.graph, g_, ntd, settings.first);
             count += hc.compute() * next.coefficient;
         }
     }
-
-
 
     return count;
 }
