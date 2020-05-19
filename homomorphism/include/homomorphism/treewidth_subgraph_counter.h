@@ -10,9 +10,9 @@
 class TreewidthSubgraphCounter : SubgraphCounter
 {
 public:
-	TreewidthSubgraphCounter(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g) : spdc_(spasm), g_(g) {}
+	TreewidthSubgraphCounter(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g, bool usePool) : spdc_(spasm), g_(g), pool_(usePool) {}
 
-	static std::shared_ptr<TreewidthSubgraphCounter> instatiate(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g);
+	static std::shared_ptr<TreewidthSubgraphCounter> instatiate(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g, bool usePool);
 	
 	long compute() override;
     
@@ -20,6 +20,7 @@ public:
 private:
 	std::shared_ptr<SpasmDecomposition> spdc_;
 	std::shared_ptr<Graph> g_;
+	bool pool_;
 };
 
 #endif
