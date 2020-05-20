@@ -83,11 +83,11 @@ long long Main::subgraphsSpasmDecompositionGraph(std::shared_ptr<SpasmDecomposit
 }
 
 
-
 long long Main::subgraphsSpasmDecompositionGraph(std::string filenameSpasmDecompH, std::string filenameG) {
-	std::cerr << "ERROR: Spasm decomposition is not serializable yet" << std::endl;
-	
-	return 0;
+    auto spdc = SpasmDecomposition::fromFile(filenameSpasmDecompH);
+    auto g = AdjacencyMatrixGraph::fromFile(filenameG);
+
+	return subgraphsSpasmDecompositionGraph(spdc, g);
 }
 
 long long Main::subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
@@ -120,4 +120,18 @@ long long Main::subgraphsFiles(std::string filenameH, std::string filenameG) {
 	std::cerr << "ERROR: Unknown file formats for first argument: " << filenameH << std::endl;
 	std::cerr << "ERROR: Supported formats: .gr .spsm" << std::endl;
 	return 0;
+}
+
+long long Main::EmbeddingsSpasmGraphDegree(std::string filenameH, std::string filenameG) {
+    std::shared_ptr<Spasm> sp = Spasm::fromFile(filenameH);
+    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromFile(filenameG);
+
+    return TraversalSubgraphCounter(sp, g).compute();
+}
+
+long long Main::EmbeddingsSpasmDecompositionGraph(std::string filenameH, std::string filenameG) {
+    std::shared_ptr<SpasmDecomposition> spdc = SpasmDecomposition::fromFile(filenameH);
+    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromFile(filenameG);
+
+    return TreewidthSubgraphCounter::instatiate(spdc, g)->compute();
 }
