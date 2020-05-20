@@ -10,6 +10,9 @@ public:
 
     static IntroduceMappingIterator InitializeLeast(size_t n, size_t k, std::vector<unsigned char> edges);
     static IntroduceMappingIterator InitializeSecond(size_t n, size_t k, std::vector<unsigned char> edges);
+    static IntroduceMappingIterator InitializeInputIterator(size_t n, size_t k, size_t pos);
+    static IntroduceMappingIterator InitializePrecomputedSecond(size_t n, std::vector<unsigned char> edges, size_t pos);
+    static IntroduceMappingIterator InitializePrecomputedNonedge(size_t n, std::vector<unsigned char> edges, size_t pos);
 
     bool NextChanged();
     size_t CurrentOffset();
