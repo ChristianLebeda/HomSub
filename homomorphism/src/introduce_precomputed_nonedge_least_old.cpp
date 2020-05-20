@@ -33,7 +33,7 @@ std::vector<size_t>& IntroducePrecomputedNonedgeLeastOld::Introduce(std::vector<
     IntroduceMappingIterator mapping = IntroduceMappingIterator::InitializeLeast(size_.n, bag.size(), bag);
     auto precomputedStart = precomputed_->GetIterator(edges);
 
-    std::cerr << "ERROR: There is a bug in the old introducehandler nonedge. Outpu might be incorrect!!!";
+    std::cerr << "ERROR: There is a bug in the old introducehandler nonedge. Output might be incorrect!!!" << std::endl;
 
     for(size_t idx = 0; idx < input.size(); idx += size_.n) {
 
