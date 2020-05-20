@@ -162,5 +162,5 @@ long long Main::EmbeddingsSpasmDecompositionGraph(std::string filenameH, std::st
     std::shared_ptr<SpasmDecomposition> spdc = SpasmDecomposition::fromFile(filenameH);
     std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromFile(filenameG);
 
-    return TreewidthSubgraphCounter::instatiate(spdc, g)->compute();
+    return TreewidthSubgraphCounter::instatiate(spdc, g, true)->compute();
 }
