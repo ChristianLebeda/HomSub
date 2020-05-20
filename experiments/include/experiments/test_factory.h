@@ -75,6 +75,7 @@ private:
     static void MemoryTest1(TestSettings& settings, TestLogger& logger);
     static void MemoryTest2(TestSettings& settings, TestLogger& logger);
     static void Multithread(TestSettings& settings, TestLogger& logger);
+    static void ObjectPooling(TestSettings& settings, TestLogger& logger);
 };
 
 #endif /* test_factory_h */

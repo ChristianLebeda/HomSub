@@ -1,3 +1,4 @@
+#include <assert.h>
 #include "homomorphism/main.h"
 
 #include "homomorphism/adjacency_matrix_graph.h"
@@ -43,6 +44,10 @@ long long Main::subgraphsGraph(std::string filenameH, std::string filenameG) {
 	return subgraphsSpasmDecompositionGraph(decomposedSpasmFromGraph(filenameH), AdjacencyMatrixGraph::fromFile(filenameG));
 }
 
+long long Main::subgraphsGraphNonpooled(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
+    return subgraphsSpasmDecompositionGraphNonpooled(decomposedSpasmFromGraph(H), G);
+}
+
 long long Main::subgraphsGraphMaxDegree(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
     std::shared_ptr<Spasm> spasm = spasmFromGraph(H);
     
@@ -73,15 +78,34 @@ long long subgraphsSpasmGraphMaxDegree(std::shared_ptr<Spasm> H, std::shared_ptr
 }
 
 long long Main::subgraphsSpasmDecompositionGraph(std::shared_ptr<SpasmDecomposition> SpasmDecompH, std::shared_ptr<Graph> G) {
-	std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, SpasmDecompH->graph());
+	std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, SpasmDecompH->graph(), true);
 	
-	std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, G);
+	std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, G, true);
 	
     long autoMorph = autoCounter->compute();
-    
-	return autoMorph > 0 ? embCounter->compute() / autoMorph : 0;
+
+    if(autoMorph < 0) {
+        std::cerr << "ERROR: Automorphisms should alway be positive";
+        assert(false);
+    }
+
+	return embCounter->compute() / autoMorph;
 }
 
+long long Main::subgraphsSpasmDecompositionGraphNonpooled(std::shared_ptr<SpasmDecomposition> SpasmDecompH, std::shared_ptr<Graph> G) {
+    std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, SpasmDecompH->graph(), false);
+
+    std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(SpasmDecompH, G, false);
+
+    long autoMorph = autoCounter->compute();
+
+    if(autoMorph < 0) {
+        std::cerr << "ERROR: Automorphisms should alway be positive";
+        assert(false);
+    }
+
+    return embCounter->compute() / autoMorph;
+}
 
 long long Main::subgraphsSpasmDecompositionGraph(std::string filenameSpasmDecompH, std::string filenameG) {
     auto spdc = SpasmDecomposition::fromFile(filenameSpasmDecompH);
@@ -93,12 +117,17 @@ long long Main::subgraphsSpasmDecompositionGraph(std::string filenameSpasmDecomp
 long long Main::subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
     std::shared_ptr<SpasmDecomposition> spd = decomposedSpasmFromGraph(H);
     
-    std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(spd, H);
-    std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(spd, G);
+    std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(spd, H, true);
+    std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(spd, G, true);
     
     long autoMorph = autoCounter->computeParallel();
+
+    if(autoMorph < 0) {
+        std::cerr << "ERROR: Automorphisms should alway be positive";
+        assert(false);
+    }
     
-    return autoMorph > 0 ? embCounter->computeParallel() / autoMorph : 0;
+    return embCounter->computeParallel() / autoMorph;
 }
 
 
