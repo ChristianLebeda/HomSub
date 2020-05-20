@@ -1,6 +1,11 @@
 #include "homomorphism/edge_set_graph.h"
 
+#include <fstream>
+#include <iostream>
 #include <stdio.h>
+
+#include "homomorphism/graph6helper.h"
+#include "homomorphism/helper_functions.h"
 
 void EdgeSetGraph::clear(size_t v)
 {
@@ -66,4 +71,45 @@ std::shared_ptr<EdgeSetGraph> EdgeSetGraph::FromGraph(std::shared_ptr<Graph> g) 
         }
     }
     return result;
+}
+
+std::shared_ptr<EdgeSetGraph> EdgeSetGraph::parseGr(std::ifstream& input) {
+    std::string line;
+    do {
+        if(!std::getline(input, line)) return nullptr;
+    } while (line[0] == 'c');
+    
+    size_t n, m;
+    if (!std::sscanf(line.c_str(), "p tw %zd %zd", &n, &m)) return nullptr;
+    std::shared_ptr <EdgeSetGraph> G = std::make_shared<EdgeSetGraph>(n);
+
+    size_t u, v;
+    while (getline(input, line)) {
+        if (line.empty() || line[0] == 'c') continue;
+
+        if (!std::sscanf(line.c_str(), "%zd %zd", &u, &v)) return nullptr;
+
+        G->addEdge(u - 1, v - 1);
+    }
+
+    return G;
+}
+
+std::shared_ptr<EdgeSetGraph> EdgeSetGraph::fromFile(std::string path) {
+    std::ifstream input (path);
+    
+    if (input.is_open()) {
+        if (HelperFunctions::hasSuffix(path, ".gr")) {
+            return parseGr(input);
+        }
+        else {
+            std::cerr << "ERROR: Unknown graph format for file " << path
+                << "\n Current supported formats are: .gr" << std::endl;
+            return nullptr;
+        }
+    }
+    else {
+        std::cerr << "ERROR: Unable to open file: " << path << std::endl;
+        return nullptr;
+    }
 }

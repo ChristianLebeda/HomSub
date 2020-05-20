@@ -17,6 +17,8 @@ public:
     void clear(size_t v) override;
     size_t vertCount() override;
     size_t edgeCount() override;
+    static std::shared_ptr<EdgeSetGraph> fromFile(std::string path);
+    static std::shared_ptr<EdgeSetGraph> parseGr(std::ifstream& input);
     void addEdge(size_t u, size_t v) override;
     bool edgeExist(size_t u, size_t v) override;
     std::unordered_set<size_t> getNeighbourhood(size_t v) override;
