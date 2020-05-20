@@ -153,7 +153,7 @@ long long Main::subgraphsFiles(std::string filenameH, std::string filenameG) {
 
 long long Main::EmbeddingsSpasmGraphDegree(std::string filenameH, std::string filenameG) {
     std::shared_ptr<Spasm> sp = Spasm::fromFile(filenameH);
-    std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromFile(filenameG);
+    std::shared_ptr<Graph> g = EdgeSetGraph::fromFile(filenameG);
 
     return TraversalSubgraphCounter(sp, g).compute();
 }
