@@ -42,10 +42,45 @@ PathdecompotisionSettings ConfigurationFactory::PrecomputedPathSettings(size_t n
             std::make_shared<VectorAllocatorPooling>(BagSizes(n, maxWidth))};
 }
 
+PathdecompotisionSettings ConfigurationFactory::PrecomputedPathSettingsNonpooled(size_t n, size_t maxWidth,
+        std::shared_ptr<EdgeConsistencyPrecomputation> precomputation) {
+    return {std::make_shared<ForgetHandlerCombined>(n, maxWidth),
+            std::make_shared<IntroduceHandlerLeastPrecomputed>(precomputation),
+            std::make_shared<VectorAllocatorDefault>(BagSizes(n, maxWidth))};
+}
+
 DynamicProgrammingSettings ConfigurationFactory::DefaultDynamicSettings(size_t n, size_t maxWidth,
         std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast,
         std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond) {
     return {std::make_shared<ForgetHandlerCombined>(n, maxWidth),
             std::make_shared<IntroduceHandlerPrecomputed>(n, maxWidth, precomputationLeast, precomputationSecond),
             std::make_shared<JoinHandler>(), std::make_shared<VectorAllocatorPooling>(BagSizes(n, maxWidth))};
+}
+
+DynamicProgrammingSettings ConfigurationFactory::DynamicSettingsNonpooled(size_t n, size_t maxWidth,
+        std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast,
+        std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond) {
+    return {std::make_shared<ForgetHandlerCombined>(n, maxWidth),
+            std::make_shared<IntroduceHandlerPrecomputed>(n, maxWidth, precomputationLeast, precomputationSecond),
+            std::make_shared<JoinHandler>(), std::make_shared<VectorAllocatorDefault>(BagSizes(n, maxWidth))};
+}
+
+std::pair<DynamicProgrammingSettings, PathdecompotisionSettings> ConfigurationFactory::DefaultPrecomputedSettings(size_t n, size_t maxWidth,
+        std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast, std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond) {
+    auto forget = std::make_shared<ForgetHandlerCombined>(n, maxWidth);
+    auto introduce = std::make_shared<IntroduceHandlerPrecomputed>(n, maxWidth, precomputationLeast, precomputationSecond);
+    auto introduce2 = std::make_shared<IntroduceHandlerLeastPrecomputed>(precomputationLeast);
+    auto join = std::make_shared<JoinHandler>();
+    auto pool = std::make_shared<VectorAllocatorPooling>(BagSizes(n, maxWidth));
+    return std::make_pair<DynamicProgrammingSettings, PathdecompotisionSettings>({forget, introduce, join, pool}, {forget, introduce2, pool});
+}
+
+std::pair<DynamicProgrammingSettings, PathdecompotisionSettings> ConfigurationFactory::NonpoolingPrecomputedSettings(size_t n, size_t maxWidth,
+         std::shared_ptr<EdgeConsistencyPrecomputation> precomputationLeast, std::shared_ptr<EdgeConsistencyPrecomputation> precomputationSecond) {
+    auto forget = std::make_shared<ForgetHandlerCombined>(n, maxWidth);
+    auto introduce = std::make_shared<IntroduceHandlerPrecomputed>(n, maxWidth, precomputationLeast, precomputationSecond);
+    auto introduce2 = std::make_shared<IntroduceHandlerLeastPrecomputed>(precomputationLeast);
+    auto join = std::make_shared<JoinHandler>();
+    auto pool = std::make_shared<VectorAllocatorDefault>(BagSizes(n, maxWidth));
+    return std::make_pair<DynamicProgrammingSettings, PathdecompotisionSettings>({forget, introduce, join, pool}, {forget, introduce2, pool});
 }

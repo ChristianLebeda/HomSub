@@ -10,8 +10,8 @@
 #include <thread>
 #include <tuple>
 
-std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g) {
-	return std::make_shared<TreewidthSubgraphCounter>(spasm, g);
+std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g, bool usePool) {
+	return std::make_shared<TreewidthSubgraphCounter>(spasm, g, usePool);
 }
 
 long TreewidthSubgraphCounter::compute() {
@@ -19,19 +19,20 @@ long TreewidthSubgraphCounter::compute() {
 
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
-    DynamicProgrammingSettings settings = ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
-    PathdecompotisionSettings set = ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1);
+    auto settings = pool_ ?
+            ConfigurationFactory::DefaultPrecomputedSettings(g_->vertCount(), spdc_->width(), pre1, pre2) :
+            ConfigurationFactory::NonpoolingPrecomputedSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
 
     for (size_t i = 0; i < spdc_->size(); i++)
     {
         auto next = (*spdc_)[i];
         if(next.decomposition->IsPathDecomposition()) {
             auto npd = NicePathDecomposition::FromTd(next.decomposition);
-            auto hc = PathdecompositionCounter(next.graph, g_, npd, set);
+            auto hc = PathdecompositionCounter(next.graph, g_, npd, settings.second);
             count += hc.compute() * next.coefficient;
         } else {
             auto ntd = NiceTreeDecomposition::FromTd(next.decomposition);
-            auto hc = DynamicProgrammingCounter(next.graph, g_, ntd, settings);
+            auto hc = DynamicProgrammingCounter(next.graph, g_, ntd, settings.first);
             count += hc.compute() * next.coefficient;
         }
     }

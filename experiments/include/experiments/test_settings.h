@@ -82,6 +82,30 @@ public:
     void SetRepetitions(int repetitions) {
         repetitions_ = repetitions;
     }
+    void SetCreateSpasm(bool val) {
+        createSpasm_ = val;
+    }
+    bool GetCreateSpasm() {
+        return createSpasm_;
+    }
+    void SetCreateSpasmDecomp(bool val) {
+        createSpasmDecomp_ = val;
+    }
+    bool GetCreateSpasmDecmop() {
+        return createSpasmDecomp_;
+    }
+    void SetRunTimed(bool val) {
+        runTimed_ = val;
+    }
+    bool GetRunTimed() {
+        return runTimed_;
+    }
+    void SetTimedDegree(bool val) {
+        timedDegree_ = val;
+    }
+    bool GetTimedDegree() {
+        return timedDegree_;
+    }
 private:
     int randomSeed_;
     int singleTest_ = 0;
@@ -92,6 +116,10 @@ private:
     bool runCreateSpasm_;
     bool runConvertGr_;
     bool runCount_;
+    bool createSpasm_;
+    bool createSpasmDecomp_;
+    bool runTimed_;
+    bool timedDegree_ = false;
     std::string *in_ = nullptr, *out_ = nullptr;
     int prTestTime_;
     int repetitions_;

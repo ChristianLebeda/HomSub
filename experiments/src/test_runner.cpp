@@ -6,12 +6,40 @@
 #include "experiments/graph_files_experiments.h"
 #include "experiments/sanity_test_factory.h"
 
+#include "homomorphism/helper_functions.h"
 #include "homomorphism/main.h"
 
 
 void TestRunner::Run() {
     logger_.NotifyRunStart();
-    
+
+    if(settings_.GetCreateSpasm()) {
+        auto sp = Main::spasmFromGraph(settings_.GetIn())->serialize();
+        HelperFunctions::saveToFile(sp, settings_.GetOut());
+        return;
+    }
+
+    if(settings_.GetCreateSpasmDecmop()) {
+        auto sp = Main::decomposedSpasmFromGraph(settings_.GetIn())->serialize();
+        HelperFunctions::saveToFile(sp, settings_.GetOut());
+        return;
+    }
+
+    if(settings_.GetRunTimed()) {
+        auto start = std::chrono::steady_clock::now();
+        long long count = 0;
+        if(settings_.GetTimedDegree()) {
+            count = Main::EmbeddingsSpasmGraphDegree(settings_.GetIn(), settings_.GetOut());
+        } else {
+            count = Main::EmbeddingsSpasmDecompositionGraph(settings_.GetIn(), settings_.GetOut());
+        }
+        auto stop = std::chrono::steady_clock::now();
+        auto time = ((double)(std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count())) / 1000;
+        std::cout << (settings_.GetTimedDegree() ? "degree," : "treewidth,") << settings_.GetOut()
+                        << "," << count << ",," << time << std::endl;
+        return;
+    }
+
     if(settings_.GetRunCount()) {
         std::cout << Main::subgraphsFiles(settings_.GetIn(), settings_.GetOut()) << std::endl;
         return;

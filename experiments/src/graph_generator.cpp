@@ -46,6 +46,19 @@ void GraphGenerator::RandomConnectedGraph(std::shared_ptr<Graph> g, size_t verts
     }
 }
 
+void GraphGenerator::RandomGraph(std::shared_ptr<Graph> g, size_t verts, size_t edges)
+{
+    g->clear(verts);
+
+    while(g->edgeCount() < edges) {
+        //Add random edge
+        size_t u = RandomSize(verts);
+        size_t v = RandomSize(verts);
+        if(u == v || g->edgeExist(u, v)) continue;
+        g->addEdge(u, v);
+    }
+}
+
 size_t GraphGenerator::RandomSize(size_t max)
 {
     return rand() % max;

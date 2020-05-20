@@ -132,7 +132,7 @@ std::string SpasmDecomposition::serialize() {
 	// w is the maximum treewidth of all decompositions
 	std::ostringstream str;
 	str << "sp " << graphDecomps_.size() << " " << graph_->vertCount() << " "
-		<< graph_->edgeCount() << width_ << "\n";
+		<< graph_->edgeCount() << " " << width_ << "\n";
 
 	str << graph_->toGraph6(false) << "\n";
 
