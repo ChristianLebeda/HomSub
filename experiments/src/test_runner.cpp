@@ -1,17 +1,29 @@
 #include "experiments/test_runner.h"
 
 #include <iostream>
+#include <experiments/graph_generator.h>
 
 #include "experiments/test_factory.h"
 #include "experiments/graph_files_experiments.h"
 #include "experiments/sanity_test_factory.h"
 
+#include "homomorphism/adjacency_matrix_graph.h"
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/main.h"
 
 
 void TestRunner::Run() {
     logger_.NotifyRunStart();
+
+    if(settings_.GetCreateGraphSize() != 0) {
+        srand(settings_.GetRandomSeed());
+        auto g = AdjacencyMatrixGraph::testGraph();
+        for(int i = 0; i < settings_.GetRepetitions(); i++) {
+            GraphGenerator::EdgeProbabilityGraph(g, settings_.GetCreateGraphSize(), settings_.GetEdgeProbability());
+            std::cout << g->toGr();
+        }
+        return;
+    }
 
     if(settings_.GetCreateSpasm()) {
         auto sp = Main::spasmFromGraph(settings_.GetIn())->serialize();
@@ -98,6 +110,7 @@ void TestRunner::PrintHelp()
 {
     std::cout
         << "Give the program a sequence of parameters in order to adjust execution. Supported parameters are described here:\n" << std::endl
+        << "NOTE: This list is currently incomplete" << std::endl
         << "-help      | Get this help screen" << std::endl
         //<< "-list     | List all tests" << std::endl
         << "-test t    | Run a specific test based on its number" << std::endl

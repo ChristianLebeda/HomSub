@@ -82,6 +82,18 @@ public:
     void SetRepetitions(int repetitions) {
         repetitions_ = repetitions;
     }
+    int GetCreateGraphSize() {
+        return createGraphSize_;
+    }
+    void SetCreateGraphSize(int size) {
+        createGraphSize_ = size;
+    }
+    float GetEdgeProbability() {
+        return edgeProb_;
+    }
+    void SetEdgeProbability(float p) {
+        edgeProb_ = p;
+    }
     void SetCreateSpasm(bool val) {
         createSpasm_ = val;
     }
@@ -122,6 +134,8 @@ private:
     bool timedDegree_ = false;
     std::string *in_ = nullptr, *out_ = nullptr;
     int prTestTime_;
+    int createGraphSize_ = 0;
+    float edgeProb_ = 0.0;
     int repetitions_;
     TreeWidthSolver *tws_;
 };

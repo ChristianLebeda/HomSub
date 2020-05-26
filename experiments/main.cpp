@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
     
     TestSettings settings;
 
-    std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time", "-spasmdecomp", "-spasm",
-                                     "-spasms", "-convertgr", "-in", "-out", "-rep", "-count", "-h", "-g", "-runTimed", "-timeDegree"};
+    std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time", "-spasmdecomp", "-spasm", "-genGraph",
+                                     "-edgeProbability", "-spasms", "-convertgr", "-in", "-out", "-rep", "-count", "-h", "-g", "-runTimed", "-timeDegree"};
     
     for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
     int randomSeed = time(NULL);
     if(argMap.count("-seed")) {
         randomSeed = std::stoi(argMap["-seed"]);
-        settings.SetRandomSeed(randomSeed);
     }
+    settings.SetRandomSeed(randomSeed);
     
     //Set single test
     if(argMap.count("-test")) {
@@ -140,6 +140,16 @@ int main(int argc, char *argv[])
         }
     } else {
         settings.SetGroup(false, true);
+    }
+
+    if(argMap.count("-genGraph")) {
+        int size = std::stoi(argMap["-genGraph"]);
+        settings.SetCreateGraphSize(size);
+    }
+
+    if(argMap.count("-edgeProbability")) {
+        float p = std::stof(argMap["-edgeProbability"]);
+        settings.SetEdgeProbability(p);
     }
 
     if(argMap.count("-rep")) {
