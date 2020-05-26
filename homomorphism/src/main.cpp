@@ -40,6 +40,35 @@ long long Main::subgraphsGraph(std::shared_ptr<Graph> H, std::shared_ptr<Graph> 
 	return subgraphsSpasmDecompositionGraph(decomposedSpasmFromGraph(H), G);
 }
 
+long long Main::subgraphsGraphJoined(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
+    auto originalSpasm = decomposedSpasmFromGraph(H);
+    
+    std::vector<SpasmDecompositionEntry> treeWidth;
+    std::vector<SpasmEntry> maxDegree;
+    
+    for(int i = 0; i < originalSpasm->size(); i++) {
+        auto spasmDecomp = originalSpasm->operator[](i);
+        
+        if (spasmDecomp.decomposition->getWidth() > 2) {
+            maxDegree.push_back(spasmDecomp);
+        } else {
+            treeWidth.push_back(spasmDecomp);
+        }
+    }
+    
+    TraversalSubgraphCounter maxDegreeEmbCounter(std::make_shared<Spasm>(maxDegree, H), G);
+    
+    long embs = maxDegreeEmbCounter.compute();
+    
+    std::shared_ptr<TreewidthSubgraphCounter> treeWidthEmbCounter = TreewidthSubgraphCounter::instatiate(std::make_shared<SpasmDecomposition>(treeWidth, H, 2), G, true);
+    
+    embs += treeWidthEmbCounter->compute();
+    
+    std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(originalSpasm, H, true);
+    
+    return embs / autoCounter->compute();
+}
+
 long long Main::subgraphsGraph(std::string filenameH, std::string filenameG) {
 	return subgraphsSpasmDecompositionGraph(decomposedSpasmFromGraph(filenameH), AdjacencyMatrixGraph::fromFile(filenameG));
 }
@@ -58,6 +87,8 @@ long long Main::subgraphsGraphMaxDegree(std::shared_ptr<Graph> H, std::shared_pt
     
     return embCounter.compute() / autoMorphisms;
 }
+
+
 
 long long Main::subgraphsSpasmGraph(std::shared_ptr<Spasm> H, std::shared_ptr<Graph> G) {
 	return subgraphsSpasmDecompositionGraph(decomposedSpasmFromSpasm(H), G);
