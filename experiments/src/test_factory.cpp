@@ -80,41 +80,43 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
 std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
     std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
         {
-            /*Multithread,
-            SquaresInGrid,
-            BinaryTreeInBinaryTree,
-            CliquesInClique,
-            EdgesInPath,
-            PathInRandomGraph,
-            RandomPatternsInRandomGraph/*
-            ForgetLeastSignificant,
-            ForgetMostSignificant,
-            ForgetAny,
+            //Multithread,
+            //SquaresInGrid,
+            //BinaryTreeInBinaryTree,
+            //CliquesInClique,
+            //EdgesInPath,
+            //PathInRandomGraph,
+            //RandomPatternsInRandomGraph,
+            //ForgetLeastSignificant,
+            //ForgetMostSignificant,
+            //ForgetAny,
             //ForgetCombined,
             //IntroduceIterator,
             //IntroduceCompute,
-            IntroducePrecomputed,
-            IntroducePrecomputedNonedge,
-            IntroducePrecomputedEdge,
-            joinHandler,
-            InsertClosedForm,
-            ExtractClosedForm,
-            InsertIterator,
-            ExtractIterator,
-            InsertClosedVariants,
-            ExtractClosedVariants,
-            MaxDegreeHomomorphismCount,
-            CyclesInMaxDegreeRandom,
-            StarsIsMaxDegreeKRandom,
-            MemoryTest1,
-            MemoryTest2
-            PrecomputedTableFirstCycle,
-            PrecomputedTableFirstGrid,
-            PrecomputedTableFirstClique,
-            PrecomputedTableSecondCycle,
-            PrecomputedTableSecondGrid,
-            PrecomputedTableSecondClique*/
-                ObjectPooling
+            //IntroducePrecomputed,
+            //IntroducePrecomputedNonedge,
+            //IntroducePrecomputedEdge,
+            //joinHandler,
+            //InsertClosedForm,
+            //ExtractClosedForm,
+            //InsertIterator,
+            //ExtractIterator,
+            //InsertClosedVariants,
+            //ExtractClosedVariants,
+            //MaxDegreeHomomorphismCount,
+            //CyclesInMaxDegreeRandom
+            //CliquesInMaxDegreeRandom
+            //SquareInInceasingEdgeProbability
+            JoinedCounters
+            //MemoryTest1,
+            //MemoryTest2,
+            //PrecomputedTableFirstCycle,
+            //PrecomputedTableFirstGrid,
+            //PrecomputedTableFirstClique,
+            //PrecomputedTableSecondCycle,
+            //PrecomputedTableSecondGrid,
+            //PrecomputedTableSecondClique,
+            //ObjectPooling
         };
     return tests;
 }
@@ -899,37 +901,97 @@ void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &lo
     
     
     
-    for(int n = 16; n < 513; n = n*2 ) {
+    for(int n = 16; n < 4096; n = n*2 ) {
         
-        GraphGenerator::Cycle(setH, 8);
-        GraphGenerator::MaxDegreeRandomGraph(setG, n, 2);
-        
-        REPEATED_CLOCK_START
-        TraversalHomomorphismCounter::Count(setH, setG);
-        REPEATED_CLOCK_END;
-        
-        for(int i = 0; i < durations.size(); i++) {
-            logger.Log("maxDegree",n, 8, durations[i]);
+        for(int k = 3; k < 6; k++) {
+            GraphGenerator::Cycle(setH, k);
+            GraphGenerator::MaxDegreeRandomGraph(setG, n, 5);
+            
+            REPEATED_CLOCK_START
+            TraversalHomomorphismCounter::Count(setH, setG);
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("maxDegree",n, k, durations[i]);
+            }
+            
+            if((n > 512 && k > 3) || n > 1024) {
+                continue;
+            }
+            
+            GraphGenerator::Cycle(adjH, k);
+            GraphGenerator::FromGraph(adjG, setG);
+            
+            std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
+            std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
+            
+            HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, 8);
+
+            REPEATED_CLOCK_START
+            HomomorphismCounter(adjH, adjG, ntd, setting).compute();
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("treeWidth",n, k, durations[i]);
+            }
         }
         
-        GraphGenerator::Cycle(adjH, 8);
-        GraphGenerator::FromGraph(adjG, setG);
-        
-        std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
-        std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
-        
-        HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, 8);
+    }
+    
+    END_TEST;
+}
 
-        REPEATED_CLOCK_START
-        HomomorphismCounter(adjH, adjG, ntd, setting).compute();
-        REPEATED_CLOCK_END;
+void TestFactory::CliquesInMaxDegreeRandom(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("CliquesInMaxDegree5Random");
+    std::shared_ptr<EdgeSetGraph> setH = std::make_shared<EdgeSetGraph>(0);
+    std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
+    
+    std::shared_ptr<Graph> adjH = std::make_shared<AdjacencyMatrixGraph>(0);
+    std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
+    
+    TamakiRunner tr;
+    
+    
+    
+    for(int n = 16; n < 1025; n = n*2 ) {
         
-        for(int i = 0; i < durations.size(); i++) {
-            logger.Log("treeWidth",n, 8, durations[i]);
+        for(int k = 3; k < 6; k++) {
+            GraphGenerator::Clique(setH, k);
+            GraphGenerator::MaxDegreeRandomGraph(setG, n, 5);
+            
+            REPEATED_CLOCK_START
+            TraversalHomomorphismCounter::Count(setH, setG);
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("maxDegree",n, k, durations[i]);
+            }
+            
+            if( (n > 127 && k > 4) || (n > 255 && k > 3)) {
+                continue;
+            }
+            
+            GraphGenerator::Clique(adjH, k);
+            GraphGenerator::FromGraph(adjG, setG);
+            
+            std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
+            std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
+            
+            HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, k);
+
+            REPEATED_CLOCK_START
+            HomomorphismCounter(adjH, adjG, ntd, setting).compute();
+            REPEATED_CLOCK_END;
+            
+            for(int i = 0; i < durations.size(); i++) {
+                logger.Log("treeWidth",n, k, durations[i]);
+            }
         }
     }
     
     END_TEST;
+    
+    
 }
 
 void TestFactory::StarsIsMaxDegree5Random(TestSettings &settings, TestLogger &logger) {
@@ -1510,4 +1572,54 @@ void TestFactory::SquareInInceasingEdgeProbability(TestSettings& settings, TestL
     
     
     END_TEST
+}
+
+void TestFactory::JoinedCounters(TestSettings &settings, TestLogger &logger) {
+    BEGIN_TEST("JoinedCounters");
+    int k = 8;
+    
+    auto h = std::make_shared<AdjacencyMatrixGraph>(k);
+    auto g = std::make_shared<AdjacencyMatrixGraph>(n);
+    
+    GraphGenerator::Cycle(h, k);
+    
+    
+    for(int n = 10; n < 250; n += 10) {
+        GraphGenerator::EdgeProbabilityGraph(g, n, 0.01);
+        
+        REPEATED_CLOCK_START
+        Main::subgraphsGraphJoined(h, g);
+        REPEATED_CLOCK_END;
+        
+        for(int i = 0; i < durations.size(); i++) {
+            logger.Log("joined",n, k, durations[i]);
+        }
+        
+        if(n > 110) {
+            continue;
+        }
+        
+        REPEATED_CLOCK_START
+        Main::subgraphsGraph(h, g);
+        REPEATED_CLOCK_END;
+        
+        for(int i = 0; i < durations.size(); i++) {
+            logger.Log("treeWidth",n, k, durations[i]);
+        }
+        
+        if(n > 80) {
+            continue;
+        }
+        
+        REPEATED_CLOCK_START
+        Main::subgraphsGraphMaxDegree(h, g);
+        REPEATED_CLOCK_END;
+        
+        for(int i = 0; i < durations.size(); i++) {
+            logger.Log("maxDegree",n, k, durations[i]);
+        }
+    }
+    
+    
+    END_TEST;
 }

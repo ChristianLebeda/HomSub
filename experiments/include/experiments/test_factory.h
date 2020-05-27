@@ -59,6 +59,7 @@ private:
     static void ExtractIterator(TestSettings& settings, TestLogger& logger);
     static void MaxDegreeHomomorphismCount(TestSettings& settings, TestLogger& logger);
     static void CyclesInMaxDegreeRandom(TestSettings& settings, TestLogger& logger);
+    static void CliquesInMaxDegreeRandom(TestSettings& settings, TestLogger& logger);
     static void StarsIsMaxDegree5Random(TestSettings& settings, TestLogger& logger);
     static void SquareInInceasingEdgeProbability(TestSettings& settings, TestLogger& logger);
     static void PrecomputedTableFirstCycle(TestSettings& settings, TestLogger& logger);
@@ -76,6 +77,7 @@ private:
     static void MemoryTest2(TestSettings& settings, TestLogger& logger);
     static void Multithread(TestSettings& settings, TestLogger& logger);
     static void ObjectPooling(TestSettings& settings, TestLogger& logger);
+    static void JoinedCounters(TestSettings& settings, TestLogger& logger);
 };
 
 #endif /* test_factory_h */
