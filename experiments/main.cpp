@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
         int reps = std::stoi(argMap["-rep"]);
         settings.SetRepetitions(reps);
     } else {
-        settings.SetRepetitions(3);
+        settings.SetRepetitions(1);
     }
 
     TestLogger *logger;

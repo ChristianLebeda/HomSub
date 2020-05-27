@@ -1540,9 +1540,9 @@ void TestFactory::SquareInInceasingEdgeProbability(TestSettings& settings, TestL
     
     TamakiRunner tr;
     
-    for(int n = 128; n < 513; n = n * 2 ) {
+    for(int n = 256; n < 1025; n = n * 2 ) {
         
-        for(int p = 5; p < 21; p = p + 1) {
+        for(int p = 1; p < 16; p = p + 1) {
             GraphGenerator::EdgeProbabilityGraph(setH, n, float(p) * 0.01f);
             
             REPEATED_CLOCK_START
@@ -1584,7 +1584,7 @@ void TestFactory::JoinedCounters(TestSettings &settings, TestLogger &logger) {
     GraphGenerator::Cycle(h, k);
     
     
-    for(int n = 10; n < 250; n += 10) {
+    for(int n = 10; n < 450; n += 10) {
         GraphGenerator::EdgeProbabilityGraph(g, n, 0.01);
         
         REPEATED_CLOCK_START
@@ -1595,7 +1595,7 @@ void TestFactory::JoinedCounters(TestSettings &settings, TestLogger &logger) {
             logger.Log("joined",n, k, durations[i]);
         }
         
-        if(n > 110) {
+        if(n > 180) {
             continue;
         }
         
@@ -1607,7 +1607,7 @@ void TestFactory::JoinedCounters(TestSettings &settings, TestLogger &logger) {
             logger.Log("treeWidth",n, k, durations[i]);
         }
         
-        if(n > 80) {
+        if(n > 100) {
             continue;
         }
         
