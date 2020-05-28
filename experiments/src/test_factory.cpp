@@ -892,10 +892,7 @@ void TestFactory::MaxDegreeHomomorphismCount(TestSettings &settings, TestLogger 
 void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("CyclesInMaxDegree5Random");
     std::shared_ptr<EdgeSetGraph> setH = std::make_shared<EdgeSetGraph>(0);
-    std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
-    
     std::shared_ptr<Graph> adjH = std::make_shared<AdjacencyMatrixGraph>(0);
-    std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
     
     TamakiRunner tr;
     
@@ -905,10 +902,23 @@ void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &lo
         
         for(int k = 3; k < 6; k++) {
             GraphGenerator::Cycle(setH, k);
-            GraphGenerator::MaxDegreeRandomGraph(setG, n, 5);
+            
+            std::vector<std::shared_ptr<EdgeSetGraph>> setGs;
+            std::vector<std::shared_ptr<Graph>> adjGs;
+            
+            for(int i = 0; i < settings.GetRepetitions(); i++) {
+                std::shared_ptr<EdgeSetGraph> g = std::make_shared<EdgeSetGraph>(n);
+                GraphGenerator::MaxDegreeRandomGraph(g, n, 5);
+                setGs.push_back(g);
+                
+                std::shared_ptr<Graph> g2 = std::make_shared<AdjacencyMatrixGraph>(n);
+                GraphGenerator::FromGraph(g2, g);
+                adjGs.push_back(g2);
+            }
+            
             
             REPEATED_CLOCK_START
-            TraversalHomomorphismCounter::Count(setH, setG);
+            TraversalHomomorphismCounter::Count(setH, setGs[r]);
             REPEATED_CLOCK_END;
             
             for(int i = 0; i < durations.size(); i++) {
@@ -920,7 +930,6 @@ void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &lo
             }
             
             GraphGenerator::Cycle(adjH, k);
-            GraphGenerator::FromGraph(adjG, setG);
             
             std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
             std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
@@ -928,7 +937,7 @@ void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &lo
             HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, 8);
 
             REPEATED_CLOCK_START
-            HomomorphismCounter(adjH, adjG, ntd, setting).compute();
+            HomomorphismCounter(adjH, adjGs[r], ntd, setting).compute();
             REPEATED_CLOCK_END;
             
             for(int i = 0; i < durations.size(); i++) {
@@ -944,10 +953,10 @@ void TestFactory::CyclesInMaxDegreeRandom(TestSettings &settings, TestLogger &lo
 void TestFactory::CliquesInMaxDegreeRandom(TestSettings &settings, TestLogger &logger) {
     BEGIN_TEST("CliquesInMaxDegree5Random");
     std::shared_ptr<EdgeSetGraph> setH = std::make_shared<EdgeSetGraph>(0);
-    std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
+    //std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
     
     std::shared_ptr<Graph> adjH = std::make_shared<AdjacencyMatrixGraph>(0);
-    std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
+    //std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
     
     TamakiRunner tr;
     
@@ -957,10 +966,23 @@ void TestFactory::CliquesInMaxDegreeRandom(TestSettings &settings, TestLogger &l
         
         for(int k = 3; k < 6; k++) {
             GraphGenerator::Clique(setH, k);
-            GraphGenerator::MaxDegreeRandomGraph(setG, n, 5);
+            //GraphGenerator::MaxDegreeRandomGraph(setG, n, 5);
+            
+            std::vector<std::shared_ptr<EdgeSetGraph>> setGs;
+            std::vector<std::shared_ptr<Graph>> adjGs;
+            
+            for(int i = 0; i < settings.GetRepetitions(); i++) {
+                std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(n);
+                GraphGenerator::MaxDegreeRandomGraph(setG, n, 5);
+                setGs.push_back(setG);
+                
+                std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(n);
+                GraphGenerator::FromGraph(adjG, setG);
+                adjGs.push_back(adjG);
+            }
             
             REPEATED_CLOCK_START
-            TraversalHomomorphismCounter::Count(setH, setG);
+            TraversalHomomorphismCounter::Count(setH, setGs[r]);
             REPEATED_CLOCK_END;
             
             for(int i = 0; i < durations.size(); i++) {
@@ -972,7 +994,6 @@ void TestFactory::CliquesInMaxDegreeRandom(TestSettings &settings, TestLogger &l
             }
             
             GraphGenerator::Clique(adjH, k);
-            GraphGenerator::FromGraph(adjG, setG);
             
             std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
             std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
@@ -980,7 +1001,7 @@ void TestFactory::CliquesInMaxDegreeRandom(TestSettings &settings, TestLogger &l
             HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, k);
 
             REPEATED_CLOCK_START
-            HomomorphismCounter(adjH, adjG, ntd, setting).compute();
+            HomomorphismCounter(adjH, adjGs[r], ntd, setting).compute();
             REPEATED_CLOCK_END;
             
             for(int i = 0; i < durations.size(); i++) {
@@ -1530,10 +1551,10 @@ void TestFactory::ObjectPooling(TestSettings& settings, TestLogger& logger) {
 void TestFactory::SquareInInceasingEdgeProbability(TestSettings& settings, TestLogger& logger) {
     BEGIN_TEST("SquareInIncreasingEdgeProbability");
     std::shared_ptr<EdgeSetGraph> setH = std::make_shared<EdgeSetGraph>(0);
-    std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
+    //std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(0);
     
     std::shared_ptr<Graph> adjH = std::make_shared<AdjacencyMatrixGraph>(0);
-    std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
+    //std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(0);
     
     GraphGenerator::CompleteGrid(setH, 2, 2);
     GraphGenerator::CompleteGrid(adjH, 2, 2);
@@ -1543,17 +1564,27 @@ void TestFactory::SquareInInceasingEdgeProbability(TestSettings& settings, TestL
     for(int n = 256; n < 1025; n = n * 2 ) {
         
         for(int p = 1; p < 16; p = p + 1) {
-            GraphGenerator::EdgeProbabilityGraph(setH, n, float(p) * 0.01f);
+            
+            std::vector<std::shared_ptr<EdgeSetGraph>> setGs;
+            std::vector<std::shared_ptr<Graph>> adjGs;
+            
+            for(int i = 0; i < settings.GetRepetitions(); i++) {
+                std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(n);
+                GraphGenerator::EdgeProbabilityGraph(setG, n, float(p) * 0.01f);
+                setGs.push_back(setG);
+                
+                std::shared_ptr<Graph> adjG = std::make_shared<AdjacencyMatrixGraph>(n);
+                GraphGenerator::FromGraph(adjG, setG);
+                adjGs.push_back(adjG);
+            }
             
             REPEATED_CLOCK_START
-            TraversalHomomorphismCounter::Count(setH, setG);
+            TraversalHomomorphismCounter::Count(setH, setGs[r]);
             REPEATED_CLOCK_END;
             
             for(int i = 0; i < durations.size(); i++) {
                 logger.Log("maxDegree",n, p, durations[i]);
             }
-            
-            GraphGenerator::FromGraph(adjG, setG);
             
             std::shared_ptr<TreeDecomposition> td = tr.decompose(adjH);
             std::shared_ptr<NiceTreeDecomposition> ntd = NiceTreeDecomposition::FromTd(td);
@@ -1561,7 +1592,7 @@ void TestFactory::SquareInInceasingEdgeProbability(TestSettings& settings, TestL
             HomomorphismSettings setting = ConfigurationFactory::defaultSettings(n, 4);
 
             REPEATED_CLOCK_START
-            HomomorphismCounter(adjH, adjG, ntd, setting).compute();
+            HomomorphismCounter(adjH, adjGs[r], ntd, setting).compute();
             REPEATED_CLOCK_END;
             
             for(int i = 0; i < durations.size(); i++) {
@@ -1579,16 +1610,28 @@ void TestFactory::JoinedCounters(TestSettings &settings, TestLogger &logger) {
     int k = 8;
     
     auto h = std::make_shared<AdjacencyMatrixGraph>(k);
-    auto g = std::make_shared<AdjacencyMatrixGraph>(n);
+    //auto g = std::make_shared<AdjacencyMatrixGraph>(n);
     
     GraphGenerator::Cycle(h, k);
     
     
     for(int n = 10; n < 450; n += 10) {
-        GraphGenerator::EdgeProbabilityGraph(g, n, 0.01);
+        
+        std::vector<std::shared_ptr<EdgeSetGraph>> setGs;
+        std::vector<std::shared_ptr<AdjacencyMatrixGraph>> adjGs;
+        
+        for(int i = 0; i < settings.GetRepetitions(); i++) {
+            std::shared_ptr<EdgeSetGraph> setG = std::make_shared<EdgeSetGraph>(n);
+            GraphGenerator::EdgeProbabilityGraph(setG, n, 0.01);
+            setGs.push_back(setG);
+            
+            std::shared_ptr<AdjacencyMatrixGraph> adjG = std::make_shared<AdjacencyMatrixGraph>(n);
+            GraphGenerator::FromGraph(adjG, setG);
+            adjGs.push_back(adjG);
+        }
         
         REPEATED_CLOCK_START
-        Main::subgraphsGraphJoined(h, g);
+        Main::subgraphsGraphJoined(h, adjGs[r]);
         REPEATED_CLOCK_END;
         
         for(int i = 0; i < durations.size(); i++) {
@@ -1600,7 +1643,7 @@ void TestFactory::JoinedCounters(TestSettings &settings, TestLogger &logger) {
         }
         
         REPEATED_CLOCK_START
-        Main::subgraphsGraph(h, g);
+        Main::subgraphsGraph(h, adjGs[r]);
         REPEATED_CLOCK_END;
         
         for(int i = 0; i < durations.size(); i++) {
@@ -1612,7 +1655,7 @@ void TestFactory::JoinedCounters(TestSettings &settings, TestLogger &logger) {
         }
         
         REPEATED_CLOCK_START
-        Main::subgraphsGraphMaxDegree(h, g);
+        Main::subgraphsGraphMaxDegree(h, setGs[r]);
         REPEATED_CLOCK_END;
         
         for(int i = 0; i < durations.size(); i++) {
