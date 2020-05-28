@@ -104,9 +104,9 @@ std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAll
             //InsertClosedVariants,
             //ExtractClosedVariants,
             //MaxDegreeHomomorphismCount,
-            //CyclesInMaxDegreeRandom
-            //CliquesInMaxDegreeRandom
-            //SquareInInceasingEdgeProbability
+            CyclesInMaxDegreeRandom,
+            CliquesInMaxDegreeRandom,
+            SquareInInceasingEdgeProbability,
             JoinedCounters
             //MemoryTest1,
             //MemoryTest2,
