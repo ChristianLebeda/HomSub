@@ -14,6 +14,12 @@ def appendDegree(out):
         for line in f:
             out.write(line)
 
+def appendHomlib(out):
+    print("Appending homlib results")
+    with open("output/homlib.csv", "r") as f:
+        for line in f:
+            out.write(line)
+
 def appendVF3(out):
     print("Appending VF3 results")
     with open("output/vf3.out", "r") as f:
@@ -36,9 +42,16 @@ def appendGlasgow(out):
 
 with open("output/results.csv", "w") as result:
     result.write("algorithm,input,count,foundfirst,time\n")
-    appendTreewidth(result)
-    #appendDegree(result)
-    appendVF3(result)
-    appendGlasgow(result)
+    for arg in sys.argv[1:]:
+        if arg == 'treewidth':
+            appendTreewidth(result)
+        if arg == 'degree':
+            appendDegree(result)
+        if arg == 'homlib':
+            appendHomlib(result)
+        if arg == 'vf3':
+            appendVF3(result)
+        if arg == 'glasgow':
+            appendGlasgow(result)
 
 
