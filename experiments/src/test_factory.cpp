@@ -80,7 +80,7 @@ std::function<void(TestSettings&, TestLogger&)> TestFactory::GetTest(int i) {
 std::vector<std::function<void(TestSettings&, TestLogger&)>> TestFactory::GetAllTests() {
     std::vector<std::function<void(TestSettings&, TestLogger&)>> tests
         {
-            //Multithread,
+            Multithread,
             //SquaresInGrid,
             //BinaryTreeInBinaryTree,
             //CliquesInClique,
