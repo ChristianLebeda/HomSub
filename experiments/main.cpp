@@ -4,7 +4,6 @@
 #include "experiments/graph_generator.h"
 #include <time.h>
 #include "homomorphism/tree_decomposition.h"
-#include "homomorphism/tamaki-2017.h"
 #include "homomorphism/tamaki_runner.h"
 #include "experiments/test_runner.h"
 #include <unordered_map>
