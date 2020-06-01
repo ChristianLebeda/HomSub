@@ -40,9 +40,7 @@ long TreewidthSubgraphCounter::compute() {
     return count;
 }
 
-long TreewidthSubgraphCounter::computeParallel() {
-    
-    int threadCount = 4;
+long TreewidthSubgraphCounter::computeParallel(int threadCount) {
     
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
@@ -53,8 +51,12 @@ long TreewidthSubgraphCounter::computeParallel() {
     
     //Create settings objects
     for(int i = 0; i < threadCount; i++) {
-        pdSettings.push_back(ConfigurationFactory::PrecomputedPathSettings(g_->vertCount(), spdc_->width(), pre1));
-        dpSettings.push_back(ConfigurationFactory::DefaultDynamicSettings(g_->vertCount(), spdc_->width(), pre1, pre2));
+        //TODO: There is a bug in the sorting below resulting in pools being shared among threads
+        auto settings = //pool_ ?
+                        //ConfigurationFactory::DefaultPrecomputedSettings(g_->vertCount(), spdc_->width(), pre1, pre2) :
+                        ConfigurationFactory::NonpoolingPrecomputedSettings(g_->vertCount(), spdc_->width(), pre1, pre2);
+        pdSettings.push_back(settings.second);
+        dpSettings.push_back(settings.first);
     }
     
     std::vector<std::tuple<int, long, std::shared_ptr<HomomorphismCounterInterface>>> computations;

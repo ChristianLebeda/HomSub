@@ -28,7 +28,6 @@ std::vector<std::shared_ptr<TreeDecomposition>> TamakiRunner::decomposeAll(std::
     in << str.str();
     in.close();
 
-    // TODO: Might want to increase heap for JVM
     std::string path = ThirdParty::directory() + "tamaki";
     std::string command = "java -cp " + path + " TamakiRunner < tam.in > tam.out";
     system(command.c_str());

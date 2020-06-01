@@ -17,7 +17,7 @@ public:
     static std::shared_ptr<SpasmDecomposition> decomposedSpasmFromGraph(std::string filename);
     static std::shared_ptr<SpasmDecomposition> decomposedSpasmFromSpasm(std::shared_ptr<Spasm> sp);
     static std::shared_ptr<SpasmDecomposition> decomposedSpasmFromSpasm(std::string filename);
-    static long long subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G);
+    static long long subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G, int threadCount);
     static long long subgraphsGraph(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G);
     static long long subgraphsGraphJoined(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G);
     static long long subgraphsGraphNonpooled(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G);

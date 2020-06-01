@@ -5,7 +5,15 @@
 
 std::shared_ptr<NiceTreeDecomposition> NiceTreeDecomposition::FromTd(std::shared_ptr<TreeDecomposition> td)
 {
-    return std::make_shared<NiceTreeDecomposition>(convertNode(-1, 0, td), td->getGraph(), td->getWidth());
+    size_t root = 0;
+    // Find start vertex
+    for(size_t i = 0; i < td->getGraph()->vertCount(); i++) {
+        if(td->getGraph()->getNeighbourList()[i].size() == 1) {
+            root = i;
+            break;
+        }
+    }
+    return std::make_shared<NiceTreeDecomposition>(convertNode(-1, root, td), td->getGraph(), td->getWidth());
 }
 
 std::shared_ptr<NTDNode> NiceTreeDecomposition::convertNode(size_t from, size_t node, std::shared_ptr<TreeDecomposition> td)

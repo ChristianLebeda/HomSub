@@ -1468,11 +1468,13 @@ void TestFactory::Multithread(TestSettings& settings, TestLogger& logger) {
             logger.Log("sequential", n, 7, d);
         }
         
-        REPEATED_CLOCK_START;
-        Main::subgraphsGraphParallel(h, g);
-        REPEATED_CLOCK_END;
-        for(int d : durations) {
-            logger.Log("parallel", n, 7, d);
+        for(int threads = 1; threads <= 8; threads++) {
+            REPEATED_CLOCK_START;
+                Main::subgraphsGraphParallel(h, g, threads);
+            REPEATED_CLOCK_END;
+            for (int d : durations) {
+                logger.Log("parallel", n, 7, threads, d);
+            }
         }
     }
     
@@ -1486,12 +1488,14 @@ void TestFactory::Multithread(TestSettings& settings, TestLogger& logger) {
         for(int d : durations) {
             logger.Log("sequential", n, 8, d);
         }
-        
-        REPEATED_CLOCK_START;
-        Main::subgraphsGraphParallel(h, g);
-        REPEATED_CLOCK_END;
-        for(int d : durations) {
-            logger.Log("parallel", n, 8, d);
+
+        for(int threads = 1; threads <= 8; threads++) {
+            REPEATED_CLOCK_START;
+                Main::subgraphsGraphParallel(h, g, threads);
+            REPEATED_CLOCK_END;
+            for (int d : durations) {
+                logger.Log("parallel", n, 8, threads, d);
+            }
         }
     }
     

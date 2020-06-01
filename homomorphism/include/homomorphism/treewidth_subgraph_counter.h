@@ -16,7 +16,7 @@ public:
 	
 	long compute() override;
     
-    long computeParallel();
+    long computeParallel(int threadCount);
 private:
 	std::shared_ptr<SpasmDecomposition> spdc_;
 	std::shared_ptr<Graph> g_;

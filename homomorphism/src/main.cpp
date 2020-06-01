@@ -145,20 +145,20 @@ long long Main::subgraphsSpasmDecompositionGraph(std::string filenameSpasmDecomp
 	return subgraphsSpasmDecompositionGraph(spdc, g);
 }
 
-long long Main::subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G) {
+long long Main::subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr<Graph> G, int threadCount) {
     std::shared_ptr<SpasmDecomposition> spd = decomposedSpasmFromGraph(H);
     
     std::shared_ptr<TreewidthSubgraphCounter> autoCounter = TreewidthSubgraphCounter::instatiate(spd, H, true);
     std::shared_ptr<TreewidthSubgraphCounter> embCounter = TreewidthSubgraphCounter::instatiate(spd, G, true);
     
-    long autoMorph = autoCounter->computeParallel();
+    long autoMorph = autoCounter->computeParallel(threadCount);
 
     if(autoMorph < 0) {
         std::cerr << "ERROR: Automorphisms should alway be positive";
         assert(false);
     }
     
-    return embCounter->computeParallel() / autoMorph;
+    return embCounter->computeParallel(threadCount) / autoMorph;
 }
 
 
