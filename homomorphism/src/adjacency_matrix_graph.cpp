@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <stdio.h>
+#include <sstream>
 
 #include "homomorphism/graph6helper.h"
 #include "homomorphism/helper_functions.h"

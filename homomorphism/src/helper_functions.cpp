@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 bool HelperFunctions::hasSuffix(const std::string& str, const std::string& suffix)
 {
@@ -23,41 +24,6 @@ bool HelperFunctions::saveToFile(const std::string& str, const std::string& file
     return true;
 }
 
-std::string HelperFunctions::trimDreadnautOutput(PipeHandler& dread, size_t n) 
-{
-    std::ostringstream out;
-
-    std::istringstream line;
-    size_t v;
-
-    std::string tmp;
-
-    do {
-        tmp = dread.nextLine();
-    } while(!hasPrefix(tmp, "  0 :"));
-
-    for (size_t i = 0; i < n; i++)
-    {
-        line.clear();
-        if(i) {
-            line.str(dread.nextLine());
-        } else {
-            line.str(tmp);
-        }
-
-        line >> tmp >> tmp;
-
-        while (line >> v) {
-            if (i < v) {
-                out << " " << v;
-            }
-        }
-
-        out << " ; ";
-    }
-
-    return out.str();
-}
 
 std::string HelperFunctions::trimDreadnautOutput(std::ifstream& dread, size_t n)
 {

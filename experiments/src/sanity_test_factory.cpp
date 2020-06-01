@@ -1,5 +1,7 @@
 #include "experiments/sanity_test_factory.h"
 
+#include <sstream>
+
 #include "experiments/graph_generator.h"
 #include "homomorphism/forget_handler_last.h"
 #include "homomorphism/forget_handler_first.h"

@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include "experiments/test_factory.h"
-#include "homomorphism/tamaki-2017.h"
 #include "homomorphism/tree_decomposition.h"
 #include "homomorphism/nice_tree_decomposition.h"
 #include "homomorphism/adjacency_matrix_graph.h"

@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "homomorphism/pipe_handler.h"
-
 class HelperFunctions
 {
 public:
@@ -12,7 +10,6 @@ public:
     static bool hasSuffix(const std::string& str, const std::string& suffix);
     static bool saveToFile(const std::string& str, const std::string& filename);
     static std::string trimDreadnautOutput(std::ifstream& output, size_t n);
-    static std::string trimDreadnautOutput(PipeHandler& output, size_t n);
     static size_t pow(size_t n, size_t k);
 };
 

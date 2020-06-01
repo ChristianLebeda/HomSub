@@ -1,8 +1,10 @@
 #include "homomorphism/spasm_decomposition.h"
 
-#include "homomorphism/helper_functions.h"
-#include "homomorphism/tamaki-2017.h"
+#include <sstream>
+
 #include "homomorphism/adjacency_matrix_graph.h"
+#include "homomorphism/tamaki_runner.h"
+#include "homomorphism/helper_functions.h"
 
 std::shared_ptr<SpasmDecomposition> SpasmDecomposition::fromFile(std::string path) {
 	std::ifstream input(path);
@@ -23,7 +25,7 @@ std::shared_ptr<SpasmDecomposition> SpasmDecomposition::fromFile(std::string pat
 }
 
 std::shared_ptr<SpasmDecomposition> SpasmDecomposition::decomposeSpasm(std::shared_ptr<Spasm> sp) {
-	Tamaki2017 t;
+	TamakiRunner t;
 	
 	std::vector<SpasmDecompositionEntry> decomps(sp->size());
 	size_t width = 0;
