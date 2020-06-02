@@ -12,16 +12,12 @@ echo "Using pattern/$1 as H"
 # Run treewidth algorithm
 for i in input/*/*.gr; do
   echo "Treewidth $i"
-  time(
-    echo "Treewidth $i"
-    ../../build/experiments/experiments -runTimed -h pattern/$1.spsmd -g $i &>> output/treewidth.csv
-  ) &>> output/treewidth.log
+  echo "Treewidth $i" &>> output/treewidth.log
+  /usr/bin/time -v ../../build/experiments/experiments -runTimed -h pattern/$1.spsmd -g $i &>> output/treewidth.log
 done
 
 for i in input/*/*.gr; do
   echo "homlib $i"
-  time(
-    echo "Homlib $i"
-    python3 ~/Downloads/homlib/example/run.py pattern/$1.gr $i &>> output/homlib.csv
-  ) &>> output/homlib.log
+  echo "Homlib $i" &>> output/homlib.log
+  /usr/bin/time -v python3 ~/Downloads/homlib/example/run.py pattern/$1.gr $i &>> output/homlib.log
 done

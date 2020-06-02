@@ -2,7 +2,7 @@
 
 ./create-experiment-folder.sh experiment7-2
 cd experiment7-2
-cp ../utilities/runhomomorphisms.sh run.sh
+cp ../utilities/runhomomorphismmemory.sh run.sh
 cp ../patterns/cycle7.gr pattern/
 ./prepare.sh cycle7
 python3 ../utilities/trimspasm.py pattern/cycle7.spsmd > tmp
