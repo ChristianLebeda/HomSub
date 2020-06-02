@@ -7,8 +7,7 @@
 #include "homomorphism/calculation_remapper.h"
 #include "homomorphism/configuration_factory.h"
 #include "homomorphism/homomorphism_counter_interface.h"
-#include <thread>
-#include <tuple>
+//#include <thread>
 
 std::shared_ptr<TreewidthSubgraphCounter> TreewidthSubgraphCounter::instatiate(std::shared_ptr<SpasmDecomposition> spasm, std::shared_ptr<Graph> g, bool usePool) {
 	return std::make_shared<TreewidthSubgraphCounter>(spasm, g, usePool);
@@ -41,7 +40,10 @@ long TreewidthSubgraphCounter::compute() {
 }
 
 long TreewidthSubgraphCounter::computeParallel(int threadCount) {
-    
+    // This implementation is currently removed, as it created issues on some platforms
+    return compute();
+
+    /*
     auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g_, spdc_->width());
     auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g_, spdc_->width());
     
@@ -130,5 +132,5 @@ long TreewidthSubgraphCounter::computeParallel(int threadCount) {
         threads[i].join();
     }
     
-    return counter;
+    return counter; */
 }
