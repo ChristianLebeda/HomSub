@@ -1,12 +1,12 @@
-# Thesis - Counting subgraphs
+# HomSub: Counting small subgraphs via homomorphisms
 
 This is the repository used for the thesis of Christian Janos Lebeda and Jonas Mortensen under the supervision of Radu-Cristian Curticapean and Holger Dell.
 
 The repository contains two projects.
 
-The first will include an implementation of the algorithm for counting subgraphs described in the research paper [Homomorphisms Are a Good Basis for Counting Small Subgraphs](https://arxiv.org/abs/1705.01595).
+The first is an implementation of the algorithm for counting small subgraphs described in the research paper [Homomorphisms Are a Good Basis for Counting Small Subgraphs](https://arxiv.org/abs/1705.01595).
 
-The second project will be used for conducting performance experiments of said implementation.
+The second project is used for conducting performance experiments of said implementation.
 
 ## Building and running
 
@@ -19,7 +19,7 @@ sh build-third-party.sh
 ```
 Run the `build-and-run` script to run all performance experiments and log the results in the ExperimentsResults directory.
 
-Run the `build` script to create an executable in `experiments-build/experiments` which can be used to run the algorithm on and input pattern and host graph (.gr file): `./experiments -count -h <pattern file> -g <host file>`
+Run the `build` script to create an executable in the folder `experiments-build/experiments` which can be used to run the algorithm on an input pattern and host graph (.gr file): `./experiments -count -h <pattern file> -g <host file>`
 
 ## File types
 
