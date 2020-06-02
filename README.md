@@ -62,3 +62,8 @@ b 3 3
 s td 1 2 2
 b 1 2 1
 ```
+
+We have compared HomSub to existing software for counting homomorphisms and for counting subgraphs (both induced and non-induced). Here we include links to the state of the repositories at the time of comparison:
+- [The Glashow Subgraph Solver](https://github.com/ciaranm/glasgow-subgraph-solver/tree/b3fe447c619abb6dd10d67ed8fc50627d1dc25d7) (Counting non-induced subgraphs)
+- [VF3](https://github.com/MiviaLab/vf3lib/tree/130cf1036596e136f7565f6142f901c46844651b) (Counting induced subgraphs)
+- [Homlib](https://github.com/spaghetti-source/homlib/tree/534d900b35fea549958dc72473defdffef81a8) (Counting homomorphisms)
