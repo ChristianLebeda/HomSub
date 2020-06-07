@@ -1,5 +1,7 @@
 import sys
 
+# Splits graphs outputted by HomSub
+
 n = -1
 m = -1
 

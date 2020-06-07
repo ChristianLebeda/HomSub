@@ -14,7 +14,7 @@ for i in input/*/*.gr; do
   echo "Treewidth $i"
   time(
     echo "Treewidth $i"
-    ../../build/experiments/experiments -runTimed -h pattern/$1.spsmd -g $i &>> output/treewidth.csv
+    ../../experiments-build/experiments/experiments -runTimed -h pattern/$1.spsmd -g $i &>> output/treewidth.csv
   ) &>> output/treewidth.log
 done
 
@@ -22,6 +22,6 @@ for i in input/*/*.gr; do
   echo "homlib $i"
   time(
     echo "Homlib $i"
-    python3 ~/Downloads/homlib/example/run.py pattern/$1.gr $i &>> output/homlib.csv
+    python3 runhomlib.py pattern/$1.gr $i &>> output/homlib.csv
   ) &>> output/homlib.log
 done

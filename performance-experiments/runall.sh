@@ -65,12 +65,14 @@ time ./run.sh k4
 python3 convertresults.py homlib vf3 glasgow
 cd ..
 
+cd experiment7-1
+time ./run.sh cycle7
+cd ..
+
 cd experiment7-2
 time ./run.sh cycle7
-python3 convertresults.py homlib vf3 glasgow
 cd ..
 
 cd experiment7-3
 time ./run.sh sp9
-python3 convertresults.py homlib vf3 glasgow
 cd ..

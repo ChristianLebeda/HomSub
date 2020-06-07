@@ -4,7 +4,13 @@ This folder contains scripts to replicate the performance experiments presented 
 
 To run these example you need to clone and build the repositories for VF3, the Glasgow Subgraph Solver and homlib.
 
-The scripts using the settings used for the report. 
+Before running the scripts replace the path to VF3 and the glasgow subgraph solver in the *runexperiment* and *runlarge* files in the utility folder.
+
+The experiments ran on a machine using Ubuntu 18-04 LTS.  
+Python3 is required.
+
+The scripts uses the settings detailed in the report.  
+Some of the experiments are not shown in the report. These are marked with an asterisk.
 
 Exeriements:
  - 1-1: 3-clique random graphs n=1000
@@ -15,19 +21,22 @@ Exeriements:
  - 3-1: triangle-path random graphs n=150 
  - 3-2: triangle-path random graphs n=75
  - 4-1: 7-cycles homomorphisms random graphs n=1000 
- - 4-2: 7-cycles homomorphisms random graphs n=500
+ - 4-2: 7-cycles homomorphisms random graphs n=500 *
  - 5-1: bunker homomorphisms random graphs n=150 
- - 5-2: bunker homomorphisms random graphs n=75
- - 6-1: dragonfly homomorphisms random graphs n=10000
- - 6-2: 4-clique homomorphisms random graphs n=10000
+ - 5-2: bunker homomorphisms random graphs n=75 *
+ - 6-1: dragonfly homlib random graphs n=10000
+ - 6-2: 4-clique homlib random graphs n=10000
+ - 7-1: 7-cycle homlib memory comparison random graphs n=1000 *
+ - 7-2: 7-cycle homlib memory comparison random graphs n=500
+ - 7-3: bunker homlib memory comparison random graphs n=150
 
-To create the experiments with the same settings used for the report use
+To create all experiments use
 
 ```
  ./createall
 ```
 
-To run all experiments
+To run all experiments use
 
 ```
  ./runall

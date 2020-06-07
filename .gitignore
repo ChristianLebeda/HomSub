@@ -17,3 +17,4 @@ third-party/
 homomorphism/include/homomorphism/third_party.h
 .vscode/
 experiments-build/
+performance-experiments/experiment*/

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 if [ "$#" -ne 4 ]; then
-    echo "Type edge count as argument"
+    echo "Too few arguments"
     exit 1
 fi
 
 mkdir -p input/$3
 cd input/$3
-../../../../build/experiments/experiments -seed $1 -genGraph $2 -edgeProbability $3 -rep $4 > graphs.gr
+../../../../experiments-build/experiments/experiments -seed $1 -genGraph $2 -edgeProbability $3 -rep $4 > graphs.gr
 python3 ../../splitgraphs.py graphs.gr
 rm graphs.gr
 
