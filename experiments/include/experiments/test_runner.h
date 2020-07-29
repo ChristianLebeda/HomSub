@@ -1,18 +1,17 @@
 #ifndef EXPERIMENTS_TEST_RUNNER_H
 #define EXPERIMENTS_TEST_RUNNER_H
 
-#include <functional>
+#include <vector>
 
 #include "experiments/test_settings.h"
 #include "experiments/test_logger.h"
 
-class TestRunner
-{
-public:
-    TestRunner(TestSettings ts, TestLogger& tl) : settings_(ts), logger_(tl) {};
+class TestRunner {
+ public:
+    TestRunner(TestSettings ts, TestLogger& tl) : settings_(ts), logger_(tl) {}
     void Run();
     static void PrintHelp();
-private:
+ private:
     TestSettings settings_;
     TestLogger& logger_;
     void RunTestFromMask(int mask);

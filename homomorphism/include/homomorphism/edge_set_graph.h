@@ -1,18 +1,23 @@
 #ifndef HOMOMORPHISM_EDGE_SET_GRAPH_H_
 #define HOMOMORPHISM_EDGE_SET_GRAPH_H_
 
+#include <memory>
 #include <set>
-#include <vector>
+#include <string>
 #include <unordered_set>
+#include <vector>
 
 #include "homomorphism/graph.h"
 
 class EdgeSetGraph : public Graph {
-public:
-    EdgeSetGraph(size_t verts) : verts_(verts), edges_(0), neighbours_() {
+ public:
+    explicit EdgeSetGraph(size_t verts) : verts_(verts), edges_(0) {
         neighbours_.resize(verts);
-    };
-    EdgeSetGraph(size_t verts, size_t edges, std::vector<std::unordered_set<size_t>> neighbours) : verts_(verts), edges_(edges), neighbours_(neighbours) {};
+    }
+    EdgeSetGraph(size_t verts,
+                 size_t edges,
+                 const std::vector<std::unordered_set<size_t>> &neighbours)
+        : verts_(verts), edges_(edges), neighbours_(neighbours) {}
     static std::shared_ptr<EdgeSetGraph> FromGraph(std::shared_ptr<Graph> g);
     void clear(size_t v) override;
     size_t vertCount() override;
@@ -25,11 +30,11 @@ public:
     bool isIsomorphic(std::shared_ptr<Graph> g) override;
     std::shared_ptr<Graph> partition(std::set<size_t>* parts, size_t size) override;
     std::vector<std::unordered_set<size_t>> getNeighbourList();
-    
-private:
+
+ private:
     size_t verts_;
     size_t edges_;
     std::vector<std::unordered_set<size_t>> neighbours_;
 };
 
-#endif 
+#endif

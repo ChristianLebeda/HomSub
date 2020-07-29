@@ -1,38 +1,40 @@
 #ifndef EXPERIMENTS_TEST_SETTINGS_H
 #define EXPERIMENTS_TEST_SETTINGS_H
 
+#include <string>
+
 #include "homomorphism/tree_width_solver.h"
 
 class TestSettings {
-public:
+ public:
     void SetRandomSeed(int seed) {
         randomSeed_ = seed;
-    };
-    int GetRandomSeed() {
+    }
+    int GetRandomSeed() const {
         return randomSeed_;
     }
     void SetTWS(TreeWidthSolver *tws) {
         tws_ = tws;
-    };
+    }
     void SetRunAll(bool run) {
         runAll_ = run;
     }
-    bool GetRunAll() {
+    bool GetRunAll() const {
         return runAll_;
     }
     void SetSingleTest(int test) {
         singleTest_ = test;
         runSingleTest_ = true;
-    };
-    int GetSingleTest() {
+    }
+    int GetSingleTest() const {
         return singleTest_;
-    };
+    }
     bool ShouldRunSingleTest(){
         return runSingleTest_;
-    };
+    }
     void SetPrTestTime(float time) {
         prTestTime_ = time;
-    };
+    }
     void SetGroup(bool runSanity, bool runPerformance) {
         runSanity_ = runSanity;
         runPerformance_ = runPerformance;
@@ -46,25 +48,25 @@ public:
     void SetRunCountSub(bool val) {
         runCountSub_ = val;
     }
-    bool GetRunCountSub() {
+    bool GetRunCountSub() const {
         return runCountSub_;
     }
     void SetRunCountHom(bool val) {
         runCountHom_ = val;
     }
-    bool GetRunCountHom() {
+    bool GetRunCountHom() const {
         return runCountHom_;
     }
-    bool GetRunSanity() {
+    bool GetRunSanity() const {
         return runSanity_;
     }
-    bool GetRunPerformance() {
+    bool GetRunPerformance() const {
         return runPerformance_;
     }
-    bool GetRunCreateSpasm() {
+    bool GetRunCreateSpasm() const {
         return runCreateSpasm_;
     }
-    bool GetRunConvertGr() {
+    bool GetRunConvertGr() const {
         return runConvertGr_;
     }
     void SetIn(std::string& filename) {
@@ -73,28 +75,28 @@ public:
     void SetOut(std::string& filename) {
         out_ = &filename;
     }
-    std::string GetIn() {
+    std::string GetIn() const {
         return in_ ? *in_ : "";
     }
-    std::string GetOut() {
+    std::string GetOut() const {
         return out_ ? *out_ : "";
     }
-    int GetPrTestTime() {
+    int GetPrTestTime() const {
         return prTestTime_;
     }
-    int GetRepetitions() {
+    int GetRepetitions() const {
         return repetitions_;
     }
     void SetRepetitions(int repetitions) {
         repetitions_ = repetitions;
     }
-    int GetCreateGraphSize() {
+    int GetCreateGraphSize() const {
         return createGraphSize_;
     }
     void SetCreateGraphSize(int size) {
         createGraphSize_ = size;
     }
-    float GetEdgeProbability() {
+    float GetEdgeProbability() const {
         return edgeProb_;
     }
     void SetEdgeProbability(float p) {
@@ -103,28 +105,28 @@ public:
     void SetCreateSpasm(bool val) {
         createSpasm_ = val;
     }
-    bool GetCreateSpasm() {
+    bool GetCreateSpasm() const {
         return createSpasm_;
     }
     void SetCreateSpasmDecomp(bool val) {
         createSpasmDecomp_ = val;
     }
-    bool GetCreateSpasmDecmop() {
+    bool GetCreateSpasmDecmop() const {
         return createSpasmDecomp_;
     }
     void SetRunTimed(bool val) {
         runTimed_ = val;
     }
-    bool GetRunTimed() {
+    bool GetRunTimed() const {
         return runTimed_;
     }
     void SetTimedDegree(bool val) {
         timedDegree_ = val;
     }
-    bool GetTimedDegree() {
+    bool GetTimedDegree() const {
         return timedDegree_;
     }
-private:
+ private:
     int randomSeed_;
     int singleTest_ = 0;
     bool runSingleTest_ = false;

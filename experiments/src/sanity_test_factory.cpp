@@ -583,7 +583,7 @@ void SanityTestFactory::homomorphismHandcraftedTest(TestSettings& settings, Test
 
     TamakiRunner tam;
     GraphGenerator gen;
-    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<NiceTreeDecomposition> ntd;
     HomomorphismSettings homSet;
     long result;
@@ -656,7 +656,7 @@ void SanityTestFactory::HomomorphismPrecomputedHandcraftedTest(TestSettings& set
 
     TamakiRunner tam;
     GraphGenerator gen;
-    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<NiceTreeDecomposition> ntd;
     DynamicProgrammingSettings homSet;
     long result;
@@ -748,7 +748,7 @@ void SanityTestFactory::PathDecompHomomorphismHandcraftedTest(TestSettings& sett
 
     TamakiRunner tam;
     GraphGenerator gen;
-    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph(), g = AdjacencyMatrixGraph::testGraph();
+    std::shared_ptr<Graph> h = AdjacencyMatrixGraph::testGraph();
     std::shared_ptr<NicePathDecomposition> npd;
     PathdecompotisionSettings homSet;
     long result;

@@ -1,4 +1,3 @@
-# Set the project name
 project (homomorphism)
 
 file(GLOB homomorphism_SRC

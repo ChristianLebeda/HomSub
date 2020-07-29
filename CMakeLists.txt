@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.5)
-set (CMAKE_CXX_STANDARD 11)
-
-SET(CMAKE_CXX_FLAGS -pthread)
+set (CMAKE_CXX_STANDARD 17)
+SET(CMAKE_CXX_FLAGS "-std=c++17 -Wno-ignored-attributes -pthread")
 
 project(subgraph_thesis)
 
