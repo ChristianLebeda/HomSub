@@ -5,8 +5,12 @@
 #include "homomorphism/helper_functions.h"
 #include "homomorphism/nauty.h"
 #include "homomorphism/tamaki_runner.h"
+#include "homomorphism/edge_consistency_precomputation.h"
 #include "homomorphism/treewidth_subgraph_counter.h"
 #include "homomorphism/traversal_subgraph_counter.h"
+#include "homomorphism/configuration_factory.h"
+#include "homomorphism/pathdecomposition_counter.h"
+#include "homomorphism/dynamic_programming_counter.h"
 
 std::shared_ptr<Spasm> Main::spasmFromGraph(std::shared_ptr<Graph> h) {
     Nauty n;
@@ -163,6 +167,36 @@ long long Main::subgraphsGraphParallel(std::shared_ptr<Graph> H, std::shared_ptr
 
 
 long long Main::subgraphsFiles(std::string filenameH, std::string filenameG) {
+	auto g = AdjacencyMatrixGraph::fromFile(filenameG);
+
+	if (!g) {
+		std::cerr << "ERROR: Could not load graph G. Aborting." << std::endl;
+		return 0;
+	}
+
+	if (HelperFunctions::hasSuffix(filenameH, ".gr")) {
+        auto h = AdjacencyMatrixGraph::fromFile(filenameH);
+        if (!h) {
+            std::cerr << "ERROR: Could not load graph H. Aborting." << std::endl;
+            return 0;
+    	}
+		return subgraphsGraph(h, g);
+	} else if (HelperFunctions::hasSuffix(filenameH, ".spsm")) {
+        auto s = Spasm::fromFile(filenameH);
+        if (!s) {
+            std::cerr << "ERROR: Could not load spasm H. Aborting." << std::endl;
+            return 0;
+    	}
+        return subgraphsSpasmGraph(s, g);
+	}
+
+	std::cerr << "ERROR: Unknown file formats for first argument: " << filenameH << std::endl;
+	std::cerr << "ERROR: Supported formats: .gr .spsm" << std::endl;
+	return 0;
+}
+
+
+long long Main::homomorphismsFiles(std::string filenameH, std::string filenameG) {
 	std::shared_ptr<Graph> g = AdjacencyMatrixGraph::fromFile(filenameG);
 
 	if (!g) {
@@ -171,10 +205,31 @@ long long Main::subgraphsFiles(std::string filenameH, std::string filenameG) {
 	}
 
 	if (HelperFunctions::hasSuffix(filenameH, ".gr")) {
-		return subgraphsGraph(AdjacencyMatrixGraph::fromFile(filenameH), g);
-	}
-	else if (HelperFunctions::hasSuffix(filenameH, ".spsm")) {
-		return subgraphsSpasmGraph(Spasm::fromFile(filenameH), g);
+        std::shared_ptr<Graph> h = AdjacencyMatrixGraph::fromFile(filenameH);
+        if (!h) {
+            std::cerr << "ERROR: Could not load graph H. Aborting." << std::endl;
+            return 0;
+    	}
+
+        TamakiRunner tr;
+        auto td = tr.decompose(h);
+        auto pre1 = EdgeConsistencyPrecomputation::InitializeLeast(g, td->getWidth());
+        auto pre2 = EdgeConsistencyPrecomputation::InitializeSecond(g, td->getWidth());
+        auto settings = ConfigurationFactory::DefaultPrecomputedSettings(g->vertCount(), td->getWidth(), pre1, pre2);
+
+        if(td->IsPathDecomposition()) {
+            auto npd = NicePathDecomposition::FromTd(td);
+            auto hc = PathdecompositionCounter(h, g, npd, settings.second);
+            return hc.compute();
+        } else {
+            auto ntd = NiceTreeDecomposition::FromTd(td);
+            auto hc = DynamicProgrammingCounter(h, g, ntd, settings.first);
+            return hc.compute();
+        }
+	} else if (HelperFunctions::hasSuffix(filenameH, ".spsm")) {
+		std::cerr << "ERROR: Homcounting for spasm not implemented. Aborting." << std::endl;
+        return 0;
+		// return subgraphsSpasmGraph(Spasm::fromFile(filenameH), g);
 	}
 
 	std::cerr << "ERROR: Unknown file formats for first argument: " << filenameH << std::endl;

@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     TestSettings settings;
 
     std::set<std::string> arguments {"-help", "-test", "-group", "-all", "-csv", "-seed", "-time", "-spasmdecomp", "-spasm", "-genGraph",
-                                     "-edgeProbability", "-spasms", "-convertgr", "-in", "-out", "-rep", "-count", "-h", "-g", "-runTimed", "-timeDegree"};
+                                     "-edgeProbability", "-spasms", "-convertgr", "-in", "-out", "-rep", "-count-sub", "-count-hom", "-h", "-g", "-runTimed", "-timeDegree"};
     
     for(int i = 1; i < argc; i++) {
         std::string arg = argv[i];
@@ -116,7 +116,8 @@ int main(int argc, char *argv[])
         settings.SetOut(argMap["-out"]);
     }
     
-    settings.SetRunCount(argMap.count("-count"));
+    settings.SetRunCountSub(argMap.count("-count-sub"));
+    settings.SetRunCountHom(argMap.count("-count-hom"));
     
     if(argMap.count("-h")) {
         settings.SetIn(argMap["-h"]);

@@ -29,6 +29,7 @@ public:
     static long long subgraphsSpasmDecompositionGraphNonpooled(std::shared_ptr<SpasmDecomposition> SpasmDecompH, std::shared_ptr<Graph> G);
     static long long subgraphsSpasmDecompositionGraph(std::string filenameSpasmDecompH, std::string filenameG);
     static long long subgraphsFiles(std::string filenameH, std::string filenameG);
+    static long long homomorphismsFiles(std::string filenameH, std::string filenameG);
     static long long EmbeddingsSpasmGraphDegree(std::string filenameH, std::string filenameG);
     static long long EmbeddingsSpasmDecompositionGraph(std::string filenameH, std::string filenameG);
 };

@@ -19,7 +19,8 @@ sh build-third-party.sh
 ```
 Run the `build-and-run` script to run all performance experiments and log the results in the ExperimentsResults directory.
 
-Run the `build` script to create an executable in the folder `experiments-build/experiments` which can be used to run the algorithm on an input pattern and host graph (.gr file): `./experiments -count -h <pattern file> -g <host file>`
+Run the `build` script to create an executable in the folder `experiments-build/experiments` which can be used to run the algorithm on and input pattern and host graph (.gr file): `./experiments -count-sub -h <pattern file> -g <host file>`
+We also expose our implementation of the homomorphism counter via `./experiments -count-hom -h <pattern file> -g <host file>`
 
 ## File types
 

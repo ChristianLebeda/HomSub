@@ -52,8 +52,13 @@ void TestRunner::Run() {
         return;
     }
 
-    if(settings_.GetRunCount()) {
+    if(settings_.GetRunCountSub()) {
         std::cout << Main::subgraphsFiles(settings_.GetIn(), settings_.GetOut()) << std::endl;
+        return;
+    }
+
+    if(settings_.GetRunCountHom()) {
+        std::cout << Main::homomorphismsFiles(settings_.GetIn(), settings_.GetOut()) << std::endl;
         return;
     }
 
@@ -108,23 +113,26 @@ void TestRunner::RunTestFromList(const std::vector<std::function<void (TestSetti
 
 void TestRunner::PrintHelp()
 {
-    std::cout
-        << "Give the program a sequence of parameters in order to adjust execution. Supported parameters are described here:\n" << std::endl
-        << "NOTE: This list is currently incomplete" << std::endl
-        << "-help      | Get this help screen" << std::endl
-        //<< "-list     | List all tests" << std::endl
-        << "-test t    | Run a specific test based on its number" << std::endl
-        << "-group g   | Runs a test group: correctness (c), performance (p) or all (a)" << std::endl
-        << "             Performance group is default" << std::endl
-        << "-rep r     | Specify how maby times the repeated experiments should run" << std::endl
-        << "-csv       | Output test results formatted as csv" << std::endl
-        << "-seed      | Specify the seed used by the random graphs" << std::endl
-        << "-time      | Set the timout limit for incremental tests" << std::endl
-        << "-in        | Specifies the path to the input file" << std::endl
-        << "-out       | Specifies the path for the output file" << std::endl
-        << "-spasms    | Converts all graphs from the input file to spasms" << std::endl
-        << "-convertgr | Converts the input file from graph6 to .gr format" << std::endl
-        //<< "-mask m   | Run several tests masked by given signed integer (-1 runs all)" << std::endl
-        //<< "-run h g | Count occurences of pattern h in host g" << std::endl
-        << std::endl;
+    std::cout << R"(usage: experiments [-help] [-test <number>] ...
+
+Provide a sequence of command-line parameters in order to adjust execution.
+An incomplete list of supported parameters is described here:
+
+-help      | Get this help screen
+-test t    | Run a specific test based on its number
+-group g   | Runs a test group: correctness (c), performance (p) or all (a)
+             Performance group is default
+-rep r     | Specify how maby times the repeated experiments should run
+-csv       | Output test results formatted as csv
+-seed      | Specify the seed used by the random graphs
+-time      | Set the timout limit for incremental tests
+-in        | Specifies the path to the input file
+-out       | Specifies the path for the output file
+-spasms    | Converts all graphs from the input file to spasms
+-convertgr | Converts the input file from graph6 to .gr format
+-count-sub | Output the number Sub(H,G). Requires -h and -g
+-count-hom | Output the number Sub(H,G). Requires -h and -g
+-h <file>  | Path to the pattern graph
+-g <file>  | Path to the host graph
+)";
 }

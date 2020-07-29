@@ -43,11 +43,17 @@ public:
     void SetRunConvertGr(bool val) {
         runConvertGr_ = val;
     }
-    void SetRunCount(bool val) {
-        runCount_ = val;
+    void SetRunCountSub(bool val) {
+        runCountSub_ = val;
     }
-    bool GetRunCount() {
-        return runCount_;
+    bool GetRunCountSub() {
+        return runCountSub_;
+    }
+    void SetRunCountHom(bool val) {
+        runCountHom_ = val;
+    }
+    bool GetRunCountHom() {
+        return runCountHom_;
     }
     bool GetRunSanity() {
         return runSanity_;
@@ -127,7 +133,8 @@ private:
     bool runPerformance_;
     bool runCreateSpasm_;
     bool runConvertGr_;
-    bool runCount_;
+    bool runCountSub_;
+    bool runCountHom_;
     bool createSpasm_;
     bool createSpasmDecomp_;
     bool runTimed_;
